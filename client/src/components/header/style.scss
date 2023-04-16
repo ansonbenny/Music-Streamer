@@ -1,0 +1,105 @@
+@import '../../index.scss';
+
+.Header {
+    background: transparent;
+    width: 100%;
+    border-bottom: 1px solid var(--primary-border);
+
+    .inner {
+        display: flex;
+        flex-direction: row;
+        padding: 1.5rem;
+        align-items: center;
+        justify-content: left;
+
+        .logo_menu {
+            display: none;
+            max-width: 150px;
+            margin-right: 1rem;
+
+            @media screen and (min-width:768px) {
+                margin-right: 2rem;
+            }
+
+            .logo {
+                position: relative;
+                background: transparent;
+                border: 8px solid $PrimaryColor;
+                border-radius: 50%;
+                width: 7px;
+                height: 7px;
+                margin-right: 5px;
+                animation: logoAnimation .5s ease-in-out forwards;
+
+                .dot {
+                    background: #f5f5f6;
+                    height: 4px;
+                    width: 4px;
+                    margin-left: 9px;
+                    border-radius: 50%;
+                    position: absolute;
+                }
+            }
+
+            h1 {
+                color: var(--text-primary-color);
+                font-size: 17px;
+                font-weight: 600;
+            }
+
+            .bar {
+                padding-top: 2px;
+                margin-right: 1rem;
+
+                button {
+                    background: transparent;
+                    border: none;
+                    cursor: pointer;
+                }
+            }
+
+            @media screen and (max-width:767px) {
+                display: flex;
+            }
+        }
+
+        .search {
+            display: flex;
+            flex-direction: row;
+            background: var(--primary-bg);
+            padding: 0.3rem;
+            height: 1.7rem;
+            border-radius: 9999px;
+            align-items: center;
+            justify-content: center;
+
+            svg {
+                fill: var(--text-primary-color);
+                margin: 0 .3rem;
+            }
+
+            input {
+                height: 100%;
+                width: 100%;
+                outline: none;
+                background: transparent;
+                border: none;
+                color: var(--text-primary-color);
+
+                @media screen and (min-width:560px) {
+                    width: 20rem;
+                }
+
+                @media screen and (min-width:768px) {
+                    width: 25rem;
+                }
+            }
+        }
+    }
+}
+
+.expand {
+    .inner .logo_menu {
+        display: flex;
+    }
+}
