@@ -33,6 +33,7 @@ body {
   padding: 0;
   font-family: 'Open Sans';
   background: var(--content-bg);
+  scroll-behavior: smooth;
 }
 
 * {
@@ -59,6 +60,10 @@ body {
       }
     }
   }
+}
+
+.container{
+  padding: 1.5rem;
 }
 
 // Pages

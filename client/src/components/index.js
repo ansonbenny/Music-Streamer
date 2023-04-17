@@ -1,3 +1,7 @@
 export { default as Header } from './header/header'
 export { default as Menu } from './menu/menu'
 export { default as Loading } from './loading/loading'
+export { default as Musics } from './musics/musics'
+export { default as Recommended } from './home/recommended'
+export { default as Carousel } from './home/carousel'
+export { default as Footer } from './footer/footer'

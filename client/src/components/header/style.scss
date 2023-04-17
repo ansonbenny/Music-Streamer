@@ -1,7 +1,9 @@
 @import '../../index.scss';
 
 .Header {
-    background: transparent;
+    position: fixed;
+    z-index: 999;
+    background: var(--content-bg);
     width: 100%;
     border-bottom: 1px solid var(--primary-border);
 
@@ -102,4 +104,8 @@
     .inner .logo_menu {
         display: flex;
     }
+}
+
+.spaceHeader{
+    padding-top: 6rem;
 }

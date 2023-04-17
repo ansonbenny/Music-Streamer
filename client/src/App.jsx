@@ -1,6 +1,6 @@
 import { Route, Routes } from 'react-router-dom'
 import { Home } from './pages'
-import { Header, Loading, Menu } from './components'
+import { Footer, Header, Loading, Menu } from './components'
 import { useRef } from 'react'
 
 const App = () => {
@@ -18,6 +18,7 @@ const App = () => {
         <Routes>
           <Route exact path='/' element={<Home />} />
         </Routes>
+        <Footer />
       </div>
 
       {

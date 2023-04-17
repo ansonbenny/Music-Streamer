@@ -1,0 +1,16 @@
+@import '../../index.scss';
+
+.footer {
+    background: #969ba00d;
+    width: 100%;
+    height: auto;
+
+    .inner {
+        padding: 1.5rem;
+
+        p{
+            font-size: 11px;
+            color: $TextSecondaryColor;
+        }
+    }
+}
