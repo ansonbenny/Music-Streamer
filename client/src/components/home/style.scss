@@ -1,5 +1,9 @@
 @import '../../index.scss';
 
+.slick-initialized {
+    overflow: hidden;
+}
+
 .recommended {
     margin-bottom: 2rem;
 
@@ -119,33 +123,18 @@
         margin-bottom: 1rem;
     }
 
-    .grid {
-        scroll-behavior: smooth;
-        display: grid;
-        gap: 1rem;
-        grid-auto-flow: column;
-        grid-auto-columns: minmax(calc((100% - 3 * 1rem) / 4), 1fr);
-        overflow-x: auto;
-
-        &::-webkit-scrollbar {
-            display: none;
-        }
-
-        @media screen and (max-width:1050px) {
-            grid-auto-columns: minmax(calc((100% - 2 * 1rem) / 3), 1fr);
-        }
-
-        @media screen and (max-width:600px) {
-            grid-auto-columns: minmax(calc((85% - 1 * 1rem) / 2), 1fr);
-        }
+    .inner {
+        margin-left: -.5rem;
+        margin-right: -.5rem;
 
         .card {
+            padding: .5rem;
             position: relative;
             cursor: pointer;
 
             img {
                 border-radius: 5px;
-                width: 100%;
+                width: calc(100% - 1rem);
                 height: auto;
             }
 
@@ -154,6 +143,7 @@
                 display: none;
                 top: 0;
                 bottom: 0;
+                right: .5rem;
                 position: absolute;
                 width: 100%;
                 transition: all .5s ease-in-out;
@@ -178,14 +168,6 @@
             &:hover .play {
                 display: flex;
             }
-        }
-    }
-}
-
-@media screen and (min-width: 1115px) {
-    :is(.expand) {
-        .carousel .grid {
-            grid-auto-columns: minmax(calc((100% - 4 * 1rem) / 5), 1fr);
         }
     }
 }
