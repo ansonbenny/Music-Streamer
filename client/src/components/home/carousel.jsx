@@ -1,13 +1,10 @@
 import { Play } from '../../assets'
 import Slider from 'react-slick'
-import demo from '../../assets/demo2.jpg'
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import './style.scss'
 
-const Carousel = ({ title }) => {
-
-    const loop = [1, 2, 343, 4, 545, 56, 6, 6, 766]
+const Carousel = ({ title, data }) => {
 
     var settings = {
         dots: false,
@@ -45,11 +42,11 @@ const Carousel = ({ title }) => {
             <div className="inner">
                 <Slider {...settings}>
                     {
-                        loop?.map((elm, key) => {
+                        data?.map((elm, key) => {
                             return (
                                 <div className='card' id='carousel' key={key}>
-                                    <img className='scrollImg' src={demo} />
-                                    <div className="play">
+                                    <img src={elm?.thumbnail} />
+                                    <div className="hover-details">
                                         <button>
                                             <Play
                                                 width={'16px'}
@@ -57,6 +54,10 @@ const Carousel = ({ title }) => {
                                                 color={'#333'}
                                             />
                                         </button>
+                                        <div className='details'>
+                                            <h5>{elm?.title}</h5>
+                                            <p>{elm?.extract}</p>
+                                        </div>
                                     </div>
                                 </div>
                             )

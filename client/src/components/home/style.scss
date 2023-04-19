@@ -8,13 +8,7 @@
     margin-bottom: 2rem;
 
     .title {
-        h5 {
-            font-size: 1.17rem;
-            font-weight: 600;
-            color: var(--text-primary-color);
-        }
-
-        margin-bottom: 1rem;
+        @include rowsTitle;
     }
 
     .grid {
@@ -26,30 +20,42 @@
             grid-template-columns: repeat(2, minmax(9rem, 1fr));
         }
 
-        @media screen and (max-width:492px) {
+        @media screen and (max-width:540px) {
             grid-template-columns: auto;
         }
 
         .card {
+            background: var(--primary-bg);
+            padding: .5rem 0;
+            padding-bottom: .2rem;
+            align-items: center;
             width: 100%;
             display: flex;
             flex-direction: row;
+            height: auto;
+            border-radius: 5px;
 
             img {
+                @include coverImage;
                 width: 3rem;
                 height: 3rem;
                 border-radius: 5px;
+                margin-left: .5rem;
             }
 
             .details {
                 padding-left: 1rem;
                 width: 9rem;
 
+                @media screen and (max-width:1115px) {
+                    width: 8rem;
+                }
+
                 @media screen and (max-width:790px) {
                     width: 7rem;
                 }
 
-                @media screen and (max-width:492px) {
+                @media screen and (max-width:540px) {
                     width: 11rem;
                 }
 
@@ -60,21 +66,15 @@
 
                 h5 {
                     font-weight: 500;
-                    font-size: 16px;
+                    font-size: 14px;
                     color: var(--text-primary-color);
-                    width: auto;
-                    white-space: nowrap;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
+                    @include singleLine;
                 }
 
                 p {
                     color: $TextSecondaryColor;
                     font-size: 12px;
-                    width: auto;
-                    white-space: nowrap;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
+                    @include singleLine;
                 }
             }
 
@@ -82,15 +82,10 @@
                 padding-left: 1rem;
                 height: 100%;
                 width: 100%;
-                display: flex;
+                display: none;
                 align-items: center;
                 justify-content: right;
-                margin-right: 5rem;
-
-                @media screen and (max-width:492px) {
-                    margin-right: 0;
-                    justify-content: right;
-                }
+                margin-right: .5rem;
 
                 button {
                     display: flex;
@@ -99,28 +94,35 @@
                     height: 1.5rem;
                     width: 1.5rem;
                     border-radius: 50%;
-                    background: var(--primary-bg);
+                    background: $PrimaryColor;
                     border: none;
                     cursor: pointer;
+                    transition: all .5s ease-in-out;
+                    -moz-transition: all .5s ease-in-out;
 
                     svg {
                         fill: var(--text-primary-color);
                     }
+
+                    &:hover{
+                        transform: translateY(-5px);
+                    }
                 }
+            }
+
+            &:hover .play {
+                display: flex;
             }
         }
     }
 }
 
 .carousel {
-    .title {
-        h5 {
-            font-size: 1.17rem;
-            font-weight: 600;
-            color: var(--text-primary-color);
-        }
+    margin-bottom: 1.5rem;
 
-        margin-bottom: 1rem;
+    .title {
+        @include rowsTitle;
+        margin-bottom: .5rem;
     }
 
     .inner {
@@ -133,40 +135,107 @@
             cursor: pointer;
 
             img {
+                @include coverImage;
                 border-radius: 5px;
                 width: calc(100% - 1rem);
                 height: auto;
             }
 
-            .play {
+            .hover-details {
                 background: transparent;
                 display: none;
                 top: 0;
-                bottom: 0;
+                bottom: 7%;
                 right: .5rem;
                 position: absolute;
                 width: 100%;
-                transition: all .5s ease-in-out;
-                -moz-transition: all .5s ease-in-out;
-                flex-direction: column;
-                align-items: center;
+                flex-direction: row-reverse;
+                align-items: end;
                 justify-content: center;
 
                 button {
+                    position: absolute;
+                    right: 1.5rem;
                     background: #fff;
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    height: 3rem;
-                    width: 3rem;
+                    height: 2.5rem;
+                    width: 2.5rem;
                     border: none;
                     border-radius: 50%;
                     cursor: pointer;
+                    transition: all .5s ease-in-out;
+                    -moz-transition: all .5s ease-in-out;
+
+                    &:hover {
+                        transform: translateY(-5px);
+                    }
+                }
+
+                .details {
+                    position: absolute;
+                    left: 1.5rem;
+                    max-width: 40%;
+                    text-align: left;
+
+                    h5 {
+                        @include singleLine;
+                        line-height: 1.875rem;
+                        font-size: 14px;
+                        color: #fff;
+                        font-weight: 600;
+                    }
+
+                    p {
+                        @include singleLine;
+                        font-size: 12px;
+                        color: $TextSecondaryColor;
+                    }
                 }
             }
 
-            &:hover .play {
+            &:hover .hover-details {
                 display: flex;
+            }
+        }
+    }
+}
+
+.genres {
+    margin-bottom: 2rem;
+
+    .title {
+        @include rowsTitle;
+    }
+
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
+        gap: 1rem;
+
+        @media screen and (max-width: 862px) {
+            grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr));
+        }
+
+        button {
+            @include singleLine;
+            width: 100%;
+            height: 3rem;
+            padding: .5rem;
+            text-align: left;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 14px;
+            color: var(--text-primary-color);
+            border-radius: 5px;
+            border: none;
+            background: var(--primary-bg);
+            transition: all .5s ease-in-out;
+            -moz-transition: all .5s ease-in-out;
+
+            &:hover {
+                background: rgba(150, 155, 160, .2);
             }
         }
     }

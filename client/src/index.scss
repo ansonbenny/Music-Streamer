@@ -18,16 +18,6 @@ $GreyBlack : #333;
   }
 }
 
-@keyframes logoAnimation {
-  0% {
-    rotate: 0deg;
-  }
-
-  100% {
-    rotate: 360deg;
-  }
-}
-
 body {
   margin: 0;
   padding: 0;
@@ -39,6 +29,39 @@ body {
 * {
   margin: 0;
   padding: 0;
+}
+
+@keyframes logoAnimation {
+  0% {
+    rotate: 0deg;
+  }
+
+  100% {
+    rotate: 360deg;
+  }
+}
+
+@mixin rowsTitle {
+  h5 {
+    font-size: 1.17rem;
+    font-weight: 600;
+    color: var(--text-primary-color);
+  }
+
+  margin-bottom: 1rem;
+}
+
+@mixin singleLine {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: auto;
+}
+
+@mixin coverImage {
+  aspect-ratio: 1/1;
+  object-position: center;
+  object-fit: cover;
 }
 
 .Main {
@@ -62,7 +85,7 @@ body {
   }
 }
 
-.container{
+.container {
   padding: 1.5rem;
 }
 

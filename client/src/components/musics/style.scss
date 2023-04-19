@@ -4,15 +4,10 @@
     margin-bottom: 2rem;
 
     .title {
-        h5 {
-            font-size: 1.17rem;
-            font-weight: 600;
-            color: var(--text-primary-color);
-        }
+        @include rowsTitle;
     }
 
     .grid {
-        padding-top: 1rem;
         display: grid;
         gap: 1rem;
         grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
@@ -24,73 +19,86 @@
         .card {
             border-radius: 5px;
             cursor: pointer;
+            background: var(--primary-bg);
+            position: relative;
+            padding: 1rem;
 
-            .image {
+            .thumb {
                 position: relative;
                 width: auto;
                 height: auto;
-                transition: all .5s ease-in-out;
-                -moz-transition: all .5s ease-in-out;
 
                 img {
+                    @include coverImage;
                     border-radius: 5px;
                     width: 100%;
                     height: auto;
                 }
 
-                .play {
-                    background: transparent;
-                    display: none;
-                    top: 0;
-                    bottom: 0;
-                    position: absolute;
-                    width: 100%;
-                    transition: all .5s ease-in-out;
-                    -moz-transition: all .5s ease-in-out;
-                    flex-direction: column;
-                    align-items: center;
-                    justify-content: center;
-
-                    button {
-                        background: #fff;
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        height: 3rem;
-                        width: 3rem;
-                        border: none;
-                        border-radius: 50%;
-                        cursor: pointer;
-                    }
-                }
-
-                &:hover .play {
-                    display: flex;
+                .rounded{
+                    border-radius: 50%
                 }
             }
 
             .details {
                 h5 {
+                    @include singleLine;
                     line-height: 1.875rem;
                     font-size: 14px;
                     color: var(--text-primary-color);
                     font-weight: 500;
-                    width: auto;
-                    max-width: 9rem;
-                    white-space: nowrap;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
                 }
 
                 p {
+                    @include singleLine;
                     font-size: 12px;
                     color: $TextSecondaryColor;
-                    width: auto;
-                    max-width: 9rem;
-                    white-space: nowrap;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
                 }
+            }
+
+
+            .play {
+                border-radius: 5px;
+                display: none;
+                top: 0;
+                bottom: 0;
+                left: 0;
+                position: absolute;
+                width: 100%;
+                transition: all .5s ease-in-out;
+                -moz-transition: all .5s ease-in-out;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+
+                button {
+                    position: absolute;
+                    right: 1.5rem;
+                    bottom: calc(1rem + 14px + 12px + 1.875rem);
+                    background: #fff;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    height: 2.5rem;
+                    width: 2.5rem;
+                    border: none;
+                    border-radius: 50%;
+                    cursor: pointer;
+                    transition: all .5s ease-in-out;
+                    -moz-transition: all .5s ease-in-out;
+
+                    &:hover {
+                        transform: translateY(-5px);
+                    }
+                }
+
+                &:hover {
+                    background: rgba(0, 0, 0, .1);
+                }
+            }
+
+            &:hover .play {
+                display: flex;
             }
 
         }
