@@ -64,6 +64,11 @@ body {
   object-fit: cover;
 }
 
+@mixin transi_easy_in_out($second: .5s){
+  transition: all $second ease-in-out;
+  -moz-transition: all $second ease-in-out;
+}
+
 .Main {
 
   .content {

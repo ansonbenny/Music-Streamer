@@ -667,6 +667,27 @@ const Home = () => {
           "thumbnail": "https://upload.wikimedia.org/wikipedia/en/1/1c/Inherit_the_Viper_%282019%29_Film_Poster.jpg",
           "thumbnail_width": 236,
           "thumbnail_height": 350
+        }, {
+          "title": "Underwater",
+          "year": 2020,
+          "cast": [
+            "Kristen Stewart",
+            "Vincent Cassel",
+            "Jessica Henwick",
+            "John Gallagher Jr.",
+            "Mamoudou Athie",
+            "T.J. Miller"
+          ],
+          "genres": [
+            "Action",
+            "Horror",
+            "Science Fiction"
+          ],
+          "href": "Underwater_(film)",
+          "extract": "Underwater is a 2020 American science fiction action horror film directed by William Eubank. The film stars Kristen Stewart, Vincent Cassel, Jessica Henwick, John Gallagher Jr., Mamoudou Athie, and T.J. Miller.",
+          "thumbnail": "https://upload.wikimedia.org/wikipedia/en/4/4a/Underwater_poster.jpeg",
+          "thumbnail_width": 250,
+          "thumbnail_height": 398
         },]}
         isArtist />
       <Musics

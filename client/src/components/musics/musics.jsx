@@ -9,7 +9,7 @@ const Musics = ({ title, data, isArtist }) => {
         <h5>{title}</h5>
       </div>
 
-      <div className="grid">
+      <div className={`grid ${isArtist && 'single-row'}`}>
         {
           data?.map((elm, key) => {
             return (
