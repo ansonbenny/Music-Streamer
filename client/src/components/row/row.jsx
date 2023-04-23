@@ -2,20 +2,20 @@ import React from 'react'
 import { Play } from '../../assets'
 import './style.scss'
 
-const Musics = ({ title, data, isArtist }) => {
+const Row = ({ title, data, isSingle }) => {
   return (
-    <div className='Musics'>
+    <div data-for='Row'>
       <div className="title">
         <h5>{title}</h5>
       </div>
 
-      <div className={`grid ${isArtist && 'single-row'}`}>
+      <div className={`grid ${isSingle && 'single-row'}`}>
         {
           data?.map((elm, key) => {
             return (
               <div className="card" key={key}>
-                <div className="thumb">
-                  <img className={isArtist ? 'rounded' : ''} src={elm?.thumbnail} alt="" />
+                <div className="thumbnail">
+                  <img className={isSingle ? 'rounded' : ''} src={elm?.thumbnail} alt="" />
                 </div>
 
                 <div className="details">
@@ -43,4 +43,4 @@ const Musics = ({ title, data, isArtist }) => {
   )
 }
 
-export default Musics
+export default Row

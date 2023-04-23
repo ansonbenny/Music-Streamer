@@ -2,7 +2,7 @@ import React, { Fragment } from 'react'
 import { MagnifyingGlass, MenuBar } from '../../assets'
 import './style.scss'
 
-const Header = ({ contentRef, menuRef }) => {
+const Header = ({ menuRef }) => {
   return (
     <Fragment>
       <div className='Header'>
@@ -17,7 +17,7 @@ const Header = ({ contentRef, menuRef }) => {
                 } else if (menuRef?.current) {
                   // Medium plus devices
 
-                  contentRef?.current?.classList?.remove("expand")
+                  document.body?.classList?.remove("expand")
                   menuRef?.current?.classList?.add('showMd')
                 }
               }}>

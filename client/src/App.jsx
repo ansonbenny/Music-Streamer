@@ -1,22 +1,23 @@
-import { Route, Routes } from 'react-router-dom'
-import { Home } from './pages'
-import { Footer, Header, Loading, Menu } from './components'
-import { useRef } from 'react'
+import { Route, Routes } from "react-router-dom";
+import { Home, Music } from "./pages";
+import { Footer, Header, Loading, Menu } from "./components";
+import { useRef } from "react";
 
 const App = () => {
-  let contentRef = useRef()
-  let menuRef = useRef()
+  let menuRef = useRef();
   return (
     <section className="Main">
-
       {false && <Loading />}
 
-      <Menu contentRef={contentRef} ref={menuRef} />
+      <Menu ref={menuRef} />
 
-      <div className="content" ref={contentRef}>
-        <Header contentRef={contentRef} menuRef={menuRef} />
+      <Header menuRef={menuRef} />
+
+      <div className="page">
         <Routes>
-          <Route exact path='/' element={<Home />} />
+          <Route exact path="/" element={<Home />} />
+          <Route path="/music" element={<Music />} />
+          <Route path="/artist" element={<Music isArtist />} />
         </Routes>
         <Footer />
       </div>
@@ -25,7 +26,7 @@ const App = () => {
         // bottom play options
       }
     </section>
-  )
-}
+  );
+};
 
-export default App
+export default App;
