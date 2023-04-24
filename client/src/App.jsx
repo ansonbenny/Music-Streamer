@@ -1,6 +1,7 @@
+import React from "react";
 import { Route, Routes } from "react-router-dom";
 import { Home, Music } from "./pages";
-import { Footer, Header, Loading, Menu } from "./components";
+import { Footer, Header, Loading, Menu, Player } from "./components";
 import { useRef } from "react";
 
 const App = () => {
@@ -22,9 +23,7 @@ const App = () => {
         <Footer />
       </div>
 
-      {
-        // bottom play options
-      }
+      <Player />
     </section>
   );
 };

@@ -3,7 +3,7 @@
 .menu {
     position: fixed;
     width: 240px;
-    height: 100%;
+    height: calc(100% - 4rem);
     z-index: 1000;
     background: var(--primary-bg);
 
@@ -13,6 +13,7 @@
 
     @media screen and (max-width:767px) {
         display: none;
+        height: 100%;
 
         &:is(.showSm) {
             display: block;

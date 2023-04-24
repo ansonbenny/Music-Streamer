@@ -1,5 +1,19 @@
 @import "../../index.scss";
 
+@keyframes hideAndShow {
+  0% {
+    content: '●';
+  }
+
+  50% {
+    content: '● ●';
+  }
+
+  100% {
+    content: '● ● ●';
+  }
+}
+
 .banner {
   margin-bottom: 2rem;
 
@@ -147,11 +161,12 @@
 }
 
 .collections {
+  margin-bottom: 2rem;
 
   table {
     width: 100%;
     text-align: center;
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
     table-layout: fixed;
     border-collapse: collapse;
 
@@ -225,13 +240,42 @@
           }
         }
 
-        .more {
+        .more_btn {
           background: transparent;
           border: none;
           cursor: pointer;
 
           svg {
             fill: var(--text-primary-color);
+          }
+
+        }
+
+        div[class^='more_options'] {
+          display: none;
+          text-align: left;
+          position: absolute;
+          background: var(--content-bg);
+          border-radius: 5px;
+          margin-top: -2rem;
+          right: 2rem;
+          width: 8rem;
+          border: 1px solid var(--primary-border);
+          padding: .5rem 0;
+
+          ul {
+            list-style: none;
+
+            li {
+              padding: .5rem 1rem;
+              color: var(--text-primary-color);
+              @include transi_easy_in_out;
+
+              &:hover {
+                cursor: pointer;
+                background: var(--primary-bg);
+              }
+            }
           }
         }
 
@@ -258,6 +302,49 @@
               display: block
             }
           }
+        }
+      }
+    }
+  }
+
+  .see_more {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    button {
+      color: var(--text-primary-color);
+      font-weight: 700;
+      text-transform: uppercase;
+      background: var(--content-bg);
+      border: 1px solid var(--primary-border);
+      font-size: 12px;
+      cursor: pointer;
+      width: 8rem;
+      height: 2rem;
+      border-radius: 9999px;
+      @include transi_easy_in_out;
+
+      &:hover {
+        background: var(--primary-bg);
+      }
+
+      &::after {
+        display: none;
+        content: '●';
+      }
+
+      &:is(.active) {
+        color: $PrimaryColor;
+
+        span {
+          display: none;
+        }
+
+        &::after {
+          display: block;
+          animation: hideAndShow 1s ease-in-out infinite;
         }
       }
     }

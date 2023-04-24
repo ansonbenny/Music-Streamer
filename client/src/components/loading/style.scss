@@ -1,14 +1,8 @@
 @import '../../index.scss';
 
 
-@keyframes loadingDot {
+@keyframes upAndDown {
     50% {
-        transform: translateY(-30px);
-    }
-}
-
-@keyframes loadingDot3 {
-    100% {
         transform: translateY(-30px);
     }
 }
@@ -33,6 +27,6 @@
     }
 
     .dot-active {
-        animation: loadingDot .5s ease-in-out infinite;
+        animation: upAndDown .5s ease-in-out infinite;
     }
 }

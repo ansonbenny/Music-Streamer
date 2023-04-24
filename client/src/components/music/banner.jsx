@@ -38,6 +38,7 @@ const Banner = ({ data }) => {
           Play
         </button>
         <button className="extra">
+          {/* active for grenn */}
           <Heart width={"20px"} height={"20px"} />
         </button>
         <button className="extra">

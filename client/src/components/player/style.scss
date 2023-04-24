@@ -1,0 +1,20 @@
+@import '../../index.scss';
+
+.player{
+    z-index: 999;
+    height: 4rem;
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+    background: var(--content-bg);
+    border-top: 1px solid var(--primary-border);
+
+    .inner{
+        padding: .5rem;
+
+        .audio_player{
+            display: flex;
+            flex-direction: row
+        }
+    }
+}
