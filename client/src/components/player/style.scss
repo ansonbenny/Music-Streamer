@@ -1,6 +1,6 @@
 @import '../../index.scss';
 
-.player{
+.player {
     z-index: 999;
     height: 4rem;
     position: fixed;
@@ -9,12 +9,143 @@
     background: var(--content-bg);
     border-top: 1px solid var(--primary-border);
 
-    .inner{
-        padding: .5rem;
+    .inner {
+        width: auto;
+        padding: .5rem 1rem;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(calc(100% / 3), 1fr));
+        align-items: center;
 
-        .audio_player{
+        .details {
+            width: 100%;
             display: flex;
-            flex-direction: row
+            flex-direction: row;
+            align-items: center;
+            justify-content: left;
+
+            .thumbnail img {
+                border-radius: 5px;
+                width: 3rem;
+                height: 3rem;
+                aspect-ratio: 1/1;
+                object-fit: cover;
+                object-position: center;
+                margin-right: .5rem;
+            }
+
+            .content {
+                width: 70%;
+                margin-right: .5rem;
+
+                h4 {
+                    width: auto;
+                    font-size: 12.5px;
+                    font-weight: 600;
+                    color: var(--text-primary-color);
+                    @include singleLine;
+                }
+
+                p {
+                    font-weight: normal;
+                    font-size: 11px;
+                    width: auto;
+                    color: $TextSecondaryColor;
+                    @include singleLine;
+                }
+            }
+        }
+
+        .audio_player {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+
+            .actions {
+                display: flex;
+                flex-direction: row;
+
+                button {
+                    width: auto;
+                    height: auto;
+                    background: none;
+                    border: none;
+                    margin: 0 1rem;
+                    cursor: pointer;
+
+                    svg {
+                        fill: var(--text-primary-color);
+                        @include transi_easy_in_out;
+                    }
+
+                    &:hover {
+                        svg {
+                            fill: $PrimaryColor;
+                        }
+                    }
+                }
+
+                .prev svg {
+                    rotate: 180deg;
+                }
+            }
+
+            .seekBar {
+                display: flex;
+                flex-direction: row;
+                align-content: center;
+                justify-content: center;
+                width: 100%;
+
+                label {
+                    text-align: center;
+                    color: $TextSecondaryColor;
+                    font-size: 11px;
+                    width: 5rem;
+                }
+
+                input[type="range"] {
+                    width: 100%;
+                    -webkit-appearance: none;
+                    appearance: none;
+                    border-radius: 9999px;
+                    height: 4px;
+                    margin-top: .4rem;
+                    background: linear-gradient(to right, $PrimaryColor 0%, $PrimaryColor 0%, #d9d9db 0%, #d9d9db 0%);
+                    @include transi_easy_in_out;
+
+                    &::-webkit-slider-thumb {
+                        -webkit-appearance: none;
+                        appearance: none;
+                        background: #FFF;
+                        border: none;
+                        border-radius: 50%;
+                        height: .5rem;
+                        width: .5rem;
+                        box-shadow: rgba(9, 30, 66, 0.25) 0px 1px 1px, rgba(9, 30, 66, 0.13) 0px 0px 1px 1px;
+                        cursor: pointer;
+                    }
+
+                    &::-moz-range-thumb {
+                        border: none;
+                        background: #FFF;
+                        border-radius: 50%;
+                        height: .5rem;
+                        width: .5rem;
+                        box-shadow: rgba(9, 30, 66, 0.25) 0px 1px 1px, rgba(9, 30, 66, 0.13) 0px 0px 1px 1px;
+                        cursor: pointer;
+                    }
+                }
+            }
+        }
+
+        .volume {
+            width: 100%;
+
+            input {
+                float: right;
+            }
         }
     }
 }
