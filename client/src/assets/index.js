@@ -6,3 +6,5 @@ export { default as Heart } from "./heart";
 export { default as Dots } from "./dots";
 export { default as Share } from "./share";
 export { default as Navigate } from "./navigate";
+export { default as SpeakerMute } from "./speakerMute";
+export { default as Speaker } from "./speaker";

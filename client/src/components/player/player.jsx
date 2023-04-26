@@ -1,33 +1,16 @@
 import React, { useCallback, useLayoutEffect, useRef, useState } from "react";
-import { Navigate, Pause, Play } from "../../assets";
+import {
+  Heart,
+  Navigate,
+  Pause,
+  Play,
+  Speaker,
+  SpeakerMute,
+} from "../../assets";
 import song from "../../assets/song.mp3";
 import "./style.scss";
 
 const Player = () => {
-  const audio = useRef();
-  const volume = useRef();
-  const audioSeekBar = useRef();
-
-  const [time, setTime] = useState({
-    current: `00 : 00`,
-    duration: `00 : 00`,
-  });
-
-  const AudioSeekBarProgressColor = useCallback(() => {
-    if (audioSeekBar?.current) {
-      var value =
-        ((audioSeekBar.current.value - audioSeekBar.current.min) /
-          (audioSeekBar.current.max - audioSeekBar.current.min)) *
-        100;
-      audioSeekBar.current.style.background =
-        "linear-gradient(to right, #09c478 0%, #09c478 " +
-        value +
-        "%, #d9d9db " +
-        value +
-        "%, #d9d9db 100%)";
-    }
-  }, []);
-
   const data = {
     title: "The Grudge",
     year: 2020,
@@ -49,13 +32,40 @@ const Player = () => {
     thumbnail_height: 326,
   };
 
-  useLayoutEffect(() => {
-    volume.current.value = audio.current.volume;
+  const ref = useRef({});
 
-    audio?.current?.addEventListener("timeupdate", () => {
-      audioSeekBar.current.value = audio.current.currentTime;
-      var sec = audio.current.currentTime;
+  const [time, setTime] = useState({
+    current: `00 : 00`,
+    duration: `00 : 00`,
+  }); // set on redux
+
+  const progressColor = useCallback((to) => {
+    if (ref?.current?.[to]) {
+      var value =
+        ((ref.current[to].value - ref.current[to].min) /
+          (ref.current[to].max - ref.current[to].min)) *
+        100;
+
+      ref.current[to].style.background =
+        "linear-gradient(to right, #09c478 0%, #09c478 " +
+        value +
+        "%, #d9d9db " +
+        value +
+        "%, #d9d9db 100%)";
+    }
+  }, []);
+
+  useLayoutEffect(() => {
+    ref.current["volume"].value = ref.current["audio"].volume;
+    progressColor("volume");
+
+    ref?.current?.["audio"]?.addEventListener("timeupdate", () => {
+      ref.current["seekBar"].value = ref.current["audio"].currentTime;
+
+      var sec = ref.current["audio"].currentTime;
+
       sec = sec % 3600;
+
       var min = Math.floor(sec / 60);
 
       min = min >= 10 ? min : "0" + min;
@@ -63,18 +73,23 @@ const Player = () => {
       sec = Math.floor(sec % 60);
 
       sec = sec >= 10 ? sec : "0" + sec;
+
       setTime((time) => ({ ...time, current: `${min} : ${sec}` }));
 
-      AudioSeekBarProgressColor();
+      progressColor("seekBar");
     });
 
-    audio?.current?.addEventListener("durationchange", () => {
-      audioSeekBar.current.value = 0;
-      audioSeekBar.current.min = 0;
-      audioSeekBar.current.max = audio.current.duration;
+    ref?.current?.["audio"]?.addEventListener("durationchange", () => {
+      ref.current["seekBar"].value = 0;
 
-      var sec = audio.current.duration;
+      ref.current["seekBar"].min = 0;
+
+      ref.current["seekBar"].max = ref.current["audio"].duration;
+
+      var sec = ref.current["audio"].duration;
+
       sec = sec % 3600;
+
       var min = Math.floor(sec / 60);
 
       min = min >= 10 ? min : "0" + min;
@@ -82,23 +97,25 @@ const Player = () => {
       sec = Math.floor(sec % 60);
 
       sec = sec >= 10 ? sec : "0" + sec;
+
       setTime((time) => ({ ...time, duration: `${min} : ${sec}` }));
 
-      AudioSeekBarProgressColor();
+      progressColor("seekBar");
     });
   }, []);
 
   const changeVolume = (e) => {
-    audio.current.volume = e.target.value;
+    ref.current["audio"].volume = e.target.value;
+    progressColor("volume");
   };
 
   const changeTime = (e) => {
-    audio.current.currentTime = e.target.value;
+    ref.current["audio"].currentTime = e.target.value;
   };
 
   return (
     <div className="player">
-      <div className="inner">
+      <div className="inner" id="sample">
         <div className="details">
           <div className="thumbnail">
             <img src={data?.thumbnail} alt="" />
@@ -108,6 +125,15 @@ const Player = () => {
             <h4>{data?.title}</h4>
             <p>{data?.extract}</p>
           </div>
+
+          <div className="playlist">
+            <button>
+              {
+                // if class active color change to green, active for in playlist
+              }
+              <Heart width={"16px"} height={"16px"} />
+            </button>
+          </div>
         </div>
 
         <div className="audio_player">
@@ -116,23 +142,23 @@ const Player = () => {
               <Navigate width={"16px"} height={"16px"} />
             </button>
 
-            {audio?.current?.paused ? (
+            {ref?.current?.["audio"]?.paused ? (
               <button
                 className="play_pause"
                 onClick={() => {
-                  audio.current.play();
+                  ref.current["audio"].play();
                 }}
               >
-                <Play width={"22px"} height={"22px"} />
+                <Play width={"25px"} height={"25px"} />
               </button>
             ) : (
               <button
                 className="play_pause"
                 onClick={() => {
-                  audio.current.pause();
+                  ref.current["audio"].pause();
                 }}
               >
-                <Pause width={"22px"} height={"22px"} />
+                <Pause width={"25px"} height={"25px"} />
               </button>
             )}
 
@@ -146,7 +172,9 @@ const Player = () => {
             <input
               type="range"
               step="any"
-              ref={audioSeekBar}
+              ref={(seekBar) => {
+                if (ref?.current) return (ref.current["seekBar"] = seekBar);
+              }}
               onChange={changeTime}
             />
             <label className="duration">{time?.duration}</label>
@@ -154,17 +182,32 @@ const Player = () => {
         </div>
 
         <div className="volume">
+          {
+            ref?.current?.["audio"]?.volume > 0 ? (
+              <Speaker width={"16px"} height={"16px"} />
+            ) : (
+              <SpeakerMute width={"16px"} height={"16px"} />
+            ) /*speaker volume save on cookie or localStorage */
+          }
+
           <input
             type="range"
             min="0"
             max="1"
             step="0.1"
             onChange={changeVolume}
-            ref={volume}
+            ref={(volume) => {
+              if (ref?.current) return (ref.current["volume"] = volume);
+            }}
           />
         </div>
 
-        <audio src={song} ref={audio} />
+        <audio
+          src={song}
+          ref={(audio) => {
+            if (ref?.current) return (ref.current["audio"] = audio);
+          }}
+        />
       </div>
     </div>
   );

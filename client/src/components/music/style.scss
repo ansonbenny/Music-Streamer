@@ -151,10 +151,8 @@
         transform: scale(1.2) translateY(-3px);
       }
 
-      &:is(.active) {
-        svg {
-          fill: $PrimaryColor;
-        }
+      &:is(.active) svg {
+        fill: $PrimaryColor;
       }
     }
   }

@@ -3,30 +3,33 @@ import { Dots, Play } from "../../assets";
 import "./style.scss";
 
 const Collections = ({ data }) => {
-  let optionsRef = useRef([]);
-  let btnRef = useRef([]);
+  const ref = useRef({
+    options: [],
+    btn: [],
+  });
 
   useEffect(() => {
     window.addEventListener("click", (e) => {
-      let btn = btnRef?.current?.find((elm) => {
+      let btn = ref?.current?.["btn"]?.find((elm) => {
         if (elm?.contains(e.target)) {
           return true;
         }
       });
 
-      let menu_options = optionsRef?.current?.find((elm) => {
+      let menu_options = ref?.current?.["options"]?.find((elm) => {
         if (elm?.contains(e.target)) {
           return true;
         }
       });
 
       if (!btn && !menu_options) {
-        optionsRef?.current?.forEach((elm) => {
+        ref?.current?.["options"]?.forEach((elm) => {
           elm.style.display = "none";
         });
       }
     });
   }, []);
+
   return (
     <div className="collections">
       <table>
@@ -57,7 +60,7 @@ const Collections = ({ data }) => {
                   <button
                     className="more_btn"
                     onClick={() => {
-                      optionsRef?.current?.forEach((elm, index) => {
+                      ref?.current?.["options"]?.forEach((elm, index) => {
                         if (index === key) {
                           elm.style.display = "block";
                         } else {
@@ -65,14 +68,19 @@ const Collections = ({ data }) => {
                         }
                       });
                     }}
-                    ref={(elm) => (btnRef.current[key] = elm)}
+                    ref={(elm) => {
+                      if (ref?.current) return (ref.current["btn"][key] = elm);
+                    }}
                   >
                     <Dots width={"16px"} height={"16px"} />
                   </button>
 
                   <div
                     className={`more_options_${key}`}
-                    ref={(elm) => (optionsRef.current[key] = elm)}
+                    ref={(elm) => {
+                      if (ref?.current)
+                        return (ref.current["options"][key] = elm);
+                    }}
                   >
                     <ul>
                       <li>Add to playlist</li>

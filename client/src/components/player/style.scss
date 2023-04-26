@@ -9,12 +9,26 @@
     background: var(--content-bg);
     border-top: 1px solid var(--primary-border);
 
+    @media screen and (max-width:700px) {
+        height: 5rem;
+    }
+
     .inner {
+        position: relative;
         width: auto;
         padding: .5rem 1rem;
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(calc(100% / 3), 1fr));
         align-items: center;
+
+        audio {
+            visibility: hidden;
+        }
+
+        @media screen and (max-width:700px) {
+            grid-template-columns: repeat(auto-fill, minmax(calc(100% / 2), 1fr));
+            padding-top: 1rem;
+        }
 
         .details {
             width: 100%;
@@ -34,7 +48,7 @@
             }
 
             .content {
-                width: 70%;
+                width: 55%;
                 margin-right: .5rem;
 
                 h4 {
@@ -51,6 +65,40 @@
                     width: auto;
                     color: $TextSecondaryColor;
                     @include singleLine;
+                }
+            }
+
+            .playlist button {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: auto;
+                height: auto;
+                border: none;
+                background: none;
+                cursor: pointer;
+                @include transi_easy_in_out;
+
+                &:hover {
+                    transform: scale(1.1) translateY(-3px);
+                }
+
+                svg {
+                    fill: var(--text-primary-color);
+                }
+
+                &:is(.active) svg {
+                    fill: $PrimaryColor;
+                }
+            }
+
+            @media screen and (max-width: 350px) {
+                .content {
+                    width: 40%;
+                }
+
+                .playlist {
+                    display: none;
                 }
             }
         }
@@ -137,14 +185,86 @@
                         cursor: pointer;
                     }
                 }
+
+            }
+
+            @media screen and (max-width:700px) {
+                align-items: end;
+
+                .seekBar {
+                    width: 100%;
+                    position: absolute;
+                    left: 0;
+                    top: 0;
+                    right: 0;
+
+                    input {
+                        width: 100%;
+                        margin: 0 1rem;
+                    }
+
+                    label {
+                        display: none;
+                    }
+                }
             }
         }
 
         .volume {
             width: 100%;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: right;
 
-            input {
-                float: right;
+            svg {
+                fill: var(--text-primary-color);
+                margin-right: .5rem;
+            }
+
+            input[type="range"] {
+                -webkit-appearance: none;
+                appearance: none;
+                border-radius: 9999px;
+                height: 4px;
+                background: linear-gradient(to right, $PrimaryColor 0%, $PrimaryColor 0%, #d9d9db 0%, #d9d9db 0%);
+                @include transi_easy_in_out;
+
+                &::-webkit-slider-thumb {
+                    -webkit-appearance: none;
+                    appearance: none;
+                    background: #FFF;
+                    border: none;
+                    border-radius: 50%;
+                    height: .5rem;
+                    width: .5rem;
+                    box-shadow: rgba(9, 30, 66, 0.25) 0px 1px 1px, rgba(9, 30, 66, 0.13) 0px 0px 1px 1px;
+                    cursor: pointer;
+                }
+
+                &::-moz-range-thumb {
+                    border: none;
+                    background: #FFF;
+                    border-radius: 50%;
+                    height: .5rem;
+                    width: .5rem;
+                    box-shadow: rgba(9, 30, 66, 0.25) 0px 1px 1px, rgba(9, 30, 66, 0.13) 0px 0px 1px 1px;
+                    cursor: pointer;
+                }
+            }
+
+            @media screen and (max-width: 700px) {
+                position: absolute;
+                right: 1rem;
+                bottom: .5rem;
+
+                input {
+                    width: calc((2 * 16px) + (6 * 1rem) + 25px);
+                }
+
+                svg {
+                    display: none;
+                }
             }
         }
     }
