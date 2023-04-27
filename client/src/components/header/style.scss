@@ -9,8 +9,7 @@
   @include expand_page;
 
   @media screen and (max-width: 767px) {
-    width: 100%;
-    margin-left: 0;
+    @include expand_page($expanded: true);
   }
 
   .inner {
@@ -109,7 +108,7 @@
 .expand {
   @media screen and (min-width: 768px) {
     .Header {
-        @include expand_page($expanded:true);
+      @include expand_page($expanded: true);
     }
   }
 

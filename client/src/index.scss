@@ -29,6 +29,7 @@ body {
 * {
   margin: 0;
   padding: 0;
+  -webkit-tap-highlight-color: transparent;
 }
 
 @keyframes logoAnimation {
@@ -73,35 +74,72 @@ body {
   @if $expanded {
     width: 100%;
     margin-left: 0;
-  } @else {
+  }
+
+  @else {
     margin-left: 240px;
     width: calc(100% - 240px);
   }
 }
 
 .Main {
+  min-height: 100vh;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+
   .page {
     @include expand_page;
 
-    height: auto;
-
     @media screen and (max-width: 767px) {
-      width: 100%;
-      margin-left: 0;
+      @include expand_page($expanded: true);
     }
+
+    .error_404 {
+      display: block;
+      text-align: center;
+      padding: 5rem 0;
+
+      h1 {
+        font-size: 70px;
+        color: var(--text-primary-color);
+      }
+
+      p {
+        padding-top: .5rem;
+        font-size: 15px;
+        color: $TextSecondaryColor;
+      }
+
+      button {
+        margin-top: 1rem;
+        width: auto;
+        text-align: center;
+        padding: .5rem 1.5rem;
+        color: $PrimaryColor;
+        background: transparent;
+        border-radius: 9999px;
+        border: 1px solid $PrimaryColor;
+        cursor: pointer;
+        @include transi_easy_in_out;
+
+        &:hover {
+          border-color: var(--text-primary-color);
+          color: var(--text-primary-color);
+        }
+      }
+    }
+  }
+
+  .container {
+    padding: 1.5rem;
   }
 }
 
 .expand {
   @media screen and (min-width: 768px) {
     .page {
-      @include expand_page($expanded:true);
+      @include expand_page($expanded: true);
     }
   }
 }
-
-.container {
-  padding: 1.5rem;
-}
-
-// Pages

@@ -1,17 +1,32 @@
 @import '../../index.scss';
 
 .footer {
+    display: block;
     background: #969ba00d;
     width: 100%;
     height: auto;
-    padding-bottom: 4rem;
+    padding-bottom: 5rem;
+    margin-top: auto;
+    @include expand_page;
+
+    @media screen and (max-width: 767px) {
+        @include expand_page($expanded: true);
+    }
 
     .inner {
         padding: 1.5rem;
 
-        p{
+        p {
             font-size: 11px;
             color: $TextSecondaryColor;
+        }
+    }
+}
+
+.expand {
+    @media screen and (min-width: 768px) {
+        .footer {
+            @include expand_page($expanded: true);
         }
     }
 }

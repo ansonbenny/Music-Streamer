@@ -1,6 +1,6 @@
 import React from "react";
-import { Route, Routes } from "react-router-dom";
-import { Home, Music } from "./pages";
+import { Route, Router, Routes } from "react-router-dom";
+import { Error, Home, Music } from "./pages";
 import { Footer, Header, Loading, Menu, Player } from "./components";
 import { useRef } from "react";
 
@@ -19,9 +19,11 @@ const App = () => {
           <Route exact path="/" element={<Home />} />
           <Route path="/music" element={<Music />} />
           <Route path="/artist" element={<Music isArtist />} />
+          <Route path="*" element={<Error />} />
         </Routes>
-        <Footer />
       </div>
+
+      <Footer />
 
       <Player />
     </section>
