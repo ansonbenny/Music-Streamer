@@ -8,3 +8,8 @@ export { default as Share } from "./share";
 export { default as Navigate } from "./navigate";
 export { default as SpeakerMute } from "./speakerMute";
 export { default as Speaker } from "./speaker";
+export { default as MusicIcon } from "./music";
+export { default as Disc } from "./disc";
+export { default as Mic } from "./mic";
+export { default as List } from "./list";
+export { default as Expand } from "./expand";

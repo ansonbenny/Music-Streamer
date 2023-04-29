@@ -2,6 +2,7 @@ import React from "react";
 import { Banner, Collections, Row } from "../components";
 
 const Music = ({ isArtist }) => {
+  // same page for saved playlist item
   return (
     <div className="container">
       <Banner
@@ -43,8 +44,7 @@ const Music = ({ isArtist }) => {
               ],
               genres: ["Horror", "Supernatural"],
               href: "The_Grudge_(2020_film)",
-              extract:
-                "The Grud",
+              extract: "The Grud",
               thumbnail:
                 "https://upload.wikimedia.org/wikipedia/en/3/34/The_Grudge_2020_Poster.jpeg",
               thumbnail_width: 220,

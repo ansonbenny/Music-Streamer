@@ -16,7 +16,7 @@ const Home = () => {
             extract:
               '102 Dalmatians is a 2000 American crime comedy film directed by Kevin Lima and produced by Edward S. Feldman and Walt Disney Pictures. The sequel to the 1996 film 101 Dalmatians, a live-action remake of the 1961 Disney animated film of the same name, it stars Glenn Close reprising her role as Cruella de Vil as she attempts to steal puppies for her "grandest" fur coat yet. Glenn Close and Tim McInnerny were the only two actors from the 1996 film to return for the sequel. The film received generally negative reviews from critics and was unable to achieve the box office success of its predecessor, although the film was nominated for the Academy Award for Best Costume Design.',
             thumbnail:
-              "https://upload.wikimedia.org/wikipedia/en/f/fe/102_dalmatians_poster.jpg",
+              "http://music.flatfull.com/waveme/wp-content/uploads/sites/2/2020/09/Artboard-50.png",
             thumbnail_width: 220,
             thumbnail_height: 327,
           },
@@ -29,7 +29,7 @@ const Home = () => {
             extract:
               "28 Days is a 2000 American comedy-drama film directed by Betty Thomas and written by Susannah Grant. Sandra Bullock stars as Gwen Cummings, a newspaper columnist obliged to enter rehabilitation for alcoholism. The film costars Viggo Mortensen, Dominic West, Elizabeth Perkins, Azura Skye, Steve Buscemi, and Diane Ladd.",
             thumbnail:
-              "https://upload.wikimedia.org/wikipedia/en/f/f7/28_Days_Poster.jpg",
+              "http://music.flatfull.com/waveme/wp-content/uploads/sites/2/2020/09/Artboard-29.png",
             thumbnail_width: 238,
             thumbnail_height: 360,
           },
@@ -42,7 +42,7 @@ const Home = () => {
             extract:
               "3 Strikes is a 2000 American comedy film written and directed by DJ Pooh, and starring Brian Hooks, N'Bushe Wright, Faizon Love and David Alan Grier. Despite some commercial success, it was negatively received by critics. The title refers to California's habitual offender law, whereby three convictions confer an automatic life sentence.",
             thumbnail:
-              "https://upload.wikimedia.org/wikipedia/en/d/db/3_Strikes_Poster.jpg",
+              "http://music.flatfull.com/waveme/wp-content/uploads/sites/2/2020/09/Artboard-27.png",
             thumbnail_width: 225,
             thumbnail_height: 333,
           },
@@ -65,7 +65,7 @@ const Home = () => {
             extract:
               "The 6th Day is a 2000 American science fiction action film directed by Roger Spottiswoode and starring Arnold Schwarzenegger, Tony Goldwyn, Michael Rapaport, and Robert Duvall. In the film, a family man of the future is illegally cloned by accident as part of a vast conspiracy involving a shady billionaire businessman, and is thrust into a struggle to clear his name and protect his family from the conspirators who seek to keep the cloning a secret. The title refers to the Judeo-Christian Genesis creation narrative, where God created mankind on the sixth day. The film was Terry Crews' acting debut.",
             thumbnail:
-              "https://upload.wikimedia.org/wikipedia/en/a/a0/The_6th_Day_%282000_film%29.jpg",
+              "http://music.flatfull.com/waveme/wp-content/uploads/sites/2/2020/09/Artboard-30.png",
             thumbnail_width: 257,
             thumbnail_height: 387,
           },
@@ -645,6 +645,7 @@ const Home = () => {
           },
         ]}
         isSingle
+        isRound
       />
       <Row
         title={"New music"}

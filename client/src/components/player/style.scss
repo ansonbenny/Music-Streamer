@@ -48,7 +48,8 @@
             }
 
             .content {
-                width: 55%;
+                max-width: 55%;
+                width: auto;
                 margin-right: .5rem;
 
                 h4 {

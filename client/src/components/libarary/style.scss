@@ -1,0 +1,70 @@
+@import '../../index.scss';
+
+.library_head {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+
+    .title {
+        @include rowsTitle;
+        margin-bottom: 0;
+    }
+
+    .search_library {
+        position: relative;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        margin-left: auto;
+
+        svg {
+            fill: var(--text-primary-color);
+            right: .3rem;
+
+            &:is(.active) {
+                position: absolute;
+                left: 0;
+                padding: 0 .5rem;
+            }
+        }
+
+
+        input {
+            background: transparent;
+            position: absolute;
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            outline: none;
+            border: none;
+            color: transparent;
+
+            &::placeholder {
+                color: transparent;
+            }
+
+            &:hover {
+                cursor: pointer;
+                background: rgba(0, 0, 0, 0.2);
+            }
+
+            &:focus {
+                cursor: text;
+                width: auto;
+                background: rgba(0, 0, 0, 0.2);
+                padding-left: 2rem;
+                padding-right: .5rem;
+                position: relative;
+                border-radius: 5px;
+                color: var(--text-primary-color);
+
+                &::placeholder {
+                    color: var(--text-primary-color);
+                }
+            }
+        }
+    }
+}

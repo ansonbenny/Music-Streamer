@@ -9,3 +9,6 @@ export { default as Footer } from "./footer/footer";
 export { default as Banner } from "./music/banner";
 export { default as Collections } from "./music/collections";
 export { default as Player } from "./player/player";
+export { default as LibraryHead } from "./libarary/head";
+export { default as FIlterSearch } from "./search/filter";
+export { default as LoadMore } from "./load-more/load-more";

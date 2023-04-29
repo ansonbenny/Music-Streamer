@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { Dots, Play } from "../../assets";
+import { LoadMore } from "../";
 import "./style.scss";
 
 const Collections = ({ data }) => {
@@ -95,12 +96,7 @@ const Collections = ({ data }) => {
         </tbody>
       </table>
 
-      <div className="see_more">
-        <button>
-          {/* active for animation */}
-          <span>&#9679; &#9679; &#9679;</span>
-        </button>
-      </div>
+      <LoadMore />
     </div>
   );
 };
