@@ -13,3 +13,5 @@ export { default as Disc } from "./disc";
 export { default as Mic } from "./mic";
 export { default as List } from "./list";
 export { default as Expand } from "./expand";
+export { default as Eye } from "./eye";
+export { default as EyeHide } from "./eyehide";

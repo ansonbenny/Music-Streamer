@@ -21,11 +21,9 @@ const Banner = ({ data }) => {
               <span>Avatar</span>
             </li>
             <li>
-              &#9679;
               <span>2021</span>
             </li>
             <li>
-              &#9679;
               <span>4:33</span>
             </li>
           </ul>

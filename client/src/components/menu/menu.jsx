@@ -40,7 +40,7 @@ const Menu = forwardRef((params, ref) => {
   return (
     <div className="menu showMd" ref={ref}>
       <div className="inner">
-        <div className="Head">
+        <div className="logo_menu">
           <div className="logo">
             <div className="dot" />
           </div>
@@ -67,80 +67,88 @@ const Menu = forwardRef((params, ref) => {
           </div>
         </div>
 
-        <div className="card">
-          <h5>Hi SignUp Now</h5>
+        <div className="scrollable">
+          <div className="card">
+            <h5>Hi {false ? "Anson" : "Signup Now"}</h5>
 
-          <p>Follow your favorite artists and create unlimited playlists.</p>
+            <p>Follow your favorite artists and create unlimited playlists.</p>
 
-          <div className="btns">
-            <button>Signup</button>
-            <button>Login</button>
+            <div className="btns">
+              {false ? (
+                <>
+                  <button>Account</button>
+                  <button>Logout</button>
+                </>
+              ) : (
+                <>
+                  <button>Signup</button>
+                  <button>Login</button>{" "}
+                </>
+              )}
+            </div>
           </div>
-        </div>
 
-        <div className="actions">
-          {
-            // active for btn bold
-          }
-          <button className="active">
-            <span>
-              <Disc width={"16px"} height={"16px"} color={"#09c478"} />
-            </span>
-            Discover
-          </button>
-          <button>
-            <span>
-              <MusicIcon width={"16px"} height={"16px"} color={"#09c478"} />
-            </span>
-            Songs
-          </button>
-          <button>
-            <span>
-              <Mic width={"16px"} height={"16px"} color={"#09c478"} />
-            </span>
-            Artists
-          </button>
-          <button>
-            <span>
-              <List width={"16px"} height={"16px"} color={"#09c478"} />
-            </span>
-            Library
-          </button>
+          <div className="actions">
+            <button className="active">
+              <span>
+                <Disc width={"16px"} height={"16px"} color={"#09c478"} />
+              </span>
+              Discover
+            </button>
+            <button>
+              <span>
+                <MusicIcon width={"16px"} height={"16px"} color={"#09c478"} />
+              </span>
+              Songs
+            </button>
+            <button>
+              <span>
+                <Mic width={"16px"} height={"16px"} color={"#09c478"} />
+              </span>
+              Artists
+            </button>
+            <button>
+              <span>
+                <List width={"16px"} height={"16px"} color={"#09c478"} />
+              </span>
+              Library
+            </button>
 
-          <button onClick={fullScreen}>
-            <span>
-              <Expand width={"16px"} height={"16px"} color={"#09c478"} />
-            </span>
-            Fullscreen
-          </button>
+            <button onClick={fullScreen}>
+              <span>
+                <Expand width={"16px"} height={"16px"} color={"#09c478"} />
+              </span>
+              Fullscreen
+            </button>
 
-          <button
-            ref={darkSwitch}
-            onClick={() => {
-              if (document.body?.classList?.contains("dark")) {
-                document.body?.classList?.add("light");
-                document.body?.classList?.remove("dark");
+            <button
+              ref={darkSwitch}
+              onClick={() => {
+                if (document.body?.classList?.contains("dark")) {
+                  document.body?.classList?.add("light");
+                  document.body?.classList?.remove("dark");
 
-                darkSwitch?.current?.classList?.remove("dark");
-              } else {
-                document.body?.classList?.add("dark");
-                document.body?.classList?.remove("light");
+                  darkSwitch?.current?.classList?.remove("dark");
+                } else {
+                  document.body?.classList?.add("dark");
+                  document.body?.classList?.remove("light");
 
-                darkSwitch?.current?.classList?.add("dark");
-              }
-            }}
-          >
-            <span>
-              <div className="swicth">
-                <div className="round" />
-              </div>
-            </span>
-            Dark Mode
-          </button>
-        </div>
+                  darkSwitch?.current?.classList?.add("dark");
+                }
+              }}
+            >
+              <span>
+                <div className="swicth">
+                  <div className="round" />
+                </div>
+              </span>
+              Dark Mode
+            </button>
+          </div>
 
-        <div className="rights">
-          <p>@ Copyright {new Date().getFullYear()} Musicon</p>
+          <div className="rights">
+            <p>@ Copyright {new Date().getFullYear()} Musicon</p>
+          </div>
         </div>
       </div>
 

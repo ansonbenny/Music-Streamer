@@ -1,13 +1,14 @@
-import React from "react";
+import React, { Fragment } from "react";
 import { Route, Routes } from "react-router-dom";
-import { Error, Home, Library, Music, Search } from "./pages";
+import { Account, Error, Home, Library, Music, Search } from "./pages";
 import { Footer, Header, Loading, Menu, Player } from "./components";
 import { useRef } from "react";
+import "./app.scss";
 
 const App = () => {
   let menuRef = useRef();
   return (
-    <section className="Main">
+    <Fragment>
       {
         false && <Loading />
         // Loading Screen
@@ -24,6 +25,7 @@ const App = () => {
           <Route path="/artist" element={<Music isArtist />} />
           <Route path="/library" element={<Library />} />
           <Route path="/search" element={<Search />} />
+          <Route path="/account" element={<Account />} />
           <Route path="*" element={<Error />} />
         </Routes>
       </div>
@@ -31,7 +33,7 @@ const App = () => {
       <Footer />
 
       <Player />
-    </section>
+    </Fragment>
   );
 };
 

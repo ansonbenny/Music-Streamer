@@ -1,0 +1,49 @@
+@import '../../index.scss';
+
+.custom-input {
+    display: grid;
+    grid-template-columns: auto;
+    width: 100%;
+
+    &:is(.password) {
+        grid-template-columns: auto 3rem;
+    }
+
+    input {
+        background: var(--content-bg);
+        color: var(--text-primary-color);
+        width: auto;
+        height: 2.5rem;
+        border: 2px solid var(--primary-bg);
+        outline: none;
+        border-radius: 5px;
+        padding: 0 .5rem;
+        @include transi_easy_in_out($second: .2s);
+
+        &:focus {
+            font-weight: 600;
+        }
+
+        &[type='password'] {
+            border-bottom-right-radius: 0;
+            border-top-right-radius: 0;
+        }
+    }
+
+    .show_hide {
+        text-align: center;
+        border: 2px solid var(--primary-bg);
+        margin: 0;
+        height: 2.7.5rem;
+        width: 3rem;
+        border-bottom-right-radius: 5px;
+        border-top-right-radius: 5px;
+        cursor: pointer;
+        background: var(--primary-bg);
+        @include transi_easy_in_out($second: .2s);
+
+        svg path {
+            fill: var(--text-primary-color);
+        }
+    }
+}

@@ -1,5 +1,15 @@
 @import '../../index.scss';
 
+@keyframes carousel_load {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 100%;
+    }
+}
+
 .slick-initialized {
     overflow: hidden;
 }
@@ -133,6 +143,15 @@
         margin-left: -.5rem;
         margin-right: -.5rem;
 
+        div[data-for="expand"] {
+            display: none;
+        }
+
+        div[data-for="non_expand"] {
+            display: block;
+            animation: carousel_load .5s ease-in-out forwards;
+        }
+
         .card {
             padding: .5rem;
             position: relative;
@@ -141,7 +160,7 @@
             img {
                 @include coverImage;
                 border-radius: 5px;
-                width: calc(100% - 1rem);
+                width: 100%;
                 height: auto;
             }
 
@@ -207,43 +226,18 @@
     }
 }
 
-.genres {
-    margin-bottom: 2rem;
+@media screen and (min-width:781px) {
+    .expand {
+        .carousel {
+            .inner {
+                div[data-for="expand"] {
+                    display: block;
+                    animation: carousel_load .5s ease-in-out forwards;
+                }
 
-    .title {
-        @include rowsTitle;
-    }
-
-    .grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
-        gap: 1rem;
-
-        @media screen and (max-width: 862px) {
-            grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr));
-        }
-
-        button {
-            @include singleLine;
-            width: 100%;
-            height: 3rem;
-            padding: .5rem 1rem;
-            text-align: left;
-            cursor: pointer;
-            font-weight: 500;
-            font-size: 14px;
-            color: var(--text-primary-color);
-            border-radius: 5px;
-            border: none;
-            background: var(--primary-bg);
-            @include transi_easy_in_out($second: .5s);
-
-            &:hover {
-                background: rgba(150, 155, 160, .2);
-            }
-
-            @-moz-document url-prefix() {
-                font-weight: 400;
+                div[data-for="non_expand"] {
+                    display: none;
+                }
             }
         }
     }
