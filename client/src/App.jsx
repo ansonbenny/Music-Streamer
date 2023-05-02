@@ -1,7 +1,7 @@
 import React, { Fragment } from "react";
 import { Route, Routes } from "react-router-dom";
 import { Account, Error, Home, Library, Music, Search } from "./pages";
-import { Footer, Header, Loading, Menu, Player } from "./components";
+import { Auth, Footer, Header, Loading, Menu, Player } from "./components";
 import { useRef } from "react";
 import "./app.scss";
 
@@ -13,6 +13,8 @@ const App = () => {
         false && <Loading />
         // Loading Screen
       }
+
+      {false && <Auth />}
 
       <Menu ref={menuRef} />
 

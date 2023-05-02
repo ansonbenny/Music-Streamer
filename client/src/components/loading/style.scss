@@ -27,6 +27,6 @@
     }
 
     .dot-active {
-        animation: upAndDown .5s ease-in-out infinite;
+        animation: upAndDown .5s ease-in-out forwards;
     }
 }

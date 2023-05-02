@@ -12,3 +12,4 @@ export { default as LibraryHead } from "./libarary/head";
 export { default as FIlterSearch } from "./search/filter";
 export { default as LoadMore } from "./load-more/load-more";
 export { default as Input } from "./form/input";
+export { default as Auth } from "./auth/auth";

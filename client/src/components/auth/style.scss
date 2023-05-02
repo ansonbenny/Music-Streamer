@@ -1,0 +1,172 @@
+@import '../../index.scss';
+
+.auth {
+    display: block;
+    position: fixed;
+    z-index: 1100;
+    background: rgba(0, 0, 0, 0.5);
+    width: 100%;
+    height: 100%;
+
+    .inner {
+        margin: 2rem auto;
+        display: flex;
+        flex-direction: column;
+        background: var(--content-bg);
+        width: 390px;
+        height: auto;
+        max-height: calc(100vh - 7rem);
+        border-radius: 5px;
+        padding: 1.5rem 1rem;
+        overflow-y: auto;
+        scrollbar-color: transparent transparent;
+        scrollbar-width: 0;
+
+        @media screen and (max-width: 440px) {
+            width: auto;
+            margin: 2rem 1.5rem;
+        }
+
+        &::-webkit-scrollbar {
+            width: 0;
+            background: transparent;
+        }
+
+        &::-webkit-scrollbar-thumb {
+            background: transparent;
+        }
+
+        .form_auth {
+            h3 {
+                text-align: center;
+                font-size: 25px;
+                color: var(--text-primary-color);
+            }
+
+            label {
+                color: var(--text-primary-color);
+                font-size: 14px;
+            }
+
+            .custom-input {
+                padding-top: .3rem;
+                padding-bottom: .5rem;
+            }
+
+            button[data-for="forgot"] {
+                background: none;
+                border: none;
+                color: $PrimaryColor;
+                font-size: 12px;
+                cursor: pointer;
+            }
+
+            p[data-for="IF"] {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: center;
+                height: auto;
+                margin-top: 1rem;
+                background: none;
+                border: none;
+                font-size: 12px;
+                text-align: center;
+                width: 100%;
+                color: var(--text-primary-color);
+
+                span {
+                    margin-right: .5rem;
+                }
+
+                button {
+                    border: none;
+                    background: none;
+                    font-size: 12px;
+                    color: $PrimaryColor;
+                    cursor: pointer;
+                }
+            }
+
+            button[type="submit"] {
+                width: 100%;
+                height: 2.5rem;
+                margin-top: 1rem;
+                background: $PrimaryColor;
+                border: 2px solid $PrimaryColor;
+                border-radius: 5px;
+                color: #fff;
+                text-transform: uppercase;
+                font-weight: bold;
+                @include transi_easy_in_out;
+
+                &:hover {
+                    cursor: pointer;
+                    background: var(--content-bg);
+                    color: var(--text-primary-color);
+                }
+            }
+
+            p[data-for="or-txt"] {
+                color: var(--text-primary-color);
+                text-align: center;
+                font-size: 14px;
+                font-weight: bold;
+                margin: 1rem 0;
+            }
+
+            button[data-for="google"] {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: center;
+                width: 100%;
+                height: 2.5rem;
+                border-radius: 5px;
+                border: 2px solid $PrimaryColor;
+                background: var(--content-bg);
+                color: var(--text-primary-color);
+                cursor: pointer;
+                font-weight: bold;
+            }
+        }
+
+        .mail {
+            display: flex;
+            flex-direction: column;
+            align-content: center;
+            justify-content: right;
+            text-align: center;
+
+            svg {
+                margin: auto;
+                fill: var(--text-primary-color);
+            }
+
+            p {
+                margin: .5rem 0;
+                font-size: 12px;
+                color: $TextSecondaryColor;
+            }
+
+            button {
+                width: 100%;
+                height: 2.5rem;
+                margin-top: 1rem;
+                background: $PrimaryColor;
+                border: 2px solid $PrimaryColor;
+                border-radius: 5px;
+                color: #fff;
+                text-transform: uppercase;
+                font-weight: bold;
+                @include transi_easy_in_out;
+
+                &:hover {
+                    cursor: pointer;
+                    background: var(--content-bg);
+                    color: var(--text-primary-color);
+                }
+            }
+        }
+    }
+}
