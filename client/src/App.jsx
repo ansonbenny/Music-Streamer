@@ -1,12 +1,30 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useReducer } from "react";
 import { Route, Routes } from "react-router-dom";
 import { Account, Error, Home, Library, Music, Search } from "./pages";
 import { Auth, Footer, Header, Loading, Menu, Player } from "./components";
 import { useRef } from "react";
 import "./app.scss";
 
+const reducer = (state, dispatch) => {
+  switch (dispatch?.type ? dispatch.type : null) {
+    case "login":
+      return { login: true, modal: true };
+    case "signup":
+      return { signup: true, modal: true };
+    case "forgot":
+      return { forgot: true, modal: true };
+    default: {
+      return { modal: false };
+    }
+  }
+};
+
 const App = () => {
   let menuRef = useRef();
+
+  const [stateModal, modalDispatch] = useReducer(reducer, {
+    modal: false,
+  });
   return (
     <Fragment>
       {
@@ -14,9 +32,11 @@ const App = () => {
         // Loading Screen
       }
 
-      {false && <Auth />}
+      {stateModal?.modal && (
+        <Auth stateModal={stateModal} modalDispatch={modalDispatch} />
+      )}
 
-      <Menu ref={menuRef} />
+      <Menu ref={menuRef} modalDispatch={modalDispatch} />
 
       <Header menuRef={menuRef} />
 

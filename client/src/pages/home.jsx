@@ -1,7 +1,10 @@
-import React from "react";
+import React, { useLayoutEffect } from "react";
 import { Carousel, Row, Recommended } from "../components";
 
 const Home = ({}) => {
+  useLayoutEffect(() => {
+    document.title = `Musicon`;
+  }, []);
   return (
     <div className="container">
       <Carousel

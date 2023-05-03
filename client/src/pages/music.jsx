@@ -2,6 +2,7 @@ import React from "react";
 import { Banner, Collections, Row } from "../components";
 
 const Music = ({ isArtist }) => {
+  // set page titile
   // same page for saved playlist item
   return (
     <div className="container">

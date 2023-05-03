@@ -2,7 +2,7 @@ import React from "react";
 import { Input } from "..";
 import { Google } from "../../assets";
 
-const Form = ({ isSignup }) => {
+const Form = ({ isSignup, modalDispatch }) => {
   return (
     <div className="form_auth">
       {isSignup ? <h3>SignUp</h3> : <h3>Login</h3>}
@@ -26,7 +26,7 @@ const Form = ({ isSignup }) => {
 
       {isSignup && (
         <>
-          <label htmlFor="password">Password</label>
+          <label htmlFor="password">Re Enter Password</label>
           <Input
             type={"password"}
             placeholder={"Re Enter Password"}
@@ -35,21 +35,45 @@ const Form = ({ isSignup }) => {
         </>
       )}
 
-      {!isSignup && (
-        <button data-for="forgot" type="button">
-          Forgot password?
-        </button>
-      )}
+      {!isSignup ? (
+        <>
+          <button
+            data-for="forgot"
+            type="button"
+            onClick={() => {
+              modalDispatch({ type: "forgot" });
+            }}
+          >
+            Forgot password?
+          </button>
 
-      <button type="submit">Login</button>
+          <button type="submit">Login</button>
+        </>
+      ) : (
+        <button type="submit">Signup</button>
+      )}
 
       {isSignup ? (
         <p data-for="IF" type="button">
-          <span>Already a member?</span> <button>Login now</button>
+          <span>Already a member?</span>{" "}
+          <button
+            onClick={() => {
+              modalDispatch({ type: "login" });
+            }}
+          >
+            Login now
+          </button>
         </p>
       ) : (
         <p data-for="IF" type="button">
-          <span>Not a member?</span> <button>Signup now</button>
+          <span>Not a member?</span>{" "}
+          <button
+            onClick={() => {
+              modalDispatch({ type: "signup" });
+            }}
+          >
+            Signup now
+          </button>
         </p>
       )}
 

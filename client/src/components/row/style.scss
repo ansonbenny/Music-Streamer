@@ -104,7 +104,7 @@ div[data-for="Row"] {
         }
       }
 
-      .play {
+      .on_hover {
         border-radius: 5px;
         display: flex;
         top: 0;
@@ -123,10 +123,10 @@ div[data-for="Row"] {
           opacity: 1;
         }
 
-        button {
+        button[data-for="play"] {
           position: absolute;
           right: 1.5rem;
-          bottom: calc(1rem + 14px + 12px + 1.875rem);
+          bottom: calc(1rem + 14px + 12px + 1.875rem + 5px);
           background: #fff;
           display: flex;
           align-items: center;
@@ -141,6 +141,17 @@ div[data-for="Row"] {
           &:hover {
             transform: translateY(-5px);
           }
+        }
+
+        button[data-for="libray_options"] {
+          position: absolute;
+          border: none;
+          background: none;
+          top: 1.3rem;
+          right: 1.3rem;
+          cursor: pointer;
+          width: auto;
+          height: auto;
         }
       }
     }

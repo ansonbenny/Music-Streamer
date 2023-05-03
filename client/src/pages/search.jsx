@@ -2,6 +2,7 @@ import React from "react";
 import { Row, FIlterSearch, LoadMore } from "../components";
 
 const Search = () => {
+  // set page titile
   return (
     <div className="container">
       <FIlterSearch />

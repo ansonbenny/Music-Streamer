@@ -7,8 +7,10 @@
     background: rgba(0, 0, 0, 0.5);
     width: 100%;
     height: 100%;
+    animation: modal .5s ease-in-out forwards;
 
     .inner {
+        position: relative;
         margin: 2rem auto;
         display: flex;
         flex-direction: column;

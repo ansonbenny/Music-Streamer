@@ -2,7 +2,7 @@ import React, { forwardRef, useCallback, useRef } from "react";
 import { Disc, Expand, List, MenuBar, Mic, MusicIcon } from "../../assets";
 import "./style.scss";
 
-const Menu = forwardRef((params, ref) => {
+const Menu = forwardRef(({ modalDispatch }, ref) => {
   const darkSwitch = useRef();
 
   const fullScreen = useCallback(() => {
@@ -81,8 +81,20 @@ const Menu = forwardRef((params, ref) => {
                 </>
               ) : (
                 <>
-                  <button>Signup</button>
-                  <button>Login</button>{" "}
+                  <button
+                    onClick={() => {
+                      modalDispatch({ type: "signup" });
+                    }}
+                  >
+                    Signup
+                  </button>
+                  <button
+                    onClick={() => {
+                      modalDispatch({ type: "login" });
+                    }}
+                  >
+                    Login
+                  </button>{" "}
                 </>
               )}
             </div>

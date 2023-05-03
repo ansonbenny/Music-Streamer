@@ -2,11 +2,11 @@
 
 .custom-input {
     display: grid;
-    grid-template-columns: auto;
+    grid-template-columns: 100%;
     width: 100%;
 
     &:is(.password) {
-        grid-template-columns: auto 3rem;
+        grid-template-columns: calc(100% - 3rem) 3rem;
     }
 
     input {

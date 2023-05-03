@@ -1,7 +1,10 @@
-import React from "react";
+import React, { useLayoutEffect } from "react";
 import { Input } from "../components";
 
 const Account = () => {
+  useLayoutEffect(()=>{
+    document.title = `Musicon - Account`
+  },[])
   return (
     <div className="account container">
       <div className="top">

@@ -9,6 +9,7 @@ export { default as Banner } from "./music/banner";
 export { default as Collections } from "./music/collections";
 export { default as Player } from "./player/player";
 export { default as LibraryHead } from "./libarary/head";
+export { default as LibraryModal } from "./libarary/modal";
 export { default as FIlterSearch } from "./search/filter";
 export { default as LoadMore } from "./load-more/load-more";
 export { default as Input } from "./form/input";

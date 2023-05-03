@@ -1,8 +1,8 @@
 import React from "react";
-import { MusicIcon, Play } from "../../assets";
+import { Dots, MusicIcon, Play } from "../../assets";
 import "./style.scss";
 
-const Row = ({ title, data, isSingle, isRound }) => {
+const Row = ({ title, data, isSingle, isRound, setModal }) => {
   return (
     <div data-for="Row">
       {title && (
@@ -32,8 +32,18 @@ const Row = ({ title, data, isSingle, isRound }) => {
                 <p>{elm?.extract}</p>
               </div>
 
-              <div className="play">
-                <button>
+              <div className="on_hover">
+                {setModal && (
+                  <button
+                    data-for="libray_options"
+                    onClick={() => {
+                      setModal({ status: true, id: "1wqwqw" });
+                    }}
+                  >
+                    <Dots width={"16px"} height={"16px"} color={"#FFF"} />
+                  </button>
+                )}
+                <button data-for="play">
                   <Play width={"16px"} height={"16px"} color={"#333"} />
                 </button>
               </div>

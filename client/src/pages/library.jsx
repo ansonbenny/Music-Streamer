@@ -1,10 +1,19 @@
-import React from "react";
-import { LibraryHead, Row } from "../components";
+import React, { useLayoutEffect, useState } from "react";
+import { LibraryHead, LibraryModal, Row } from "../components";
 
 const Library = () => {
+  const [modal, setModal] = useState({
+    status: false,
+    id: null,
+  });
+
+  useLayoutEffect(() => {
+    document.title = `Musicon - Library`;
+  }, []);
+
   return (
     <div className="container">
-      <LibraryHead />
+      <LibraryHead setModal={setModal} />
       <Row
         data={[
           {
@@ -81,7 +90,12 @@ const Library = () => {
             thumbnail_height: 398,
           },
         ]}
+        setModal={setModal}
       />
+
+      {modal?.status && (
+        <LibraryModal isLibrary modal={modal} setModal={setModal} />
+      )}
     </div>
   );
 };
