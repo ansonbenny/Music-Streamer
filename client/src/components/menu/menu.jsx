@@ -1,9 +1,17 @@
-import React, { forwardRef, useCallback, useRef } from "react";
+import React, {
+  forwardRef,
+  useCallback,
+  useImperativeHandle,
+  useRef,
+} from "react";
 import { Disc, Expand, List, MenuBar, Mic, MusicIcon } from "../../assets";
 import "./style.scss";
 
 const Menu = forwardRef(({ modalDispatch }, ref) => {
-  const darkSwitch = useRef();
+  const refs = useRef({
+    menu: null,
+    theme: null,
+  });
 
   const fullScreen = useCallback(() => {
     var isInFullScreen =
@@ -37,8 +45,89 @@ const Menu = forwardRef(({ modalDispatch }, ref) => {
       }
     }
   }, []);
+
+  useImperativeHandle(ref, () => ({
+    themeSwitch: (click) => {
+      let theme = localStorage.getItem("theme");
+
+      const dark = () => {
+        localStorage.setItem("theme", "dark");
+
+        document.body?.classList?.add("dark");
+        document.body?.classList?.remove("light");
+
+        refs.current.theme?.classList?.add("dark");
+      };
+
+      const light = () => {
+        localStorage.removeItem("theme");
+
+        document.body?.classList?.add("light");
+        document.body?.classList?.remove("dark");
+
+        refs.current.theme?.classList?.remove("dark");
+      };
+
+      if (click) {
+        switch (theme ? theme : null) {
+          case "dark":
+            light();
+            break;
+          default:
+            dark();
+            break;
+        }
+      } else {
+        switch (theme ? theme : null) {
+          case "dark":
+            dark();
+            break;
+          default:
+            light();
+            break;
+        }
+      }
+    },
+    menuToggle: (show) => {
+      if (show) {
+        // for show menu
+
+        if (matchMedia("(max-width:767px)").matches) {
+          // Small Device
+
+          refs?.current?.menu?.classList?.add("showSm");
+        } else {
+          // Medium plus devices
+
+          document.body?.classList?.remove("expand");
+          refs?.current?.menu?.classList?.add("showMd");
+        }
+      } else {
+        //for hide menu
+
+        if (matchMedia("(max-width:767px)").matches) {
+          // Small Device
+
+          refs?.current?.menu?.classList?.remove("showSm");
+        } else {
+          // Medium plus devices
+
+          document.body?.classList?.add("expand");
+          refs?.current?.menu?.classList?.remove("showMd");
+        }
+      }
+    },
+  }));
+
   return (
-    <div className="menu showMd" ref={ref}>
+    <div
+      className="menu showMd"
+      ref={(elm) => {
+        if (refs?.current) {
+          refs.current.menu = elm;
+        }
+      }}
+    >
       <div className="inner">
         <div className="logo_menu">
           <div className="logo">
@@ -50,16 +139,7 @@ const Menu = forwardRef(({ modalDispatch }, ref) => {
           <div className="bar">
             <button
               onClick={() => {
-                if (matchMedia("(max-width:767px)").matches) {
-                  // Small Device
-
-                  ref?.current?.classList?.remove("showSm");
-                } else {
-                  // Medium plus devices
-
-                  document.body?.classList?.add("expand");
-                  ref?.current?.classList?.remove("showMd");
-                }
+                ref?.current?.menuToggle();
               }}
             >
               <MenuBar height={"16px"} width={"16px"} color={"#888"} />
@@ -134,19 +214,13 @@ const Menu = forwardRef(({ modalDispatch }, ref) => {
             </button>
 
             <button
-              ref={darkSwitch}
-              onClick={() => {
-                if (document.body?.classList?.contains("dark")) {
-                  document.body?.classList?.add("light");
-                  document.body?.classList?.remove("dark");
-
-                  darkSwitch?.current?.classList?.remove("dark");
-                } else {
-                  document.body?.classList?.add("dark");
-                  document.body?.classList?.remove("light");
-
-                  darkSwitch?.current?.classList?.add("dark");
+              ref={(elm) => {
+                if (refs?.current) {
+                  refs.current.theme = elm;
                 }
+              }}
+              onClick={() => {
+                ref?.current?.themeSwitch(true);
               }}
             >
               <span>
@@ -167,9 +241,7 @@ const Menu = forwardRef(({ modalDispatch }, ref) => {
       <div
         className="blur"
         onClick={() => {
-          if (matchMedia("(max-width:767px)").matches) {
-            ref?.current?.classList?.remove("showSm");
-          }
+          ref?.current?.menuToggle();
         }}
       />
     </div>

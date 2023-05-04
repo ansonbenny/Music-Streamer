@@ -14,15 +14,24 @@ const app = express();
 
 const port = process.env.PORT || 5000;
 
+// for react static files
+app.use(express.static("dist"));
+
 app.use(cors({ credentials: true, origin: process.env.SITE_URL }));
 app.use(cookieParser());
 app.use(express.json({ limit: "50mb" }));
+
+// routes
+app.use("/api/user/", userRoute);
 
 app.get("/api", (req, res) => {
   res.send("Musicon Api");
 });
 
-app.use("/api/user/", userRoute);
+// for render react static files
+app.get("/*", (req, res) => {
+  res.json("STATIC");
+});
 
 app.listen(port, () => {
   console.log(`Server Started Port : ${port}`);

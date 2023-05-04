@@ -1,8 +1,8 @@
 import React, { useRef } from "react";
-import { Dots, MagnifyingGlass } from "../../assets";
+import { MagnifyingGlass } from "../../assets";
 import "./style.scss";
 
-const LibraryHead = ({ setModal }) => {
+const LibraryHead = () => {
   const svgRef = useRef();
   return (
     <div className="library_head">
@@ -23,15 +23,6 @@ const LibraryHead = ({ setModal }) => {
           }}
         />
       </div>
-
-      <button
-        data-for="modal"
-        onClick={() => {
-          setModal({ status: true });
-        }}
-      >
-        <Dots width={"16px"} height={"16px"} />
-      </button>
     </div>
   );
 };

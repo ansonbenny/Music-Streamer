@@ -17,3 +17,4 @@ export { default as Eye } from "./eye";
 export { default as EyeHide } from "./eyehide";
 export { default as Google } from "./google";
 export { default as MailIcon } from "./mail";
+export { default as Plus } from "./plus";

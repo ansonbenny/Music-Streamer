@@ -1,20 +1,27 @@
 import React, { useRef } from "react";
 import "./style.scss";
+import { useDispatch, useSelector } from "react-redux";
+import { setLibraryModal } from "../../redux/library";
 
-const LibraryModal = ({ isLibrary, setModal, modal }) => {
+const LibraryModal = () => {
   const ref = useRef();
+
+  const dispatch = useDispatch();
+
+  const { modal } = useSelector((state) => state.library);
+
   // if not isLibrary add check box playlist names for music and add option for create playlist
   return (
     <div
       className="libray_options"
       onClick={(e) => {
         if (!ref?.current?.contains(e.target)) {
-          setModal({ status: false });
+          dispatch(setLibraryModal({ status: false }));
         }
       }}
     >
       <div className="inner" ref={ref}>
-        {isLibrary ? (
+        {modal.isLibrary ? (
           <>
             {modal?.id ? (
               <ul>

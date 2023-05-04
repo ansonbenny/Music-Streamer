@@ -1,8 +1,17 @@
-import React, { Fragment, useReducer } from "react";
-import { Route, Routes } from "react-router-dom";
+import React, { Fragment, useLayoutEffect, useReducer } from "react";
+import { Route, Routes, useLocation } from "react-router-dom";
 import { Account, Error, Home, Library, Music, Search } from "./pages";
-import { Auth, Footer, Header, Loading, Menu, Player } from "./components";
+import {
+  Auth,
+  Footer,
+  Header,
+  LibraryModal,
+  Loading,
+  Menu,
+  Player,
+} from "./components";
 import { useRef } from "react";
+import { useSelector } from "react-redux";
 import "./app.scss";
 
 const reducer = (state, dispatch) => {
@@ -22,19 +31,36 @@ const reducer = (state, dispatch) => {
 const App = () => {
   let menuRef = useRef();
 
+  const location = useLocation();
+
+  const { library } = useSelector((state) => state);
+
   const [stateModal, modalDispatch] = useReducer(reducer, {
     modal: false,
   });
+
+  useLayoutEffect(() => {
+    menuRef?.current?.themeSwitch();
+  }, [location]);
+
   return (
     <Fragment>
       {
-        false && <Loading />
         // Loading Screen
+        false && <Loading />
       }
 
-      {stateModal?.modal && (
-        <Auth stateModal={stateModal} modalDispatch={modalDispatch} />
-      )}
+      {
+        // for login signup forgot
+        stateModal?.modal && (
+          <Auth stateModal={stateModal} modalDispatch={modalDispatch} />
+        )
+      }
+
+      {
+        // for library playlist add delete edit
+        library["modal"]?.status && <LibraryModal />
+      }
 
       <Menu ref={menuRef} modalDispatch={modalDispatch} />
 
