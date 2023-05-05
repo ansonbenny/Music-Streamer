@@ -1,11 +1,12 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Dots, MusicIcon, Play, Plus } from "../../assets";
 import { useDispatch } from "react-redux";
 import { setLibraryModal } from "../../redux/library";
+import { dragStart, dragStop, dragging } from "../../carousel";
 import "./style.scss";
 
-const Row = ({ title, data, isSingle, isRound, isLibrary }) => {
+const Row = ({ title, data, isCarousel, isRound, isLibrary }) => {
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
@@ -13,6 +14,14 @@ const Row = ({ title, data, isSingle, isRound, isLibrary }) => {
   const ref = useRef({
     play: [],
     menu: [],
+  });
+
+  // for row to carousel
+  const [settings, setSettings] = useState({
+    isDragStart: false,
+    isDragging: false,
+    prevScrollLeft: 0,
+    prevPageX: 0,
   });
 
   return (
@@ -23,7 +32,21 @@ const Row = ({ title, data, isSingle, isRound, isLibrary }) => {
         </div>
       )}
 
-      <div className={`grid ${isSingle && "single-row"}`}>
+      <div
+        className="grid"
+        // for row to carousel
+        id={isCarousel ? "carousel" : ""}
+        ref={(elem) => {
+          if (isCarousel && ref?.current) return (ref.current["slide"] = elem);
+        }}
+        onMouseDown={(e) => dragStart(e, ref, settings, setSettings)}
+        onTouchStart={(e) => dragStart(e, ref, settings, setSettings)}
+        onTouchMove={(e) => dragging(e, ref, settings, setSettings)}
+        onMouseMove={(e) => dragging(e, ref, settings, setSettings)}
+        onMouseUp={() => dragStop(ref, settings, setSettings)}
+        onMouseOut={() => dragStop(ref, settings, setSettings)}
+        onTouchEnd={() => dragStop(ref, settings, setSettings)}
+      >
         {isLibrary && (
           <div
             className="card"
@@ -46,7 +69,13 @@ const Row = ({ title, data, isSingle, isRound, isLibrary }) => {
 
         {data?.map((elm, key) => {
           return (
-            <div className="card" key={key}>
+            <div
+              className="card"
+              key={key}
+              ref={(elem) => {
+                if (ref?.current) return (ref.current["card"] = elem);
+              }}
+            >
               <div className="thumbnail">
                 {elm?.thumbnail ? (
                   <img
@@ -64,49 +93,52 @@ const Row = ({ title, data, isSingle, isRound, isLibrary }) => {
                 <p>{elm?.extract}</p>
               </div>
 
-              <div
-                className="on_hover"
-                onClick={(e) => {
-                  if (
-                    !ref?.current?.["menu"][key]?.contains(e.target) &&
-                    !ref?.current?.["play"][key]?.contains(e.target)
-                  ) {
-                    navigate("/erer");
-                  }
-                }}
-              >
-                {isLibrary && (
-                  <button
-                    data-for="libray_options"
-                    onClick={() => {
-                      dispatch(
-                        setLibraryModal({
-                          status: true,
-                          id: "1wqwqw",
-                          isLibrary,
-                        })
-                      );
-                    }}
-                    ref={(elm) => {
-                      if (ref?.current) {
-                        ref.current.menu[key] = elm;
-                      }
-                    }}
-                  >
-                    <Dots width={"16px"} height={"16px"} color={"#FFF"} />
-                  </button>
-                )}
-                <button
-                  data-for="play"
-                  ref={(elm) => {
-                    if (ref?.current) {
-                      ref.current.play[key] = elm;
+              {!settings.isDragging && (
+                <div
+                  className="on_hover"
+                  data-also-for="navigate"
+                  onClick={(e) => {
+                    if (
+                      !ref?.current?.["menu"][key]?.contains(e.target) &&
+                      !ref?.current?.["play"][key]?.contains(e.target)
+                    ) {
+                      navigate("/erer");
                     }
                   }}
                 >
-                  <Play width={"16px"} height={"16px"} color={"#333"} />
-                </button>
-              </div>
+                  {isLibrary && (
+                    <button
+                      data-for="libray_options"
+                      onClick={() => {
+                        dispatch(
+                          setLibraryModal({
+                            status: true,
+                            id: "1wqwqw",
+                            isLibrary,
+                          })
+                        );
+                      }}
+                      ref={(elm) => {
+                        if (ref?.current) {
+                          ref.current["menu"][key] = elm;
+                        }
+                      }}
+                    >
+                      <Dots width={"16px"} height={"16px"} color={"#FFF"} />
+                    </button>
+                  )}
+                  <button
+                    data-for="play"
+                    ref={(elm) => {
+                      if (ref?.current) {
+                        ref.current["play"][key] = elm;
+                      }
+                    }}
+                  >
+                    <Play width={"16px"} height={"16px"} color={"#333"} />
+                  </button>
+                </div>
+              )}
             </div>
           );
         })}

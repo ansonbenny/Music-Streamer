@@ -1,19 +1,5 @@
 @import '../../index.scss';
 
-@keyframes carousel_load {
-    0% {
-        opacity: 0;
-    }
-
-    100% {
-        opacity: 100%;
-    }
-}
-
-.slick-initialized {
-    overflow: hidden;
-}
-
 .recommended {
     margin-bottom: 2rem;
 
@@ -24,7 +10,7 @@
     .grid {
         display: grid;
         grid-template-columns: repeat(3, minmax(9rem, 1fr));
-        gap: 1rem;
+        gap: 16px;
 
         @media screen and (max-width:1060px) {
             grid-template-columns: repeat(2, minmax(9rem, 1fr));
@@ -141,20 +127,18 @@
     }
 
     .inner {
-        margin-left: -.5rem;
-        margin-right: -.5rem;
+        display: grid;
+        gap: 16px;
+        grid-auto-flow: column;
+        overflow: hidden;
+        grid-auto-columns: minmax(calc((100% - 3 * 16px) / 4), 1fr);
 
-        div[data-for="expand"] {
-            display: none;
-        }
+        @include media_grid_and_carousel($max-width: 1024px, $colums: 3, $gap: 16px);
 
-        div[data-for="non_expand"] {
-            display: block;
-            animation: carousel_load .5s ease-in-out forwards;
-        }
+        @include media_grid_and_carousel($max-width: 600px, $colums: 2, $gap: 16px);
 
         .card {
-            padding: .5rem;
+            @include nonCopyContent;
             position: relative;
             cursor: pointer;
 
@@ -162,15 +146,16 @@
                 @include coverImage;
                 border-radius: 5px;
                 width: 100%;
-                height: auto;
+                height: 100%;
             }
 
             .hover-details {
                 background: transparent;
                 display: flex;
                 top: 0;
-                bottom: 7%;
-                right: .5rem;
+                bottom: 0;
+                right: 0;
+                left: 0;
                 position: absolute;
                 width: 100%;
                 flex-direction: row-reverse;
@@ -184,8 +169,9 @@
                 }
 
                 button {
+                    bottom: 1rem;
                     position: absolute;
-                    right: 1.5rem;
+                    right: .5rem;
                     background: #fff;
                     display: flex;
                     align-items: center;
@@ -203,8 +189,9 @@
                 }
 
                 .details {
+                    bottom: 1rem;
                     position: absolute;
-                    left: 1.5rem;
+                    left: .5rem;
                     max-width: 40%;
                     text-align: left;
 
@@ -231,14 +218,10 @@
     .expand {
         .carousel {
             .inner {
-                div[data-for="expand"] {
-                    display: block;
-                    animation: carousel_load .5s ease-in-out forwards;
-                }
+                transform: translateX(0);
+                grid-auto-columns: minmax(calc((100% - 4 * 16px) / 5), 1fr);
 
-                div[data-for="non_expand"] {
-                    display: none;
-                }
+                @include media_grid_and_carousel($max-width: 1024px, $colums: 4, $gap: 16px);
             }
         }
     }

@@ -113,6 +113,27 @@ body {
   animation: modal .5s ease-in-out forwards;
 }
 
+@mixin media_grid_and_carousel($max-width: 330px, $colums: 1, $gap: 1rem) {
+  @media screen and (max-width: $max-width) {
+    grid-template-columns: repeat(auto-fill,
+        minmax(calc((100% - ($colums - 1) * $gap) / $colums), 1fr));
+
+    &:is(#carousel) {
+      grid-auto-columns: minmax(calc((100% - ($colums - 1) * $gap) / $colums),
+          1fr) !important;
+      grid-template-columns: minmax(calc((100% - ($colums - 1) * $gap) / $colums),
+          1fr) !important;
+    }
+  }
+}
+
+@mixin nonCopyContent {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
 #root {
   min-height: 100vh;
   height: auto;

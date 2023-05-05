@@ -1,76 +1,22 @@
-import { useCallback } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Play } from "../../assets";
-import Slider from "react-slick";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
+import { dragStart, dragStop, dragging } from "../../carousel";
 import "./style.scss";
 
 const Carousel = ({ title, data }) => {
-  const settings = {
-    nonExpand: {
-      dots: false,
-      infinite: false,
-      speed: 500,
-      slidesToShow: 4,
-      slidesToScroll: 4,
-      initialSlide: 0,
-      responsive: [
-        {
-          breakpoint: 1024,
-          settings: {
-            slidesToShow: 3,
-            slidesToScroll: 3,
-            infinite: false,
-            dots: false,
-          },
-        },
-        {
-          breakpoint: 600,
-          settings: {
-            slidesToShow: 2,
-            slidesToScroll: 2,
-            initialSlide: 2,
-          },
-        },
-      ],
-    },
-    expand: {
-      dots: false,
-      infinite: false,
-      speed: 500,
-      slidesToShow: 5,
-      slidesToScroll: 5,
-      initialSlide: 0,
-      responsive: [
-        {
-          breakpoint: 1100,
-          settings: {
-            slidesToShow: 4,
-            slidesToScroll: 4,
-            infinite: false,
-            dots: false,
-          },
-        },
-      ],
-    },
-  };
+  const navigate = useNavigate();
 
-  const RenderCard = useCallback(({ obj }) => {
-    return (
-      <div className="card" id="carousel">
-        <img src={obj?.thumbnail} />
-        <div className="hover-details">
-          <button>
-            <Play width={"16px"} height={"16px"} color={"#333"} />
-          </button>
-          <div className="details">
-            <h5>{obj?.title}</h5>
-            <p>{obj?.extract}</p>
-          </div>
-        </div>
-      </div>
-    );
-  }, []);
+  const ref = useRef({
+    play: [],
+  });
+
+  const [settings, setSettings] = useState({
+    isDragStart: false,
+    isDragging: false,
+    prevScrollLeft: 0,
+    prevPageX: 0,
+  });
 
   return (
     <div className="carousel">
@@ -78,22 +24,58 @@ const Carousel = ({ title, data }) => {
         <h5>{title}</h5>
       </div>
 
-      <div className="inner">
-        <div data-for="expand">
-          <Slider {...settings?.["expand"]}>
-            {data?.map((elm, key) => {
-              return <RenderCard obj={elm} key={key} />;
-            })}
-          </Slider>
-        </div>
+      <div
+        className="inner"
+        id="carousel"
+        ref={(elem) => {
+          if (ref?.current) return (ref.current["slide"] = elem);
+        }}
+        onMouseDown={(e) => dragStart(e, ref, settings, setSettings)}
+        onTouchStart={(e) => dragStart(e, ref, settings, setSettings)}
+        onTouchMove={(e) => dragging(e, ref, settings, setSettings)}
+        onMouseMove={(e) => dragging(e, ref, settings, setSettings)}
+        onMouseUp={() => dragStop(ref, settings, setSettings)}
+        onMouseOut={() => dragStop(ref, settings, setSettings)}
+        onTouchEnd={() => dragStop(ref, settings, setSettings)}
+      >
+        {data.map((obj, key) => {
+          return (
+            <div
+              className="card"
+              key={key}
+              ref={(elem) => {
+                if (ref?.current) return (ref.current["card"] = elem);
+              }}
+            >
+              <img src={obj?.thumbnail} />
 
-        <div data-for="non_expand">
-          <Slider {...settings?.["nonExpand"]}>
-            {data?.map((elm, key) => {
-              return <RenderCard obj={elm} key={key} />;
-            })}
-          </Slider>
-        </div>
+              {!settings?.isDragging && (
+                <div
+                  className="hover-details"
+                  data-also-for="navigate"
+                  onClick={(e) => {
+                    if (!ref?.current?.["play"][key]?.contains(e.target)) {
+                      navigate("/ee");
+                    }
+                  }}
+                >
+                  <button
+                    ref={(elem) => {
+                      if (ref?.current)
+                        return (ref.current["play"][key] = elem);
+                    }}
+                  >
+                    <Play width={"16px"} height={"16px"} color={"#333"} />
+                  </button>
+                  <div className="details">
+                    <h5>{obj?.title}</h5>
+                    <p>{obj?.extract}</p>
+                  </div>
+                </div>
+              )}
+            </div>
+          );
+        })}
       </div>
     </div>
   );

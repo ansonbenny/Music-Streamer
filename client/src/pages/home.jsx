@@ -350,7 +350,7 @@ const Home = ({}) => {
             thumbnail_height: 398,
           },
         ]}
-        isSingle
+        isCarousel
         isRound
       />
       <Row

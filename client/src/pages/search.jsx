@@ -65,7 +65,7 @@ const Search = () => {
             thumbnail_height: 398,
           },
         ]}
-        isSingle
+        isCarousel
         isRound
       />
       <Row
@@ -191,7 +191,7 @@ const Search = () => {
             thumbnail_height: 378,
           },
         ]}
-        isSingle
+        isCarousel
       />
 
       <LoadMore />

@@ -1,33 +1,5 @@
 @import "../../index.scss";
 
-@mixin media_row_grid($max-width: 330px, $colums: 1, $gap: 1rem) {
-  @media screen and (max-width: $max-width) {
-    grid-template-columns: repeat(auto-fill,
-        minmax(calc((100% - ($colums - 1) * 1rem) / $colums), 1fr));
-
-    &:is(.single-row) {
-      @if $max-width ==540px {
-        grid-auto-flow: row !important;
-        grid-template-columns: repeat(auto-fill,
-            minmax(calc((100% - 1rem) / 2), 1fr)) !important;
-      }
-
-      @else if $max-width ==330px {
-        grid-auto-flow: row !important;
-        grid-template-columns: repeat(auto-fill,
-            minmax(calc((100% - 1rem) / 1), 1fr)) !important;
-      }
-
-      @else {
-        grid-auto-columns: minmax(calc((100% - ($colums - 1) * 1rem) / $colums),
-            1fr) !important;
-        grid-template-columns: minmax(calc((100% - ($colums - 1) * 1rem) / $colums),
-            1fr) !important;
-      }
-    }
-  }
-}
-
 div[data-for="Row"] {
   margin-bottom: 2rem;
 
@@ -37,26 +9,25 @@ div[data-for="Row"] {
 
   .grid {
     display: grid;
-    gap: 1rem;
+    gap: 16px;
     grid-template-columns: repeat(auto-fill,
-        minmax(calc((100% - 4 * 1rem) / 5), 1fr));
+        minmax(calc((100% - 4 * 16px) / 5), 1fr));
 
-    &:is(.single-row) {
+    &:is(#carousel) {
       grid-auto-flow: column;
       overflow: hidden;
-      grid-auto-columns: minmax(calc((100% - 4 * 1rem) / 5), 1fr);
-      grid-template-columns: minmax(calc((100% - 4 * 1rem) / 5), 1fr);
+      grid-auto-columns: minmax(calc((100% - 4 * 16px) / 5), 1fr);
+      grid-template-columns: minmax(calc((100% - 4 * 16px) / 5), 1fr);
     }
 
-    @include media_row_grid($max-width: 1180px, $colums: 4, $gap: 1rem);
+    @include media_grid_and_carousel($max-width: 1180px, $colums: 4, $gap: 16px);
 
-    @include media_row_grid($max-width: 1000px, $colums: 3, $gap: 1rem);
+    @include media_grid_and_carousel($max-width: 1000px, $colums: 3, $gap: 16px);
 
-    @include media_row_grid($max-width: 540px, $colums: 2, $gap: 1rem);
-
-    @include media_row_grid($max-width: 330px, $colums: 1, $gap: 1rem);
+    @include media_grid_and_carousel($max-width: 540px, $colums: 2, $gap: 16px);
 
     .card {
+      @include nonCopyContent;
       border-radius: 5px;
       cursor: pointer;
       background: var(--primary-bg);
@@ -162,17 +133,17 @@ div[data-for="Row"] {
   .expand {
     div[data-for="Row"] .grid {
       grid-template-columns: repeat(auto-fill,
-          minmax(calc((100% - 5 * 1rem) / 6), 1fr));
+          minmax(calc((100% - 5 * 16px) / 6), 1fr));
 
-      &:is(.single-row) {
-        grid-auto-columns: minmax(calc((100% - 5 * 1rem) / 6), 1fr) !important;
-        grid-template-columns: minmax(calc((100% - 5 * 1rem) / 6),
+      &:is(#carousel) {
+        grid-auto-columns: minmax(calc((100% - 5 * 16px) / 6), 1fr) !important;
+        grid-template-columns: minmax(calc((100% - 5 * 16px) / 6),
             1fr) !important;
       }
 
-      @include media_row_grid($max-width: 1180px, $colums: 5, $gap: 1rem);
+      @include media_grid_and_carousel($max-width: 1180px, $colums: 5, $gap: 16px);
 
-      @include media_row_grid($max-width: 1000px, $colums: 4, $gap: 1rem);
+      @include media_grid_and_carousel($max-width: 1000px, $colums: 4, $gap: 16px);
     }
   }
 }
