@@ -1,9 +1,9 @@
-import React, { useEffect, useRef, useState } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Dots, MusicIcon, Play, Plus } from "../../assets";
 import { useDispatch } from "react-redux";
 import { setLibraryModal } from "../../redux/library";
-import { dragStart, dragStop, dragging } from "../../carousel";
+import { useCarousel } from "../../custom-hooks";
 import "./style.scss";
 
 const Row = ({ title, data, isCarousel, isRound, isLibrary }) => {
@@ -11,17 +11,9 @@ const Row = ({ title, data, isCarousel, isRound, isLibrary }) => {
 
   const dispatch = useDispatch();
 
-  const ref = useRef({
+  const [ref, settings] = useCarousel({
     play: [],
     menu: [],
-  });
-
-  // for row to carousel
-  const [settings, setSettings] = useState({
-    isDragStart: false,
-    isDragging: false,
-    prevScrollLeft: 0,
-    prevPageX: 0,
   });
 
   return (
@@ -39,13 +31,6 @@ const Row = ({ title, data, isCarousel, isRound, isLibrary }) => {
         ref={(elem) => {
           if (isCarousel && ref?.current) return (ref.current["slide"] = elem);
         }}
-        onMouseDown={(e) => dragStart(e, ref, settings, setSettings)}
-        onTouchStart={(e) => dragStart(e, ref, settings, setSettings)}
-        onTouchMove={(e) => dragging(e, ref, settings, setSettings)}
-        onMouseMove={(e) => dragging(e, ref, settings, setSettings)}
-        onMouseUp={() => dragStop(ref, settings, setSettings)}
-        onMouseOut={() => dragStop(ref, settings, setSettings)}
-        onTouchEnd={() => dragStop(ref, settings, setSettings)}
       >
         {isLibrary && (
           <div
@@ -73,7 +58,8 @@ const Row = ({ title, data, isCarousel, isRound, isLibrary }) => {
               className="card"
               key={key}
               ref={(elem) => {
-                if (ref?.current) return (ref.current["card"] = elem);
+                if (isCarousel && ref?.current)
+                  return (ref.current["card"] = elem);
               }}
             >
               <div className="thumbnail">

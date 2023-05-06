@@ -1,10 +1,7 @@
-import React, {
-  forwardRef,
-  useCallback,
-  useImperativeHandle,
-  useRef,
-} from "react";
+import React, { forwardRef, useImperativeHandle, useRef } from "react";
 import { Disc, Expand, List, MenuBar, Mic, MusicIcon } from "../../assets";
+import { useDispatch } from "react-redux";
+import { setExpand } from "../../redux/additional";
 import "./style.scss";
 
 const Menu = forwardRef(({ modalDispatch }, ref) => {
@@ -13,7 +10,9 @@ const Menu = forwardRef(({ modalDispatch }, ref) => {
     theme: null,
   });
 
-  const fullScreen = useCallback(() => {
+  const dispatch = useDispatch();
+
+  const fullScreen = () => {
     var isInFullScreen =
       (document.fullscreenElement && document.fullscreenElement !== null) ||
       (document.webkitFullscreenElement &&
@@ -44,7 +43,7 @@ const Menu = forwardRef(({ modalDispatch }, ref) => {
         document.msExitFullscreen();
       }
     }
-  }, []);
+  };
 
   useImperativeHandle(ref, () => ({
     themeSwitch: (click) => {
@@ -101,6 +100,7 @@ const Menu = forwardRef(({ modalDispatch }, ref) => {
 
           document.body?.classList?.remove("expand");
           refs?.current?.menu?.classList?.add("showMd");
+          dispatch(setExpand(false));
         }
       } else {
         //for hide menu
@@ -114,6 +114,7 @@ const Menu = forwardRef(({ modalDispatch }, ref) => {
 
           document.body?.classList?.add("expand");
           refs?.current?.menu?.classList?.remove("showMd");
+          dispatch(setExpand(true));
         }
       }
     },

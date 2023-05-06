@@ -1,21 +1,13 @@
-import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Play } from "../../assets";
-import { dragStart, dragStop, dragging } from "../../carousel";
+import { useCarousel } from "../../custom-hooks";
 import "./style.scss";
 
 const Carousel = ({ title, data }) => {
   const navigate = useNavigate();
 
-  const ref = useRef({
+  const [ref, settings] = useCarousel({
     play: [],
-  });
-
-  const [settings, setSettings] = useState({
-    isDragStart: false,
-    isDragging: false,
-    prevScrollLeft: 0,
-    prevPageX: 0,
   });
 
   return (
@@ -30,13 +22,6 @@ const Carousel = ({ title, data }) => {
         ref={(elem) => {
           if (ref?.current) return (ref.current["slide"] = elem);
         }}
-        onMouseDown={(e) => dragStart(e, ref, settings, setSettings)}
-        onTouchStart={(e) => dragStart(e, ref, settings, setSettings)}
-        onTouchMove={(e) => dragging(e, ref, settings, setSettings)}
-        onMouseMove={(e) => dragging(e, ref, settings, setSettings)}
-        onMouseUp={() => dragStop(ref, settings, setSettings)}
-        onMouseOut={() => dragStop(ref, settings, setSettings)}
-        onTouchEnd={() => dragStop(ref, settings, setSettings)}
       >
         {data.map((obj, key) => {
           return (

@@ -1,4 +1,4 @@
-import React, { useCallback, useLayoutEffect, useRef, useState } from "react";
+import React, { useLayoutEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   Heart,
@@ -13,13 +13,13 @@ import { setStatus, setTime, setVolume } from "../../redux/player";
 import "./style.scss";
 
 const Player = () => {
-  const dispatch = useDispatch();
-
   const ref = useRef({});
+
+  const dispatch = useDispatch();
 
   const { data, time, volume, status } = useSelector((state) => state.player);
 
-  const progressColor = useCallback((to) => {
+  const progressColor = (to) => {
     if (ref?.current?.[to]) {
       var value =
         ((ref.current[to].value - ref.current[to].min) /
@@ -30,7 +30,7 @@ const Player = () => {
         to
       ].style.background = `linear-gradient(to right, #09c478 0%, #09c478 ${value}%, #d9d9db ${value}%, #d9d9db 100%)`;
     }
-  }, []);
+  };
 
   const changeVolume = (e) => {
     localStorage.setItem("volume", e.target.value);
@@ -57,8 +57,7 @@ const Player = () => {
       changeVolume({ target: { value: ref.current["volume"].value } });
     }
 
-    // audio current playing time
-    ref?.current?.["audio"]?.addEventListener("timeupdate", () => {
+    const handelTimeUpdate = () => {
       if (ref.current["audio"].paused) {
         dispatch(setStatus(false));
       }
@@ -80,10 +79,9 @@ const Player = () => {
       dispatch(setTime({ current: `${min} : ${sec}` }));
 
       progressColor("seekBar");
-    });
+    };
 
-    // audio duration
-    ref?.current?.["audio"]?.addEventListener("durationchange", () => {
+    const handleDurationChange = () => {
       ref.current["seekBar"].value = 0;
 
       ref.current["seekBar"].min = 0;
@@ -105,7 +103,31 @@ const Player = () => {
       dispatch(setTime({ duration: `${min} : ${sec}` }));
 
       progressColor("seekBar");
-    });
+    };
+
+    // audio current playing time
+    ref?.current?.["audio"]?.addEventListener("timeupdate", handelTimeUpdate);
+
+    // audio duration
+    ref?.current?.["audio"]?.addEventListener(
+      "durationchange",
+      handleDurationChange
+    );
+
+    return () => {
+      //cleanup
+
+      ref?.current?.["audio"]?.removeEventListener(
+        "timeupdate",
+        handelTimeUpdate
+      );
+
+      // audio duration
+      ref?.current?.["audio"]?.removeEventListener(
+        "durationchange",
+        handleDurationChange
+      );
+    };
   }, []);
 
   return (

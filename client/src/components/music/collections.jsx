@@ -10,7 +10,7 @@ const Collections = ({ data }) => {
   });
 
   useEffect(() => {
-    window.addEventListener("click", (e) => {
+    const handleClick = (e) => {
       let btn = ref?.current?.["btn"]?.find((elm) => {
         if (elm?.contains(e.target)) {
           return true;
@@ -28,7 +28,13 @@ const Collections = ({ data }) => {
           elm.style.display = "none";
         });
       }
-    });
+    };
+
+    window.addEventListener("click", handleClick);
+
+    return () => {
+      window.removeEventListener("click", handleClick);
+    };
   }, []);
 
   return (
