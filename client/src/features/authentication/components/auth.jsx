@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import { Form, Forgot, Mail } from "./";
+import { Form, Forgot, Mail } from ".";
 import "./style.scss";
 
 const Auth = ({ stateModal, modalDispatch }) => {

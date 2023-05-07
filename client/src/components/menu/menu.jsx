@@ -12,39 +12,6 @@ const Menu = forwardRef(({ modalDispatch }, ref) => {
 
   const dispatch = useDispatch();
 
-  const fullScreen = () => {
-    var isInFullScreen =
-      (document.fullscreenElement && document.fullscreenElement !== null) ||
-      (document.webkitFullscreenElement &&
-        document.webkitFullscreenElement !== null) ||
-      (document.mozFullScreenElement &&
-        document.mozFullScreenElement !== null) ||
-      (document.msFullscreenElement && document.msFullscreenElement !== null);
-
-    var docElm = document.documentElement;
-    if (!isInFullScreen) {
-      if (docElm.requestFullscreen) {
-        docElm.requestFullscreen();
-      } else if (docElm.mozRequestFullScreen) {
-        docElm.mozRequestFullScreen();
-      } else if (docElm.webkitRequestFullScreen) {
-        docElm.webkitRequestFullScreen();
-      } else if (docElm.msRequestFullscreen) {
-        docElm.msRequestFullscreen();
-      }
-    } else {
-      if (document.exitFullscreen) {
-        document.exitFullscreen();
-      } else if (document.webkitExitFullscreen) {
-        document.webkitExitFullscreen();
-      } else if (document.mozCancelFullScreen) {
-        document.mozCancelFullScreen();
-      } else if (document.msExitFullscreen) {
-        document.msExitFullscreen();
-      }
-    }
-  };
-
   useImperativeHandle(ref, () => ({
     themeSwitch: (click) => {
       let theme = localStorage.getItem("theme");
@@ -207,7 +174,11 @@ const Menu = forwardRef(({ modalDispatch }, ref) => {
               Library
             </button>
 
-            <button onClick={fullScreen}>
+            <button onClick={()=>{
+              import('./functions/fullScreen').then((module)=>{
+                module.default()
+              })
+            }}>
               <span>
                 <Expand width={"16px"} height={"16px"} color={"#09c478"} />
               </span>

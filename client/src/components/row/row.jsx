@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Dots, MusicIcon, Play, Plus } from "../../assets";
 import { useDispatch } from "react-redux";
 import { setLibraryModal } from "../../redux/library";
-import { useCarousel } from "../../custom-hooks";
+import { useCarousel } from "../../hooks";
 import "./style.scss";
 
 const Row = ({ title, data, isCarousel, isRound, isLibrary }) => {

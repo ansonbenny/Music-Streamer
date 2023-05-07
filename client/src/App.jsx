@@ -1,15 +1,8 @@
 import React, { Fragment, useLayoutEffect, useReducer } from "react";
 import { Route, Routes, useLocation } from "react-router-dom";
 import { Account, Error, Home, Library, Music, Search } from "./pages";
-import {
-  Auth,
-  Footer,
-  Header,
-  LibraryModal,
-  Loading,
-  Menu,
-  Player,
-} from "./components";
+import { Footer, Header, LibraryModal, Loading, Menu } from "./components";
+import { Auth, Player } from "./features";
 import { useRef } from "react";
 import { useSelector } from "react-redux";
 import "./app.scss";

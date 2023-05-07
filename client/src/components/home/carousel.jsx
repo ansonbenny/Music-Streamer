@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { Play } from "../../assets";
-import { useCarousel } from "../../custom-hooks";
+import { useCarousel } from "../../hooks";
 import "./style.scss";
 
 const Carousel = ({ title, data }) => {

@@ -137,6 +137,8 @@
 
         @include media_grid_and_carousel($max-width: 600px, $colums: 2, $gap: 16px);
 
+        @include media_grid_and_carousel($max-width: 300px, $colums: 1, $gap: 16px);
+
         .card {
             @include nonCopyContent;
             position: relative;

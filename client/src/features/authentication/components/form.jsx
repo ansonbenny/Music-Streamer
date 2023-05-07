@@ -1,6 +1,6 @@
 import React from "react";
-import { Input } from "..";
-import { Google } from "../../assets";
+import { Input } from "../../../components";
+import { Google } from "../../../assets";
 
 const Form = ({ isSignup, modalDispatch }) => {
   return (
