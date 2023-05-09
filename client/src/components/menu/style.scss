@@ -179,6 +179,12 @@
                         display: flex;
                         align-items: center;
                         justify-content: center;
+
+
+                        &:is(span[data-for="fullScreen"]) {
+                            width: auto;
+                            display: block;
+                        }
                     }
 
                     &:is(.active) {

@@ -71,13 +71,19 @@ const useCarousel = (elements) => {
           setSettings({ ...settings, isDragging: true, positionDiff });
           ref.current["slide"].scrollLeft =
             settings?.prevScrollLeft - positionDiff;
+
+          if (e?.touches?.[0]) {
+            // for auto adujust touch devices
+            autoSlide();
+          }
         }
       };
 
-      const dragStop = () => {
+      const dragStop = (e) => {
         const { settings } = ref.current;
-        if (settings?.isDragging && settings?.isDragStart) {
-          autoSlide(ref, settings);
+        if (!e?.touches && settings?.isDragging && settings?.isDragStart) {
+          // for auto adujust mouse devices
+          autoSlide();
         }
         setSettings({
           ...settings,

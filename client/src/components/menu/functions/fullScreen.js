@@ -1,4 +1,4 @@
-export default fullScreen = () => {
+export default () => {
   var isInFullScreen =
     (document.fullscreenElement && document.fullscreenElement !== null) ||
     (document.webkitFullscreenElement &&
@@ -17,6 +17,8 @@ export default fullScreen = () => {
     } else if (docElm.msRequestFullscreen) {
       docElm.msRequestFullscreen();
     }
+
+    return true;
   } else {
     if (document.exitFullscreen) {
       document.exitFullscreen();
@@ -27,5 +29,7 @@ export default fullScreen = () => {
     } else if (document.msExitFullscreen) {
       document.msExitFullscreen();
     }
+
+    return false;
   }
 };

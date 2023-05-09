@@ -8,6 +8,7 @@ const Menu = forwardRef(({ modalDispatch }, ref) => {
   const refs = useRef({
     menu: null,
     theme: null,
+    fullScreen: null,
   });
 
   const dispatch = useDispatch();
@@ -174,15 +175,32 @@ const Menu = forwardRef(({ modalDispatch }, ref) => {
               Library
             </button>
 
-            <button onClick={()=>{
-              import('./functions/fullScreen').then((module)=>{
-                module.default()
-              })
-            }}>
+            <button
+              onClick={() => {
+                if (refs?.current) {
+                  import("./functions/fullScreen").then((module) => {
+                    if (module.default()) {
+                      refs.current["fullScreen"].innerHTML = "Exit fullscreen";
+                    } else {
+                      refs.current["fullScreen"].innerHTML = "Fullscreen";
+                    }
+                  });
+                }
+              }}
+            >
               <span>
                 <Expand width={"16px"} height={"16px"} color={"#09c478"} />
               </span>
-              Fullscreen
+              <span
+                data-for="fullScreen"
+                ref={(elem) => {
+                  if (refs?.current) {
+                    refs.current["fullScreen"] = elem;
+                  }
+                }}
+              >
+                Fullscreen
+              </span>
             </button>
 
             <button

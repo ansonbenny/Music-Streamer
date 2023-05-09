@@ -6,7 +6,7 @@ import collections from "../db/collections.js";
 export default {
   register_request: (details) => {
     return new Promise(async (resolve, reject) => {
-      let response = null;
+      let response;
       try {
         await db
           .collection(collections.TEMP)
@@ -14,8 +14,9 @@ export default {
         await db
           .collection(collections.TEMP)
           .createIndex({ expireAt: 1 }, { expireAfterSeconds: 3600 });
+
         let check = await db.collection(collections.USER).findOne({
-          email: details.email,
+          email: details.email.replace("_register", ""),
         });
 
         if (!check) {
@@ -59,6 +60,31 @@ export default {
             resolve({ _id: response.value._id.toString() });
           }
         }
+      }
+    });
+  },
+  login_manual: (email, password) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        let user = await db.collection(collections.USER).findOne({
+          email,
+        });
+
+        if (user) {
+          let check = await bcrypt.compare(password, user?.password);
+
+          if (check) {
+            delete user.password;
+
+            resolve(user);
+          } else {
+            reject({ status: 422, message: "Email or Password Wrong" });
+          }
+        } else {
+          reject({ status: 422, message: "Email or Password Wrong" });
+        }
+      } catch (err) {
+        reject(err);
       }
     });
   },
