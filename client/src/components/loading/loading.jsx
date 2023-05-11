@@ -35,7 +35,7 @@ const Loading = () => {
       } else {
         index = 0;
       }
-    }, 1000);
+    }, 500);
 
     return () => {
       clearInterval(interval);

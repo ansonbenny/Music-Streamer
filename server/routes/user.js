@@ -35,6 +35,13 @@ const CheckLogged = (req, res, next) => {
   });
 };
 
+router.get("/checkLogged", CheckLogged, (req, res) => {
+  res.status(405).json({
+    status: 405,
+    message: "User not logged",
+  });
+});
+
 router.post("/register", CheckLogged, async (req, res) => {
   let { name, email, password, rePassword, google } = req.body;
   if (google) {
@@ -248,7 +255,7 @@ router.get("/login", CheckLogged, async (req, res) => {
         if (response) {
           let token = jwt.sign(
             {
-              ...response,
+              _id: response._id,
             },
             process.env.JWT_SECRET,
             {

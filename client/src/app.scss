@@ -7,7 +7,7 @@
         @include expand_page($expanded: true);
     }
 
-    .error_404 {
+    .error_page {
         display: block;
         text-align: center;
         padding: 5rem 0;
