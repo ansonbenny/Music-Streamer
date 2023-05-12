@@ -3,6 +3,7 @@ import player from "./player";
 import library from "./library";
 import additional from "./additional";
 import user from "./user";
+import auth from "./auth";
 
 export const store = configureStore({
   reducer: {
@@ -10,5 +11,6 @@ export const store = configureStore({
     library,
     additional,
     user,
+    auth,
   },
 });

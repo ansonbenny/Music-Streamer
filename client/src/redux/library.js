@@ -24,6 +24,8 @@ const librarySlice = createSlice({
         state.modal.id = null;
         state.modal.status = payload.status;
       }
+
+      return state;
     },
   },
 });

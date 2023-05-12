@@ -9,11 +9,9 @@ const Error = ({ customErr }) => {
   useLayoutEffect(() => {
     document.title = `Musicon - Error`;
 
-    if (!customErr) {
-      setTimeout(() => {
-        dispatch(setLoading(false));
-      }, 1000);
-    }
+    setTimeout(() => {
+      dispatch(setLoading({ site: false }));
+    }, 1000);
   }, []);
   return (
     <div className="container">

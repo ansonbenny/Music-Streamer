@@ -3,15 +3,20 @@ import { createSlice } from "@reduxjs/toolkit";
 const additionalSlice = createSlice({
   name: "additional",
   initialState: {
-    loading: true,
+    loading: {
+      api: true,
+      site: true,
+    },
     expand: false,
   },
   reducers: {
     setLoading: (state, { payload }) => {
       state.loading = payload;
+      return state
     },
     setExpand: (state, { payload }) => {
       state.expand = payload;
+      return state
     },
   },
 });

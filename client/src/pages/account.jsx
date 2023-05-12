@@ -1,10 +1,17 @@
 import React, { useLayoutEffect } from "react";
 import { Input } from "../components";
+import { useDispatch } from "react-redux";
+import { setLoading } from "../redux/additional";
 
 const Account = () => {
-  useLayoutEffect(()=>{
-    document.title = `Musicon - Account`
-  },[])
+  const dispatch = useDispatch();
+  useLayoutEffect(() => {
+    document.title = `Musicon - Account`;
+
+    setTimeout(() => {
+      dispatch(setLoading({ site: false }));
+    }, 1000);
+  }, []);
   return (
     <div className="account container">
       <div className="top">

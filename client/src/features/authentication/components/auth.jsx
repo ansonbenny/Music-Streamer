@@ -1,21 +1,21 @@
 import React, { useRef } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Form, Forgot, Mail } from ".";
+import { exitAuth } from "../../../redux/auth";
 import "./style.scss";
 
-const Auth = ({ stateModal, modalDispatch }) => {
-  // redux check login or signup or forgot
-  // add error design
+const Auth = (params) => {
   const ref = useRef(null);
+  const { auth } = useSelector((state) => state);
+  const dispatch = useDispatch();
 
   const CheckForm = () => {
-    if (stateModal?.login) {
-      return <Form modalDispatch={modalDispatch} />;
-    } else if (stateModal?.signup) {
-      return <Form modalDispatch={modalDispatch} isSignup />;
-    } else if (stateModal?.forgot) {
-      return <Forgot modalDispatch={modalDispatch} />;
-    } else {
-      console.log("MAIL");
+    if (auth?.login) {
+      return <Form />;
+    } else if (auth?.signup) {
+      return <Form isSignup />;
+    } else if (auth?.forgot) {
+      return <Forgot />;
     }
   };
 
@@ -24,15 +24,12 @@ const Auth = ({ stateModal, modalDispatch }) => {
       className="auth"
       onClick={(e) => {
         if (!ref?.current.contains(e.target)) {
-          modalDispatch();
+          dispatch(exitAuth());
         }
       }}
     >
       <div className="inner" ref={ref}>
-        {
-          // if mail show mail
-          <CheckForm />
-        }
+        <CheckForm />
       </div>
     </div>
   );

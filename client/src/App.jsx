@@ -1,12 +1,20 @@
-import React, {
-  Fragment,
-  useEffect,
-  useLayoutEffect,
-  useReducer,
-  useState,
-} from "react";
-import { Outlet, Route, Routes, useLocation } from "react-router-dom";
-import { Account, Error, Home, Library, Music, Search } from "./pages";
+import React, { Fragment, useEffect, useLayoutEffect, useState } from "react";
+import {
+  Outlet,
+  Route,
+  Routes,
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
+import {
+  Account,
+  Error,
+  Home,
+  Library,
+  Music,
+  Search,
+  Verification,
+} from "./pages";
 import { Footer, Header, LibraryModal, Loading, Menu } from "./components";
 import { Auth, Player } from "./features";
 import { useRef } from "react";
@@ -17,14 +25,18 @@ import instance from "./lib/axios";
 import axios from "axios";
 import "./app.scss";
 
-const ProtectedRoute = ({ isAuth }) => {
+const ProtectedRoute = ({ isAuth, isAll }) => {
   const dispatch = useDispatch();
+
+  const navigate = useNavigate();
+
+  const { user, additional } = useSelector((state) => state);
 
   const [customErr, setCustomErr] = useState(null);
 
   useEffect(() => {
     setCustomErr(null);
-    dispatch(setLoading(true));
+    dispatch(setLoading({ api: true, site: true }));
 
     const cancelToken = axios.CancelToken.source();
 
@@ -41,6 +53,9 @@ const ProtectedRoute = ({ isAuth }) => {
         } else if (err?.response?.data?.status === 405) {
           console.log("User Not Logged");
           dispatch(setUser(null));
+          if (isAuth) {
+            navigate("/");
+          }
         } else {
           console.log(err);
           setCustomErr({
@@ -48,13 +63,15 @@ const ProtectedRoute = ({ isAuth }) => {
             statusText: err?.response?.statusText || "Something went wrong",
           });
         }
-
-        setTimeout(() => {
-          dispatch(setLoading(false));
-        }, 1000);
+        dispatch(setLoading({ api: false, site: true }));
       } finally {
         console.log(response?.data);
         if (response?.["data"]?.data) {
+          dispatch(setUser(response["data"].data));
+
+          if (!isAll && !isAuth) {
+            navigate("/");
+          }
         }
       }
     })();
@@ -64,21 +81,17 @@ const ProtectedRoute = ({ isAuth }) => {
     };
   }, []);
 
-  return customErr ? <Error customErr={customErr} /> : <Outlet />;
-};
-
-const reducer = (state, dispatch) => {
-  switch (dispatch?.type ? dispatch.type : null) {
-    case "login":
-      return { login: true, modal: true };
-    case "signup":
-      return { signup: true, modal: true };
-    case "forgot":
-      return { forgot: true, modal: true };
-    default: {
-      return { modal: false };
-    }
-  }
+  return !additional?.loading?.api ? (
+    customErr ? (
+      <Error customErr={customErr} />
+    ) : user ? (
+      isAll || isAuth ? (
+        <Outlet />
+      ) : null
+    ) : (
+      !isAuth && <Outlet />
+    )
+  ) : null;
 };
 
 const App = () => {
@@ -86,11 +99,7 @@ const App = () => {
 
   const location = useLocation();
 
-  const { library, additional } = useSelector((state) => state);
-
-  const [stateModal, modalDispatch] = useReducer(reducer, {
-    modal: false,
-  });
+  const { library, additional, auth } = useSelector((state) => state);
 
   useLayoutEffect(() => {
     menuRef?.current?.themeSwitch();
@@ -100,14 +109,12 @@ const App = () => {
     <Fragment>
       {
         // Loading Screen
-        additional?.loading && <Loading />
+        additional?.loading?.site && <Loading />
       }
 
       {
         // for login signup forgot
-        stateModal?.modal && (
-          <Auth stateModal={stateModal} modalDispatch={modalDispatch} />
-        )
+        auth && <Auth />
       }
 
       {
@@ -115,17 +122,27 @@ const App = () => {
         library["modal"]?.status && <LibraryModal />
       }
 
-      <Menu ref={menuRef} modalDispatch={modalDispatch} />
+      <Menu ref={menuRef} />
 
       <Header menuRef={menuRef} />
 
       <div className="page">
         <Routes>
-          <Route element={<ProtectedRoute />}>
+          <Route element={<ProtectedRoute isAll />}>
             <Route exact path="/" element={<Home />} />
             <Route path="/music" element={<Music />} />
             <Route path="/artist" element={<Music isArtist />} />
             <Route path="/search" element={<Search />} />
+          </Route>
+          <Route element={<ProtectedRoute />}>
+            <Route
+              path="/register/pending/:userId/:secret"
+              element={<Verification isRegister />}
+            />
+            <Route
+              path="/forgot/pending/:userId/:secret"
+              element={<Verification />}
+            />
           </Route>
           <Route element={<ProtectedRoute isAuth />}>
             <Route path="/library" element={<Library />} />

@@ -50,7 +50,7 @@ router.post("/register", CheckLogged, async (req, res) => {
       if (password?.length >= 8 && password === rePassword) {
         email = email.toLowerCase();
 
-        let secret = Math.random().toString(16);
+        let secret = Math.random()?.toString(16)?.replace("0.", "");
 
         let response;
 
@@ -146,7 +146,7 @@ router.post("/forgot", CheckLogged, async (req, res) => {
   if (email) {
     if (password?.length >= 8 && password === rePassword) {
       email = email.toLowerCase();
-      let secret = Math.random().toString(16);
+      let secret = Math.random()?.toString(16)?.replace("0.", "");
 
       let response;
 
@@ -249,7 +249,10 @@ router.get("/login", CheckLogged, async (req, res) => {
         if (err?.status) {
           res.status(err.status).json(err);
         } else {
-          res.status(500).json(err);
+          res.status(500).json({
+            status: 500,
+            message: err,
+          });
         }
       } finally {
         if (response) {

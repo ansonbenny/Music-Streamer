@@ -36,15 +36,20 @@ const playerSlice = createSlice({
       if (payload?.duration) {
         state.time.duration = payload.duration;
       }
+
+      return state;
     },
     setData: (state, { payload }) => {
       state.data = payload;
+      return state;
     },
     setVolume: (state, { payload }) => {
       state.volume = payload;
+      return state;
     },
     setStatus: (state, { payload }) => {
       state.status = payload;
+      return state;
     },
   },
 });

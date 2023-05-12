@@ -3,8 +3,9 @@ import { Disc, Expand, List, MenuBar, Mic, MusicIcon } from "../../assets";
 import { useDispatch } from "react-redux";
 import { setExpand } from "../../redux/additional";
 import "./style.scss";
+import { setAuth } from "../../redux/auth";
 
-const Menu = forwardRef(({ modalDispatch }, ref) => {
+const Menu = forwardRef((params, ref) => {
   const refs = useRef({
     menu: null,
     theme: null,
@@ -132,14 +133,14 @@ const Menu = forwardRef(({ modalDispatch }, ref) => {
                 <>
                   <button
                     onClick={() => {
-                      modalDispatch({ type: "signup" });
+                      dispatch(setAuth({ signup: true }));
                     }}
                   >
                     Signup
                   </button>
                   <button
                     onClick={() => {
-                      modalDispatch({ type: "login" });
+                      dispatch(setAuth({ login: true }));
                     }}
                   >
                     Login

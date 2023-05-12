@@ -58,6 +58,14 @@
                 cursor: pointer;
             }
 
+            p[data-for="error"]{
+                display: none;
+                color: red;
+                text-align: center;
+                font-size: 13px;
+                margin: .5rem 0;
+            }
+
             p[data-for="IF"] {
                 display: flex;
                 flex-direction: row;

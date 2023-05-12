@@ -1,9 +1,16 @@
 import React, { useLayoutEffect } from "react";
 import { Carousel, Row, Recommended } from "../components";
+import { useDispatch } from "react-redux";
+import { setLoading } from "../redux/additional";
 
 const Home = ({}) => {
+  const dispatch = useDispatch();
   useLayoutEffect(() => {
     document.title = `Musicon`;
+    
+    setTimeout(() => {
+      dispatch(setLoading({ site: false }));
+    }, 1000);
   }, []);
   return (
     <div className="container">
