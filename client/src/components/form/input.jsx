@@ -15,6 +15,7 @@ const Input = ({ name, placeholder, value, type, disable, inputHandle }) => {
         disabled={disable}
         value={value}
         onChange={inputHandle}
+        required={true}
       />
 
       {type === "password" &&

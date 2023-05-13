@@ -1,9 +1,10 @@
-import React, { useRef, useState } from "react";
+import React, { useRef } from "react";
 import { Input } from "../../../components";
 import { useDispatch } from "react-redux";
 import { exitAuth, setAuth } from "../../../redux/auth";
 import Mail from "./mail";
 import { setUser } from "../../../redux/user";
+import useAuthState from '../hooks/useAuthState'
 import instance from "../../../lib/axios";
 
 const Forgot = (params) => {
@@ -11,10 +12,7 @@ const Forgot = (params) => {
 
   const dispatch = useDispatch();
 
-  const [state, setState] = useState({
-    mail: false,
-    form: {},
-  });
+  const [state, setState] = useAuthState();
 
   const errorHandle = (error) => {
     if (error) {
@@ -29,16 +27,6 @@ const Forgot = (params) => {
         errorRef.current.style.display = "none";
       }
     }
-  };
-
-  const inputHandle = (e) => {
-    setState((state) => ({
-      ...state,
-      form: {
-        ...state.form,
-        [e?.target?.name]: e?.target?.value || "",
-      },
-    }));
   };
 
   const forgotApi = async () => {
@@ -68,7 +56,6 @@ const Forgot = (params) => {
         errorHandle();
         dispatch(exitAuth());
       } else if (response?.data) {
-        console.log(response);
         setState((state) => ({
           ...state,
           mail: true,
@@ -90,8 +77,9 @@ const Forgot = (params) => {
       errorHandle("Enter Password And Password Length Must Contain 8");
     }
   };
+  
   return state?.mail ? (
-    <Mail email={state?.form?.email || ""} handleForm={forgotApi} />
+    <Mail email={state?.form?.email || ""} type={'forgot'} handleForm={forgotApi} />
   ) : (
     <form className="form_auth" onSubmit={formHandle}>
       <h3>Forgot</h3>
@@ -104,7 +92,7 @@ const Forgot = (params) => {
         placeholder={"Enter Email"}
         name={"email"}
         value={state?.form?.email || ""}
-        inputHandle={inputHandle}
+        inputHandle={setState}
       />
 
       <label>Password</label>
@@ -113,7 +101,7 @@ const Forgot = (params) => {
         placeholder={"Enter Password"}
         name={"password"}
         value={state?.form?.password || ""}
-        inputHandle={inputHandle}
+        inputHandle={setState}
       />
 
       <label>Re Enter Password</label>
@@ -122,7 +110,7 @@ const Forgot = (params) => {
         placeholder={"Re Enter Password"}
         name={"rePassword"}
         value={state?.form?.rePassword || ""}
-        inputHandle={inputHandle}
+        inputHandle={setState}
       />
 
       <button type="submit">Forgot</button>

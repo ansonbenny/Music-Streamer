@@ -1,6 +1,7 @@
 import { Router } from "express";
 import user from "../helper/user.js";
 import { sendMail } from "../helper/mail.js";
+import axios from "axios";
 import jwt from "jsonwebtoken";
 
 let router = Router();
@@ -44,10 +45,47 @@ router.get("/checkLogged", CheckLogged, (req, res) => {
 
 router.post("/register", CheckLogged, async (req, res) => {
   let { name, email, password, rePassword, google } = req.body;
-  if (google) {
-  } else {
-    if (email) {
-      if (password?.length >= 8 && password === rePassword) {
+  if (password?.length >= 8 && password === rePassword) {
+    if (google) {
+      let response;
+      try {
+        let googleCheck = await axios.get(
+          "https://www.googleapis.com/oauth2/v3/userinfo",
+          {
+            headers: {
+              Authorization: `Bearer ${google}`,
+            },
+          }
+        );
+
+        if (googleCheck?.data?.email && googleCheck?.data?.email === email) {
+          response = await user.register_direct({ name, email, password });
+        } else {
+          res.status(500).json({
+            status: 500,
+            message: "Something Wrong",
+          });
+        }
+      } catch (err) {
+        if (err?.status) {
+          res.status(err.status).json(err);
+        } else {
+          res.status(500).json({
+            status: 500,
+            message: err,
+          });
+        }
+      } finally {
+        if (response) {
+          res.status(200).json({
+            status: 200,
+            google: true,
+            message: "Successfully Registered",
+          });
+        }
+      }
+    } else {
+      if (email) {
         email = email.toLowerCase();
 
         let secret = Math.random()?.toString(16)?.replace("0.", "");
@@ -96,16 +134,16 @@ router.post("/register", CheckLogged, async (req, res) => {
       } else {
         res.status(422).json({
           status: 422,
-          message:
-            "Password length must contain 8 and password and Re Enter password must same",
+          message: "Enter email",
         });
       }
-    } else {
-      res.status(422).json({
-        status: 422,
-        message: "Enter email",
-      });
     }
+  } else {
+    res.status(422).json({
+      status: 422,
+      message:
+        "Password length must contain 8 and password and Re Enter password must same",
+    });
   }
 });
 
@@ -236,7 +274,63 @@ router.put("/forgot-complete", CheckLogged, async (req, res) => {
 
 router.get("/login", CheckLogged, async (req, res) => {
   let { email, password, google } = req.query;
+
   if (google) {
+    let response;
+    try {
+      let googleCheck = await axios.get(
+        "https://www.googleapis.com/oauth2/v3/userinfo",
+        {
+          headers: {
+            Authorization: `Bearer ${google}`,
+          },
+        }
+      );
+
+      if (googleCheck?.data?.email) {
+        response = await user.getUserByEmail(googleCheck.data.email);
+      } else {
+        res.status(500).json({
+          status: 500,
+          message: "Something Wrong",
+        });
+      }
+    } catch (err) {
+      if (err?.status) {
+        res.status(err.status).json(err);
+      } else {
+        res.status(500).json({
+          status: 500,
+          message: err,
+        });
+      }
+    } finally {
+      if (response) {
+        if (response) {
+          let token = jwt.sign(
+            {
+              _id: response._id,
+            },
+            process.env.JWT_SECRET,
+            {
+              expiresIn: "24h",
+            }
+          );
+
+          res
+            .status(200)
+            .cookie("token", token, {
+              httpOnly: true,
+              expires: new Date(Date.now() + 86400000),
+            })
+            .json({
+              status: 200,
+              message: "Success",
+              data: response,
+            });
+        }
+      }
+    }
   } else {
     if (email && password?.length >= 8) {
       email = email.toLowerCase();

@@ -1,9 +1,11 @@
 import React, { forwardRef, useImperativeHandle, useRef } from "react";
 import { Disc, Expand, List, MenuBar, Mic, MusicIcon } from "../../assets";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setExpand } from "../../redux/additional";
-import "./style.scss";
 import { setAuth } from "../../redux/auth";
+import { setUser } from "../../redux/user";
+import { useNavigate } from "react-router-dom";
+import "./style.scss";
 
 const Menu = forwardRef((params, ref) => {
   const refs = useRef({
@@ -13,6 +15,10 @@ const Menu = forwardRef((params, ref) => {
   });
 
   const dispatch = useDispatch();
+
+  const navigate = useNavigate();
+
+  const { user } = useSelector((state) => state);
 
   useImperativeHandle(ref, () => ({
     themeSwitch: (click) => {
@@ -124,10 +130,23 @@ const Menu = forwardRef((params, ref) => {
             <p>Follow your favorite artists and create unlimited playlists.</p>
 
             <div className="btns">
-              {false ? (
+              {user ? (
                 <>
                   <button>Account</button>
-                  <button>Logout</button>
+                  <button
+                    onClick={() => {
+                      import(
+                        "../../features/authentication/functions/logout"
+                      ).then((module) => {
+                        if (module.default()) {
+                          dispatch(setUser(null));
+                          navigate("/");
+                        }
+                      });
+                    }}
+                  >
+                    Logout
+                  </button>
                 </>
               ) : (
                 <>

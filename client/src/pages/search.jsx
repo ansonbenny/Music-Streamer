@@ -1,16 +1,10 @@
 import React, { useEffect } from "react";
 import { Row, FIlterSearch, LoadMore } from "../components";
-import { useDispatch } from "react-redux";
-import { setLoading } from "../redux/additional";
 
 const Search = () => {
-  const dispatch = useDispatch();
 
   useEffect(() => {
     // title
-    setTimeout(() => {
-      dispatch(setLoading({ site: false }));
-    }, 1000);
   }, []);
   return (
     <div className="container">

@@ -3,10 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const additionalSlice = createSlice({
   name: "additional",
   initialState: {
-    loading: {
-      api: true,
-      site: true,
-    },
+    loading: true,
     expand: false,
   },
   reducers: {

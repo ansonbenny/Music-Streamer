@@ -1,18 +1,18 @@
 import React, { useLayoutEffect } from "react";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { setLoading } from "../redux/additional";
-import { useDispatch } from "react-redux";
 
 const Error = ({ customErr }) => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch()
+
   const navigate = useNavigate();
+
   useLayoutEffect(() => {
     document.title = `Musicon - Error`;
-
-    setTimeout(() => {
-      dispatch(setLoading({ site: false }));
-    }, 1000);
+    dispatch(setLoading(false))
   }, []);
+
   return (
     <div className="container">
       <div className="error_page">

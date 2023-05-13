@@ -115,6 +115,38 @@ export default {
       }
     });
   },
+  register_direct: (details) => {
+    return new Promise(async (resolve, reject) => {
+      let response;
+      try {
+        await db
+          .collection(collections.USER)
+          .createIndex({ email: 1 }, { unique: true });
+
+        details.password = await bcrypt.hash(details.password, 10);
+
+        response = await db.collection(collections.USER).insertOne(details);
+      } catch (err) {
+        if (err?.code === 11000) {
+          reject({ status: 422, message: "Already Registered" });
+        } else {
+          reject(err);
+        }
+      } finally {
+        if (response) {
+          await db
+            .collection(collections.TEMP)
+            .deleteOne({
+              email: `${details?.email}_register`,
+            })
+            .catch((err) => {
+              console.log("Temp Delete Error : ", err);
+            });
+          resolve(response);
+        }
+      }
+    });
+  },
   login_manual: (email, password) => {
     return new Promise(async (resolve, reject) => {
       try {
@@ -151,7 +183,25 @@ export default {
           delete user?.password;
           resolve(user);
         } else {
-          reject({ status: 404 });
+          reject({ status: 404, message: "User Not Found" });
+        }
+      } catch (err) {
+        reject(err);
+      }
+    });
+  },
+  getUserByEmail: (email) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        let user = await db.collection(collections.USER).findOne({
+          email,
+        });
+
+        if (user) {
+          delete user?.password;
+          resolve(user);
+        } else {
+          reject({ status: 404, message: "User Not Found" });
         }
       } catch (err) {
         reject(err);

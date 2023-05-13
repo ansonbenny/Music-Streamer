@@ -25,18 +25,20 @@ import instance from "./lib/axios";
 import axios from "axios";
 import "./app.scss";
 
-const ProtectedRoute = ({ isAuth, isAll }) => {
+const ProtectedRoute = ({ isAuth }) => {
   const dispatch = useDispatch();
+
+  const location = useLocation();
 
   const navigate = useNavigate();
 
-  const { user, additional } = useSelector((state) => state);
-
   const [customErr, setCustomErr] = useState(null);
+
+  const { user, additional } = useSelector((state) => state);
 
   useEffect(() => {
     setCustomErr(null);
-    dispatch(setLoading({ api: true, site: true }));
+    dispatch(setLoading(true));
 
     const cancelToken = axios.CancelToken.source();
 
@@ -52,26 +54,34 @@ const ProtectedRoute = ({ isAuth, isAll }) => {
           console.log("Cancelled");
         } else if (err?.response?.data?.status === 405) {
           console.log("User Not Logged");
+
           dispatch(setUser(null));
+
           if (isAuth) {
             navigate("/");
           }
+
+          setTimeout(() => {
+            dispatch(setLoading(false));
+          }, 1000);
         } else {
           console.log(err);
+
           setCustomErr({
             status: err?.response?.status || 500,
             statusText: err?.response?.statusText || "Something went wrong",
           });
+
+          setTimeout(() => {
+            dispatch(setLoading(false));
+          }, 1000);
         }
-        dispatch(setLoading({ api: false, site: true }));
       } finally {
-        console.log(response?.data);
         if (response?.["data"]?.data) {
           dispatch(setUser(response["data"].data));
-
-          if (!isAll && !isAuth) {
-            navigate("/");
-          }
+          setTimeout(() => {
+            dispatch(setLoading(false));
+          }, 1000);
         }
       }
     })();
@@ -79,15 +89,13 @@ const ProtectedRoute = ({ isAuth, isAll }) => {
     return () => {
       cancelToken.cancel();
     };
-  }, []);
+  }, [location]);
 
-  return !additional?.loading?.api ? (
+  return !additional?.loading ? (
     customErr ? (
       <Error customErr={customErr} />
     ) : user ? (
-      isAll || isAuth ? (
-        <Outlet />
-      ) : null
+      <Outlet />
     ) : (
       !isAuth && <Outlet />
     )
@@ -109,7 +117,7 @@ const App = () => {
     <Fragment>
       {
         // Loading Screen
-        additional?.loading?.site && <Loading />
+        additional?.loading && <Loading />
       }
 
       {
@@ -128,13 +136,11 @@ const App = () => {
 
       <div className="page">
         <Routes>
-          <Route element={<ProtectedRoute isAll />}>
+          <Route element={<ProtectedRoute />}>
             <Route exact path="/" element={<Home />} />
             <Route path="/music" element={<Music />} />
             <Route path="/artist" element={<Music isArtist />} />
             <Route path="/search" element={<Search />} />
-          </Route>
-          <Route element={<ProtectedRoute />}>
             <Route
               path="/register/pending/:userId/:secret"
               element={<Verification isRegister />}
