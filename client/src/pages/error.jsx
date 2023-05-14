@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { setContentLoad, setLoading } from "../redux/additional";
+import { setLoading } from "../redux/additional";
 
 const Error = ({ customErr }) => {
   const dispatch = useDispatch();
@@ -11,7 +11,6 @@ const Error = ({ customErr }) => {
   useEffect(() => {
     document.title = `Musicon - Error`;
     dispatch(setLoading(false));
-    dispatch(setContentLoad(false));
   }, []);
 
   return (

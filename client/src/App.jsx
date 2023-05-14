@@ -1,9 +1,5 @@
 import React, { Fragment, useLayoutEffect } from "react";
-import {
-  Route,
-  Routes,
-  useLocation,
-} from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom";
 import {
   Account,
   Error,
@@ -28,6 +24,7 @@ const App = () => {
   const { library, additional, auth } = useSelector((state) => state);
 
   useLayoutEffect(() => {
+    // for theme
     menuRef?.current?.themeSwitch();
   }, [location]);
 
@@ -35,7 +32,7 @@ const App = () => {
     <Fragment>
       {
         // Loading Screen
-        additional?.loading || additional?.contentLoad ? <Loading /> : null
+        additional?.loading ? <Loading /> : null
       }
 
       {

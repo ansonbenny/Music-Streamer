@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Error from "./error";
 import instance from "../lib/axios";
-import { Loading } from "../components";
 
 const Verification = ({ isRegister }) => {
   const navigate = useNavigate();
@@ -77,7 +76,7 @@ const Verification = ({ isRegister }) => {
       }
     })();
   }, []);
-  return error ? <Error customErr={error} /> : <Loading />;
+  return error ? <Error customErr={error} /> : null;
 };
 
 export default Verification;

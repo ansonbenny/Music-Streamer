@@ -1,27 +1,34 @@
 import React, { useEffect } from "react";
 import { Input } from "../components";
-import { useDispatch } from "react-redux";
-import { setContentLoad } from "../redux/additional";
+import { useDispatch, useSelector } from "react-redux";
+import { setLoading } from "../redux/additional";
+import { useLocation } from "react-router-dom";
 
 const Account = () => {
+  const location = useLocation();
   const dispatch = useDispatch();
+  const { user } = useSelector((state) => state);
 
   useEffect(() => {
     document.title = `Musicon - Account`;
 
-    setTimeout(() => {
-      dispatch(setContentLoad(false));
-    }, 5000);
-  }, []);
+    dispatch(setLoading(true));
+
+    if (user) {
+      setTimeout(() => {
+        dispatch(setLoading(false));
+      }, 1000);
+    }
+  }, [location]);
   return (
     <div className="account container">
       <div className="top">
         <div className="avatar">A</div>
 
         <div className="overview">
-          <h1 className="userName">Anson Benny</h1>
+          <h1 className="userName">{user?.name}</h1>
 
-          <p className="email">ansonbenny1544@gmail.com</p>
+          <p className="email">{user?.email}</p>
         </div>
       </div>
 

@@ -1,18 +1,25 @@
 import React, { useEffect } from "react";
 import { LibraryHead, Row } from "../components";
-import { useDispatch } from "react-redux";
-import { setContentLoad } from "../redux/additional";
+import { useDispatch, useSelector } from "react-redux";
+import { setLoading } from "../redux/additional";
+import { useLocation } from "react-router-dom";
 
 const Library = () => {
   const dispatch = useDispatch();
+  const location = useLocation();
+  const { user } = useSelector((state) => state);
 
   useEffect(() => {
     document.title = `Musicon - Library`;
 
-    setTimeout(() => {
-      dispatch(setContentLoad(false));
-    }, 5000);
-  }, []);
+    dispatch(setLoading(true));
+
+    if (user) {
+      setTimeout(() => {
+        dispatch(setLoading(false));
+      }, 1000);
+    }
+  }, [location]);
 
   return (
     <div className="container">

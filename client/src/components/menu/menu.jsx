@@ -5,9 +5,12 @@ import { setExpand } from "../../redux/additional";
 import { setAuth } from "../../redux/auth";
 import { setUser } from "../../redux/user";
 import { useNavigate } from "react-router-dom";
+import instance from "../../lib/axios";
 import "./style.scss";
 
 const Menu = forwardRef((params, ref) => {
+  const { user } = useSelector((state) => state);
+
   const refs = useRef({
     menu: null,
     theme: null,
@@ -17,8 +20,6 @@ const Menu = forwardRef((params, ref) => {
   const dispatch = useDispatch();
 
   const navigate = useNavigate();
-
-  const { user } = useSelector((state) => state);
 
   useImperativeHandle(ref, () => ({
     themeSwitch: (click) => {
@@ -125,7 +126,7 @@ const Menu = forwardRef((params, ref) => {
 
         <div className="scrollable">
           <div className="card">
-            <h5>Hi {false ? "Anson" : "Signup Now"}</h5>
+            <h5>Hi {user ? user?.name : "Signup Now"}</h5>
 
             <p>Follow your favorite artists and create unlimited playlists.</p>
 
@@ -140,15 +141,23 @@ const Menu = forwardRef((params, ref) => {
                     Account
                   </button>
                   <button
-                    onClick={() => {
-                      import(
-                        "../../features/authentication/functions/logout"
-                      ).then((module) => {
-                        if (module.default()) {
+                    onClick={async () => {
+                      try {
+                        let response = await instance.get("/user/logout");
+
+                        if (response) {
                           dispatch(setUser(null));
-                          navigate("/");
+                          if (
+                            window.location.pathname.includes("account") ||
+                            window.location.pathname.includes("library")
+                          ) {
+                            navigate("/");
+                          }
                         }
-                      });
+                      } catch (err) {
+                        console.log(err);
+                        alert("Facing An Error");
+                      }
                     }}
                   >
                     Logout
@@ -189,7 +198,7 @@ const Menu = forwardRef((params, ref) => {
             </button>
             <button
               onClick={() => {
-                navigate("/search");
+                navigate("/search?artist");
               }}
             >
               <span>
@@ -199,7 +208,7 @@ const Menu = forwardRef((params, ref) => {
             </button>
             <button
               onClick={() => {
-                navigate("/search");
+                navigate("/search?songs");
               }}
             >
               <span>

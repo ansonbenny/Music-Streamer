@@ -1,10 +1,13 @@
 import React, { useEffect } from "react";
 import { Banner, Collections, Row } from "../components";
 import { useDispatch } from "react-redux";
-import { setContentLoad } from "../redux/additional";
+import { setLoading } from "../redux/additional";
+import { useLocation } from "react-router-dom";
 
 const Music = ({ isArtist }) => {
   // same page for saved playlist item
+
+  const location = useLocation()
 
   const dispatch = useDispatch();
 
@@ -12,9 +15,9 @@ const Music = ({ isArtist }) => {
     // document.title = `Musicon`;
 
     setTimeout(() => {
-      dispatch(setContentLoad(false));
-    }, 5000);
-  }, []);
+      dispatch(setLoading(false));
+    }, 1000);
+  }, [location]);
   return (
     <div className="container">
       <Banner

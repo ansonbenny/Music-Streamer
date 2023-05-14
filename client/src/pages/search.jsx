@@ -1,18 +1,21 @@
 import React, { useEffect } from "react";
 import { Row, FIlterSearch, LoadMore } from "../components";
-import { setContentLoad } from "../redux/additional";
+import { setLoading } from "../redux/additional";
 import { useDispatch } from "react-redux";
+import { useLocation } from "react-router-dom";
 
 const Search = () => {
+  const location = useLocation()
+
   const dispatch = useDispatch();
 
   useEffect(() => {
     // document.title = `Musicon`;
 
     setTimeout(() => {
-      dispatch(setContentLoad(false));
-    }, 5000);
-  }, []);
+      dispatch(setLoading(false));
+    }, 1000);
+  }, [location]);
   return (
     <div className="container">
       <FIlterSearch />

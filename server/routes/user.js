@@ -383,7 +383,7 @@ router.get("/login", CheckLogged, async (req, res) => {
 });
 
 router.get("/logout", (req, res) => {
-  res.status(200).clearCookie("token").json({
+  res.clearCookie("token").status(200).json({
     status: 200,
     message: "LogOut",
   });
