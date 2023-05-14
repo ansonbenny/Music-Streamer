@@ -1,11 +1,19 @@
 import React, { useEffect } from "react";
 import { Banner, Collections, Row } from "../components";
+import { useDispatch } from "react-redux";
+import { setContentLoad } from "../redux/additional";
 
 const Music = ({ isArtist }) => {
   // same page for saved playlist item
 
+  const dispatch = useDispatch();
+
   useEffect(() => {
-    // title
+    // document.title = `Musicon`;
+
+    setTimeout(() => {
+      dispatch(setContentLoad(false));
+    }, 5000);
   }, []);
   return (
     <div className="container">

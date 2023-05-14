@@ -1,10 +1,17 @@
 import React, { useEffect } from "react";
 import { Row, FIlterSearch, LoadMore } from "../components";
+import { setContentLoad } from "../redux/additional";
+import { useDispatch } from "react-redux";
 
 const Search = () => {
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    // title
+    // document.title = `Musicon`;
+
+    setTimeout(() => {
+      dispatch(setContentLoad(false));
+    }, 5000);
   }, []);
   return (
     <div className="container">

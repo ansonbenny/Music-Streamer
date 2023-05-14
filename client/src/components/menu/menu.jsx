@@ -132,7 +132,13 @@ const Menu = forwardRef((params, ref) => {
             <div className="btns">
               {user ? (
                 <>
-                  <button>Account</button>
+                  <button
+                    onClick={() => {
+                      navigate("/account");
+                    }}
+                  >
+                    Account
+                  </button>
                   <button
                     onClick={() => {
                       import(
@@ -170,25 +176,42 @@ const Menu = forwardRef((params, ref) => {
           </div>
 
           <div className="actions">
-            <button className="active">
+            <button
+              className="active"
+              onClick={() => {
+                navigate("/");
+              }}
+            >
               <span>
                 <Disc width={"16px"} height={"16px"} color={"#09c478"} />
               </span>
               Discover
             </button>
-            <button>
+            <button
+              onClick={() => {
+                navigate("/search");
+              }}
+            >
               <span>
                 <MusicIcon width={"16px"} height={"16px"} color={"#09c478"} />
               </span>
               Songs
             </button>
-            <button>
+            <button
+              onClick={() => {
+                navigate("/search");
+              }}
+            >
               <span>
                 <Mic width={"16px"} height={"16px"} color={"#09c478"} />
               </span>
               Artists
             </button>
-            <button>
+            <button
+              onClick={() => {
+                navigate("/library");
+              }}
+            >
               <span>
                 <List width={"16px"} height={"16px"} color={"#09c478"} />
               </span>

@@ -1,10 +1,17 @@
-import React, { useLayoutEffect } from "react";
+import React, { useEffect } from "react";
 import { LibraryHead, Row } from "../components";
+import { useDispatch } from "react-redux";
+import { setContentLoad } from "../redux/additional";
 
 const Library = () => {
+  const dispatch = useDispatch();
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     document.title = `Musicon - Library`;
+
+    setTimeout(() => {
+      dispatch(setContentLoad(false));
+    }, 5000);
   }, []);
 
   return (

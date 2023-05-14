@@ -1,9 +1,17 @@
-import React, { useLayoutEffect } from "react";
+import React, { useEffect } from "react";
 import { Input } from "../components";
+import { useDispatch } from "react-redux";
+import { setContentLoad } from "../redux/additional";
 
 const Account = () => {
-  useLayoutEffect(() => {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
     document.title = `Musicon - Account`;
+
+    setTimeout(() => {
+      dispatch(setContentLoad(false));
+    }, 5000);
   }, []);
   return (
     <div className="account container">
