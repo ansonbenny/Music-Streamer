@@ -5,7 +5,9 @@ let db = null;
 export const ConnectDB = async (callback) => {
   let dbName = "musicon";
   try {
-    let res = await MongoClient.connect(process.env.MONGO_URL);
+    let res = await MongoClient.connect(process.env.MONGO_URL, {
+      useNewUrlParser: true,
+    });
 
     if (res) {
       db = res.db(dbName);

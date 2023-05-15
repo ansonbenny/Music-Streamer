@@ -58,8 +58,15 @@ router.post("/register", CheckLogged, async (req, res) => {
           }
         );
 
-        if (googleCheck?.data?.email && googleCheck?.data?.email === email) {
-          response = await user.register_direct({ name, email, password });
+        if (
+          googleCheck?.data?.email &&
+          googleCheck?.data?.email?.toLowerCase() === email?.toLowerCase()
+        ) {
+          response = await user.register_direct({
+            name,
+            email: email?.toLowerCase(),
+            password,
+          });
         } else {
           res.status(500).json({
             status: 500,
@@ -85,7 +92,10 @@ router.post("/register", CheckLogged, async (req, res) => {
         }
       }
     } else {
-      if (email) {
+      var validRegex =
+        /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+
+      if (email?.match(validRegex)) {
         email = email.toLowerCase();
 
         let secret = Math.random()?.toString(16)?.replace("0.", "");
@@ -272,6 +282,132 @@ router.put("/forgot-complete", CheckLogged, async (req, res) => {
   }
 });
 
+router.put("/edit-profile", async (req, res) => {
+  const { password_profile, email, name } = req.body;
+  if (password_profile?.length >= 8) {
+    var validRegex =
+      /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+
+    if (email?.match(validRegex) && name) {
+      const { token = null } = req.cookies;
+
+      jwt.verify(token, process.env.JWT_SECRET, async (err, decode) => {
+        if (decode?._id?.length === 24) {
+          let response;
+
+          try {
+            response = await user.editProfile(
+              decode?._id,
+              email,
+              name,
+              password_profile
+            );
+          } catch (err) {
+            if (err?.status === 404) {
+              res.clearCookie("token").status(405).json({
+                status: 405,
+                message: "User not logged",
+              });
+            } else if (err?.status) {
+              res.status(err?.status).json(err);
+            } else {
+              res.status(500).json({
+                status: 500,
+                message: err,
+              });
+            }
+          } finally {
+            if (response) {
+              res.status(200).json({
+                status: 200,
+                message: "Profile Edited",
+                data: {
+                  _id: decode?._id,
+                  email,
+                  name,
+                },
+              });
+            }
+          }
+        } else if (err) {
+          res.clearCookie("token").status(405).json({
+            status: 405,
+            message: "User not logged",
+          });
+        } else {
+          res.clearCookie("token").status(405).json({
+            status: 405,
+            message: "User not logged",
+          });
+        }
+      });
+    } else {
+      res.status(422).json({
+        status: 422,
+        message: "Enter Correct Details",
+      });
+    }
+  } else {
+    res.status(422).json({
+      status: 422,
+      message: "Password Length Must 8",
+    });
+  }
+});
+
+router.put("/edit-password", async (req, res) => {
+  const { password, new_pass } = req.body;
+  if (password?.length >= 8 && new_pass?.length >= 8) {
+    const { token = null } = req.cookies;
+
+    jwt.verify(token, process.env.JWT_SECRET, async (err, decode) => {
+      if (decode?._id?.length === 24) {
+        let response;
+
+        try {
+          response = await user.editPassword(decode?._id, password, new_pass);
+        } catch (err) {
+          if (err?.status === 404) {
+            res.clearCookie("token").status(405).json({
+              status: 405,
+              message: "User not logged",
+            });
+          } else if (err?.status) {
+            res.status(err?.status).json(err);
+          } else {
+            res.status(500).json({
+              status: 500,
+              message: err,
+            });
+          }
+        } finally {
+          if (response) {
+            res.status(200).json({
+              status: 200,
+              message: "Password Edited",
+            });
+          }
+        }
+      } else if (err) {
+        res.clearCookie("token").status(405).json({
+          status: 405,
+          message: "User not logged",
+        });
+      } else {
+        res.clearCookie("token").status(405).json({
+          status: 405,
+          message: "User not logged",
+        });
+      }
+    });
+  } else {
+    res.status(422).json({
+      status: 422,
+      message: "Password Length Must 8",
+    });
+  }
+});
+
 router.get("/login", CheckLogged, async (req, res) => {
   let { email, password, google } = req.query;
 
@@ -288,7 +424,9 @@ router.get("/login", CheckLogged, async (req, res) => {
       );
 
       if (googleCheck?.data?.email) {
-        response = await user.getUserByEmail(googleCheck.data.email);
+        response = await user.getUserByEmail(
+          googleCheck.data.email?.toLowerCase()
+        );
       } else {
         res.status(500).json({
           status: 500,

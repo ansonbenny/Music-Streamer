@@ -1,25 +1,115 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useReducer, useState } from "react";
 import { Input } from "../components";
 import { useDispatch, useSelector } from "react-redux";
 import { setLoading } from "../redux/additional";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import instance from "../lib/axios";
+import { setUser } from "../redux/user";
+
+const reducer = (state, action) => {
+  switch (action) {
+    case "profile":
+      return { profile: true };
+    case "password": {
+      return { password: true };
+    }
+    default:
+      return {};
+  }
+};
 
 const Account = () => {
   const location = useLocation();
+
   const dispatch = useDispatch();
+
+  const navigate = useNavigate();
+
   const { user } = useSelector((state) => state);
+
+  const [state, stateDispatch] = useReducer(reducer, {});
+
+  const [formData, setFormData] = useState({});
+
+  const inputHandle = (e) => {
+    setFormData((form) => ({
+      ...form,
+      [e.target.name]: e.target.value,
+    }));
+  };
+
+  const formHandle = async (e, isProfile) => {
+    e.preventDefault();
+
+    if (isProfile) {
+      if (formData?.password_profile?.length >= 8) {
+        let response;
+        try {
+          response = await instance.put("/user/edit-profile", {
+            email: formData?.email || user?.email,
+            name: formData?.name || user?.name,
+            password_profile: formData?.password_profile,
+          });
+        } catch (err) {
+          if (err?.response?.data?.status === 405) {
+            alert("Not Logged");
+            dispatch(setUser(null));
+            navigate("/");
+          } else if (typeof err?.response?.data?.message === "string") {
+            alert(err?.response?.data?.message);
+          } else {
+            alert("Something Wrong");
+          }
+        } finally {
+          if (response) {
+            alert("Done");
+            dispatch(setUser(response?.data?.data));
+          }
+        }
+      } else {
+        alert("Password Length Must 8");
+      }
+    } else {
+      if (formData?.password?.length >= 8 && formData?.new_pass?.length >= 8) {
+        let response;
+        try {
+          response = await instance.put("/user/edit-password", {
+            password: formData?.password,
+            new_pass: formData?.new_pass,
+          });
+        } catch (err) {
+          if (err?.response?.data?.status === 405) {
+            alert("Not Logged");
+            dispatch(setUser(null));
+            navigate("/");
+          } else if (typeof err?.response?.data?.message === "string") {
+            alert(err?.response?.data?.message);
+          } else {
+            alert("Something Wrong");
+          }
+        } finally {
+          if (response) {
+            alert("Done");
+          }
+        }
+      } else {
+        alert("Password Length Must 8");
+      }
+    }
+  };
 
   useEffect(() => {
     document.title = `Musicon - Account`;
-
-    dispatch(setLoading(true));
 
     if (user) {
       setTimeout(() => {
         dispatch(setLoading(false));
       }, 1000);
+    } else {
+      dispatch(setLoading(true));
     }
-  }, [location]);
+  }, [location, user]);
+
   return (
     <div className="account container">
       <div className="top">
@@ -36,55 +126,105 @@ const Account = () => {
         <div className="head">
           <h5>Profile</h5>
           <div className="btn">
-            <button>Edit</button>
+            {state?.profile ? (
+              <button
+                onClick={() => {
+                  stateDispatch();
+                  setFormData({});
+                }}
+              >
+                Hide
+              </button>
+            ) : (
+              <button onClick={() => stateDispatch("profile")}>Edit</button>
+            )}
           </div>
         </div>
-        <form action="">
+        <form onSubmit={(e) => formHandle(e, true)}>
           <div className="inputs">
             <Input
-              value={""}
+              value={
+                formData?.name !== undefined
+                  ? formData?.name
+                  : user?.name
+                  ? user?.name
+                  : ""
+              }
               placeholder={"Name"}
               name={"name"}
               type={"text"}
-              disable
+              disable={state?.profile !== undefined ? false : true}
+              inputHandle={inputHandle}
             />
             <Input
-              value={""}
+              value={
+                formData?.email
+                  ? formData?.email
+                  : user?.email
+                  ? user?.email
+                  : ""
+              }
               placeholder={"Email"}
               name={"email"}
               type={"email"}
-              disable
+              disable={state?.profile !== undefined ? false : true}
+              inputHandle={inputHandle}
             />
+            {state?.profile && (
+              <Input
+                value={
+                  formData?.password_profile ? formData?.password_profile : ""
+                }
+                placeholder={"Password"}
+                name={"password_profile"}
+                type={"password"}
+                disable={state?.profile ? false : true}
+                inputHandle={inputHandle}
+              />
+            )}
           </div>
 
-          {false && <button type="submit">Save Changes</button>}
+          {state?.profile && <button type="submit">Save Changes</button>}
         </form>
 
         <div className="head">
           <h5>Password</h5>
           <div className="btn">
-            <button>Edit</button>
+            {state?.password ? (
+              <button
+                onClick={() => {
+                  stateDispatch();
+                  setFormData({});
+                }}
+              >
+                Hide
+              </button>
+            ) : (
+              <button onClick={() => stateDispatch("password")}>Edit</button>
+            )}
           </div>
         </div>
-        <form action="">
+        <form onSubmit={formHandle}>
           <div className="inputs">
             <Input
-              value={""}
+              value={formData?.password ? formData?.password : ""}
               placeholder={"Current Password"}
-              name={"current_pass"}
+              name={"password"}
               type={"password"}
-              disable
+              disable={state?.password ? false : true}
+              inputHandle={inputHandle}
             />
             <Input
-              value={""}
+              value={formData?.new_pass ? formData?.new_pass : ""}
               placeholder={"New Password"}
               name={"new_pass"}
               type={"password"}
-              disable
+              disable={state?.password ? false : true}
+              inputHandle={inputHandle}
             />
           </div>
 
-          {false && <button type="submit">Save Changes</button>}
+          {state?.password && <button type="submit">Save Changes</button>}
         </form>
       </div>
     </div>

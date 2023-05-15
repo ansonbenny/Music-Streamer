@@ -22,15 +22,14 @@ const ProtectedRoute = ({ isAuth }) => {
     const cancelToken = axios.CancelToken.source();
 
     (async () => {
-      let response;
-
       try {
-        response = await instance.get("/user/checkLogged", {
+        let response = await instance.get("/user/checkLogged", {
           cancelToken: cancelToken.token,
         });
 
         if (response?.data?.data) {
           dispatch(setUser(response["data"].data));
+          setComponent(<Outlet />);
         }
       } catch (err) {
         if (axios.isCancel(err)) {
@@ -53,10 +52,6 @@ const ProtectedRoute = ({ isAuth }) => {
           } else if (!isAuth) {
             setComponent(<Outlet />);
           }
-        }
-      } finally {
-        if (response?.["data"]?.data) {
-          setComponent(<Outlet />);
         }
       }
     })();

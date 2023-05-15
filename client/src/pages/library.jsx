@@ -12,14 +12,14 @@ const Library = () => {
   useEffect(() => {
     document.title = `Musicon - Library`;
 
-    dispatch(setLoading(true));
-
     if (user) {
       setTimeout(() => {
         dispatch(setLoading(false));
       }, 1000);
+    } else {
+      dispatch(setLoading(true));
     }
-  }, [location]);
+  }, [location, user]);
 
   return (
     <div className="container">

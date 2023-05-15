@@ -310,4 +310,88 @@ export default {
       }
     });
   },
+  editProfile: (id, email, name, password) => {
+    return new Promise(async (resolve, reject) => {
+      let response;
+      try {
+        await db
+          .collection(collections.USER)
+          .createIndex({ email: 1 }, { unique: true });
+
+        let user = await db.collection(collections.USER).findOne({
+          _id: new ObjectId(id),
+        });
+
+        if (user) {
+          let check = await bcrypt.compare(password, user?.password);
+
+          if (check) {
+            response = await db.collection(collections.USER).updateOne(
+              {
+                _id: new ObjectId(id),
+              },
+              {
+                $set: {
+                  email,
+                  name,
+                },
+              }
+            );
+          } else {
+            reject({ status: 422, message: "Wrong Password" });
+          }
+        } else {
+          reject({ status: 404 });
+        }
+      } catch (err) {
+        if (err?.code === 11000) {
+          reject({ status: 422, message: "Email Already Used" });
+        } else {
+          reject(err);
+        }
+      } finally {
+        if (response) {
+          resolve(response);
+        }
+      }
+    });
+  },
+  editPassword: (id, password, new_pass) => {
+    return new Promise(async (resolve, reject) => {
+      let response;
+      try {
+        let user = await db.collection(collections.USER).findOne({
+          _id: new ObjectId(id),
+        });
+
+        if (user) {
+          let check = await bcrypt.compare(password, user?.password);
+
+          if (check) {
+            new_pass = await bcrypt.hash(new_pass, 10);
+            response = await db.collection(collections.USER).updateOne(
+              {
+                _id: new ObjectId(id),
+              },
+              {
+                $set: {
+                  password: new_pass,
+                },
+              }
+            );
+          } else {
+            reject({ status: 422, message: "Wrong Password" });
+          }
+        } else {
+          reject({ status: 404 });
+        }
+      } catch (err) {
+        reject(err);
+      } finally {
+        if (response) {
+          resolve(response);
+        }
+      }
+    });
+  },
 };

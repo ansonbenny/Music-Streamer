@@ -135,11 +135,13 @@
             form {
                 .inputs {
                     width: 100%;
-                    display: flex;
-                    flex-direction: row;
+                    display: grid;
+                    grid-template-columns: 50% 50%;
                     gap: .5rem;
 
                     @media screen and (max-width:600px) {
+                        display: flex;
+                        grid-template-columns: none;
                         flex-direction: column;
                     }
                 }
