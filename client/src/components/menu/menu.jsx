@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setExpand } from "../../redux/additional";
 import { setAuth } from "../../redux/auth";
 import { setUser } from "../../redux/user";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import instance from "../../lib/axios";
 import "./style.scss";
 
@@ -186,7 +186,7 @@ const Menu = forwardRef((params, ref) => {
 
           <div className="actions">
             <button
-              className="active"
+              className={window.location.pathname === "/" ? "active" : ""}
               onClick={() => {
                 navigate("/");
               }}
@@ -197,18 +197,30 @@ const Menu = forwardRef((params, ref) => {
               Discover
             </button>
             <button
+              className={
+                window.location.pathname === "/search/album" ||
+                window.location.pathname === "/search/album/"
+                  ? "active"
+                  : ""
+              }
               onClick={() => {
-                navigate("/search?artist");
+                navigate("/search/album");
               }}
             >
               <span>
                 <MusicIcon width={"16px"} height={"16px"} color={"#09c478"} />
               </span>
-              Songs
+              Albums
             </button>
             <button
+              className={
+                window.location.pathname === "/search/artist" ||
+                window.location.pathname === "/search/artist/"
+                  ? "active"
+                  : ""
+              }
               onClick={() => {
-                navigate("/search?songs");
+                navigate("/search/artist");
               }}
             >
               <span>
@@ -217,6 +229,12 @@ const Menu = forwardRef((params, ref) => {
               Artists
             </button>
             <button
+              className={
+                window.location.pathname === "/library" ||
+                window.location.pathname === "/library/"
+                  ? "active"
+                  : ""
+              }
               onClick={() => {
                 navigate("/library");
               }}

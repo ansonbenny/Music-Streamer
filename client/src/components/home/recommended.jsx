@@ -1,41 +1,38 @@
-import React from 'react'
-import { Play } from '../../assets'
-import './style.scss'
+import React from "react";
+import { Play } from "../../assets";
+import "./style.scss";
 
-const Recommended = ({data}) => {
+const Recommended = ({ data }) => {
   return (
-    <div className='recommended'>
+    <div className="recommended">
       <div className="title">
         <h5>Recommended</h5>
       </div>
       <div className="grid">
-        {
-          data?.map((elm, key) => {
+        {data
+          ?.slice(0, data?.length > 6 ? 6 : data?.length)
+          ?.map((elm, key) => {
             return (
               <div className="card" key={key}>
                 <div>
-                  <img src={elm?.thumbnail} alt="" />
+                  <img src={elm?.images?.[0]?.url} alt={elm?.uri} />
                 </div>
                 <div className="details">
-                  <h5>{elm?.title}</h5>
-                  <p>{elm?.extract}</p>
+                  <h5>{elm?.name}</h5>
+                  <p>{elm?.artists?.[0]?.name}</p>
                 </div>
 
                 <div className="play">
                   <button>
-                    <Play
-                      width={'16px'}
-                      height={'16px'}
-                    />
+                    <Play width={"16px"} height={"16px"} />
                   </button>
                 </div>
               </div>
-            )
-          })
-        }
+            );
+          })}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Recommended
+export default Recommended;

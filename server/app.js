@@ -6,6 +6,9 @@ import dotenv from "dotenv";
 // Routes
 
 import userRoute from "./routes/user.js";
+import musicRoute from "./routes/music.js";
+
+// DB
 import { ConnectDB } from "./db/connection.js";
 
 dotenv.config();
@@ -23,6 +26,7 @@ app.use(express.json({ limit: "50mb" }));
 
 // routes
 app.use("/api/user/", userRoute);
+app.use("/api/music/", musicRoute);
 
 app.get("/api", (req, res) => {
   res.send("Musicon Api");

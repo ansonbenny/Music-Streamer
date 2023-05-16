@@ -1,10 +1,10 @@
 import React from "react";
-import './style.scss'
+import "./style.scss";
 
-const LoadMore = () => {
+const LoadMore = ({ active, onClick }) => {
   return (
     <div className="load_more">
-      <button>
+      <button className={active ? "active" : ""}>
         {/* active for animation */}
         <span>&#9679; &#9679; &#9679;</span>
       </button>

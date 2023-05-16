@@ -56,6 +56,7 @@ const App = () => {
             <Route path="/music" element={<Music />} />
             <Route path="/artist" element={<Music isArtist />} />
             <Route path="/search" element={<Search />} />
+            <Route path="/search/:type" element={<Search />} />
             <Route
               path="/register/pending/:userId/:secret"
               element={<Verification isRegister />}

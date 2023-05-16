@@ -18,11 +18,9 @@ const Row = ({ title, data, isCarousel, isRound, isLibrary }) => {
 
   return (
     <div data-for="Row">
-      {title && (
-        <div className="title">
-          <h5>{title}</h5>
-        </div>
-      )}
+      <div className="title">
+        <h5>{title}</h5>
+      </div>
 
       <div
         className="grid"
@@ -63,20 +61,34 @@ const Row = ({ title, data, isCarousel, isRound, isLibrary }) => {
               }}
             >
               <div className="thumbnail">
-                {elm?.thumbnail ? (
+                {elm?.album?.images?.[0] ? (
                   <img
                     className={isRound ? "rounded" : ""}
-                    src={elm?.thumbnail}
-                    alt=""
+                    src={elm?.album?.images?.[0]?.url}
+                    alt={elm?.uri}
                   />
                 ) : (
-                  <MusicIcon />
+                  <>
+                    {elm?.images?.[0] ? (
+                      <img
+                        className={isRound ? "rounded" : ""}
+                        src={elm?.images?.[0]?.url}
+                        alt={elm?.uri}
+                      />
+                    ) : (
+                      <MusicIcon />
+                    )}
+                  </>
                 )}
               </div>
 
               <div className="details">
-                <h5>{elm?.title}</h5>
-                <p>{elm?.extract}</p>
+                <h5>{elm?.name}</h5>
+                <p>
+                  {elm?.album?.name ||
+                    elm?.genres?.[0] ||
+                    elm?.artists?.[0]?.name}
+                </p>
               </div>
 
               {!settings.isDragging && (

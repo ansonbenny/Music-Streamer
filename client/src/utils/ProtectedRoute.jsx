@@ -2,8 +2,7 @@ import React, { useLayoutEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { setLoading } from "../redux/additional";
-import { setUser } from "../redux/user";
-import instance from "../lib/axios";
+import { fetchUser } from "../redux/user";
 import axios from "axios";
 
 const ProtectedRoute = ({ isAuth }) => {
@@ -16,42 +15,20 @@ const ProtectedRoute = ({ isAuth }) => {
   const navigate = useNavigate();
 
   useLayoutEffect(() => {
-    // for user checking
-    dispatch(setLoading({ api: true, site: true }));
-
     const cancelToken = axios.CancelToken.source();
 
+    dispatch(setLoading(true));
+
     (async () => {
-      try {
-        let response = await instance.get("/user/checkLogged", {
-          cancelToken: cancelToken.token,
-        });
+      let res = await dispatch(fetchUser(cancelToken));
 
-        if (response?.data?.data) {
-          dispatch(setUser(response["data"].data));
+      if (res?.payload) {
+        setComponent(<Outlet />);
+      } else if (res?.error && res?.error?.code !== "ERR_CANCELED") {
+        if (isAuth) {
+          navigate("/");
+        } else if (!isAuth) {
           setComponent(<Outlet />);
-        }
-      } catch (err) {
-        if (axios.isCancel(err)) {
-          console.log("Cancelled");
-        } else if (err?.response?.data?.status === 405) {
-          console.log("User Not Logged");
-
-          dispatch(setUser(null));
-
-          if (isAuth) {
-            navigate("/");
-          } else if (!isAuth) {
-            setComponent(<Outlet />);
-          }
-        } else {
-          console.log("Error");
-          dispatch(setUser(null));
-          if (isAuth) {
-            navigate("/");
-          } else if (!isAuth) {
-            setComponent(<Outlet />);
-          }
         }
       }
     })();

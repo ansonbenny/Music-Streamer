@@ -1,8 +1,11 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useRef } from "react";
 import { MagnifyingGlass, MenuBar } from "../../assets";
+import { useNavigate } from "react-router-dom";
 import "./style.scss";
 
 const Header = ({ menuRef }) => {
+  const ref = useRef();
+  const navigate = useNavigate();
   return (
     <Fragment>
       <div className="Header">
@@ -25,10 +28,16 @@ const Header = ({ menuRef }) => {
             </div>
           </div>
 
-          <div className="search">
+          <form
+            className="search"
+            onSubmit={(e) => {
+              e.preventDefault();
+              navigate(`/search?q=${ref?.current?.value || ""}`);
+            }}
+          >
             <MagnifyingGlass width={"16px"} height={"16px"} />
-            <input type="text" placeholder="Search..." />
-          </div>
+            <input type="text" placeholder="Search..." ref={ref} />
+          </form>
         </div>
       </div>
 

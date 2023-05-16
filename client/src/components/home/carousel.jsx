@@ -23,7 +23,7 @@ const Carousel = ({ title, data }) => {
           if (ref?.current) return (ref.current["slide"] = elem);
         }}
       >
-        {data.map((obj, key) => {
+        {data?.map((elm, key) => {
           return (
             <div
               className="card"
@@ -32,7 +32,7 @@ const Carousel = ({ title, data }) => {
                 if (ref?.current) return (ref.current["card"] = elem);
               }}
             >
-              <img src={obj?.thumbnail} />
+              <img src={elm?.images?.[0]?.url} alt={elm.uri} />
 
               {!settings?.isDragging && (
                 <div
@@ -53,8 +53,8 @@ const Carousel = ({ title, data }) => {
                     <Play width={"16px"} height={"16px"} color={"#333"} />
                   </button>
                   <div className="details">
-                    <h5>{obj?.title}</h5>
-                    <p>{obj?.extract}</p>
+                    <h5>{elm?.name}</h5>
+                    <p>{elm?.artists?.[0]?.name}</p>
                   </div>
                 </div>
               )}

@@ -4,7 +4,7 @@ import { sendMail } from "../helper/mail.js";
 import axios from "axios";
 import jwt from "jsonwebtoken";
 
-let router = Router();
+const router = Router();
 
 const CheckLogged = (req, res, next) => {
   const { token = null } = req.cookies;
