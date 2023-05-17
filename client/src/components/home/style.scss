@@ -132,6 +132,7 @@
         grid-auto-flow: column;
         overflow: hidden;
         grid-auto-columns: minmax(calc((100% - 3 * 16px) / 4), 1fr);
+        grid-template-columns: repeat(auto-fill, minmax(calc((100% - 3 * 16px) / 4), 1fr));
 
         @include media_grid_and_carousel($max-width: 1024px, $colums: 3, $gap: 16px);
 
@@ -220,8 +221,8 @@
     .expand {
         .carousel {
             .inner {
-                transform: translateX(0);
                 grid-auto-columns: minmax(calc((100% - 4 * 16px) / 5), 1fr);
+                grid-template-columns: repeat(auto-fill, minmax(calc((100% - 4 * 16px) / 5), 1fr));
 
                 @include media_grid_and_carousel($max-width: 1024px, $colums: 4, $gap: 16px);
             }

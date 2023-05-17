@@ -43,7 +43,7 @@ const Home = () => {
         }
       } finally {
         if (res?.data) {
-          // console.log(res?.["data"]?.data);
+        //  console.log(res?.["data"]?.data);
           setResponse(res?.["data"]?.data);
           setTimeout(() => {
             dispatch(setLoading(false));
@@ -58,29 +58,27 @@ const Home = () => {
   }, [location]);
   return (
     <div className="container">
-      {response?.albums?.items?.[0] && (
-        <Carousel title={"Featured"} data={response?.albums?.items} />
+      {response?.albums?.[0] && (
+        <Carousel title={"Featured"} data={response?.albums} />
       )}
 
-      {response?.albums_2?.items?.[0] && (
-        <Recommended data={response?.albums_2?.items} />
+      {response?.albums_2?.[0] && <Recommended data={response?.albums_2} />}
+
+      {response?.tracks?.[0] && (
+        <Row title={"New Featured"} data={response?.tracks} />
       )}
 
-      {response?.tracks?.items?.[0] && (
-        <Row title={"New Featured"} data={response?.tracks?.items} />
-      )}
-
-      {response?.artists?.items?.[0] && (
+      {response?.artists?.[0] && (
         <Row
           title={"Top Artists"}
-          data={response?.artists?.items}
+          data={response?.artists}
           isCarousel
           isRound
         />
       )}
 
-      {response?.tracks_2?.items?.[0] && (
-        <Row title={"New music"} data={response?.tracks_2?.items} />
+      {response?.tracks_2?.[0] && (
+        <Row title={"New music"} data={response?.tracks_2} />
       )}
     </div>
   );

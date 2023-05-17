@@ -17,7 +17,6 @@ div[data-for="Row"] {
       grid-auto-flow: column;
       overflow: hidden;
       grid-auto-columns: minmax(calc((100% - 4 * 16px) / 5), 1fr);
-      grid-template-columns: minmax(calc((100% - 4 * 16px) / 5), 1fr);
     }
 
     @include media_grid_and_carousel($max-width: 1180px, $colums: 4, $gap: 16px);
@@ -139,8 +138,6 @@ div[data-for="Row"] {
 
       &:is(#carousel) {
         grid-auto-columns: minmax(calc((100% - 5 * 16px) / 6), 1fr) !important;
-        grid-template-columns: minmax(calc((100% - 5 * 16px) / 6),
-            1fr) !important;
       }
 
       @include media_grid_and_carousel($max-width: 1180px, $colums: 5, $gap: 16px);

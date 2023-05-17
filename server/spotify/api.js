@@ -4,7 +4,7 @@ import dotnev from "dotenv";
 
 dotnev.config();
 
-const spotify = async (callback) => {
+const Spotify = async (callback) => {
   let data = qs.stringify({
     grant_type: "client_credentials",
     client_secret: process.env.SPOTIFY_SECRET,
@@ -37,4 +37,4 @@ const spotify = async (callback) => {
   }
 };
 
-export { spotify };
+export { Spotify };

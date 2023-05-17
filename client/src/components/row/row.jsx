@@ -100,7 +100,9 @@ const Row = ({ title, data, isCarousel, isRound, isLibrary }) => {
                       !ref?.current?.["menu"][key]?.contains(e.target) &&
                       !ref?.current?.["play"][key]?.contains(e.target)
                     ) {
-                      navigate("/erer");
+                      if (elm?.type === "track") {
+                        navigate(`/music/${elm?.id}`);
+                      }
                     }
                   }}
                 >

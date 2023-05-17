@@ -2,6 +2,7 @@ import React, { Fragment, useLayoutEffect } from "react";
 import { Route, Routes, useLocation } from "react-router-dom";
 import {
   Account,
+  Collections,
   Error,
   Home,
   Library,
@@ -53,10 +54,16 @@ const App = () => {
         <Routes>
           <Route element={<ProtectedRoute />}>
             <Route exact path="/" element={<Home />} />
-            <Route path="/music" element={<Music />} />
-            <Route path="/artist" element={<Music isArtist />} />
+
+            <Route path="/music/:id" element={<Music />} />
+
+            <Route path="/artist/:id" element={<Collections isArtist />} />
+            <Route path="/album/:id" element={<Collections />} />
+            <Route path="/playlist/:id" element={<Collections isPlaylist />} />
+
             <Route path="/search" element={<Search />} />
             <Route path="/search/:type" element={<Search />} />
+
             <Route
               path="/register/pending/:userId/:secret"
               element={<Verification isRegister />}

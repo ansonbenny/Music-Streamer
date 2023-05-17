@@ -24,6 +24,42 @@ const Search = () => {
 
   const [response, setResponse] = useState({});
 
+  const onLoad = async () => {
+    let res;
+    try {
+      res = await instance("/music/search", {
+        params: {
+          type,
+          offset: response?.offset + 10,
+          search:
+            searchParams.get("q")?.length > 0
+              ? searchParams.get("q")
+              : undefined,
+        },
+      });
+    } catch (err) {
+      if (typeof err?.response?.data?.message === "string") {
+        console.log(err);
+        alert(err?.response?.data?.message);
+      } else {
+        console.log(err);
+        alert("Facing An Error");
+      }
+    } finally {
+      if (res?.data) {
+        setResponse((state) => ({
+          [`${type}s`]: [
+            ...state[`${type}s`],
+            ...(res?.data?.data?.[`${type}s`] || []),
+          ],
+          offset: res?.data?.data?.offset,
+        }));
+
+        return true;
+      }
+    }
+  };
+
   useEffect(() => {
     document.title = `Musicon - Search ${searchParams.get("q") || ""}`;
 
@@ -84,37 +120,40 @@ const Search = () => {
       cancelToken.cancel();
     };
   }, [location]);
+
   return (
     <div className="container">
       <FIlterSearch type={type} q={searchParams.get("q") || ""} />
 
-      {response?.artists?.items?.[0] && (
+      {response?.artists?.[0] && (
         <Row
           title={"Artists"}
-          data={response?.artists?.items}
+          data={response?.artists}
           isCarousel={type ? false : true}
           isRound
         />
       )}
 
-      {response?.albums?.items?.[0] && (
+      {response?.albums?.[0] && (
         <Row
           title={"Albums"}
-          data={response?.albums?.items}
+          data={response?.albums}
           isCarousel={type ? false : true}
         />
       )}
 
-      {response?.tracks?.items?.[0] && (
+      {response?.tracks?.[0] && (
         <Row
           title={"Tracks"}
-          data={response?.tracks?.items}
+          data={response?.tracks}
           isCarousel={type ? false : true}
         />
       )}
 
       {type === "artist" || type === "track" || type === "album" ? (
-        <LoadMore /> // active , onClick
+        <>
+          {response?.[`${type}s`]?.length > 0 && <LoadMore onHandle={onLoad} />}
+        </>
       ) : null}
     </div>
   );

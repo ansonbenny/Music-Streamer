@@ -5,3 +5,4 @@ export { default as Search } from "./search";
 export { default as Error } from "./error";
 export { default as Account } from "./account";
 export { default as Verification } from "./verification";
+export { default as Collections } from "./collections";
