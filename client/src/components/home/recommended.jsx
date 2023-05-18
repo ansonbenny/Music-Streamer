@@ -3,6 +3,7 @@ import { Play } from "../../assets";
 import "./style.scss";
 
 const Recommended = ({ data }) => {
+  // add play options
   return (
     <div className="recommended">
       <div className="title">

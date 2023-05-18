@@ -185,8 +185,6 @@
 }
 
 .collections {
-  margin-bottom: 2rem;
-
   table {
     width: 100%;
     text-align: center;
@@ -195,13 +193,10 @@
     border-collapse: collapse;
 
     tr {
-      @include transi_easy_in_out;
-
       &:hover {
-        cursor: pointer;
-        background: var(--primary-bg);
-
         td {
+          background: var(--primary-bg);
+
           .count {
             display: none;
           }
@@ -213,6 +208,7 @@
       }
 
       td {
+        @include transi_easy_in_out;
         padding: .5rem;
         font-size: 11.5px;
         color: var(--text-primary-color);
@@ -265,12 +261,25 @@
         }
 
         .more_btn {
-          background: transparent;
-          border: none;
-          cursor: pointer;
+          display: flex;
+          flex-direction: column;
+          width: 100%;
+          height: 100%;
+          align-items: center;
+          justify-content: center;
 
-          svg {
-            fill: var(--text-primary-color);
+          button {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+
+            svg {
+              fill: var(--text-primary-color);
+            }
           }
 
         }
@@ -286,6 +295,7 @@
           width: 8rem;
           border: 1px solid var(--primary-border);
           padding: .5rem 0;
+          z-index: 1000;
 
           ul {
             list-style: none;
@@ -329,5 +339,11 @@
         }
       }
     }
+  }
+}
+
+#collections {
+  .load_more {
+    margin-bottom: 2rem;
   }
 }

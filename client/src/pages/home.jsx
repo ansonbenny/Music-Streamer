@@ -43,7 +43,7 @@ const Home = () => {
         }
       } finally {
         if (res?.data) {
-        //  console.log(res?.["data"]?.data);
+          //  console.log(res?.["data"]?.data);
           setResponse(res?.["data"]?.data);
           setTimeout(() => {
             dispatch(setLoading(false));
@@ -62,7 +62,10 @@ const Home = () => {
         <Carousel title={"Featured"} data={response?.albums} />
       )}
 
-      {response?.albums_2?.[0] && <Recommended data={response?.albums_2} />}
+      {
+        // for play
+        response?.albums_2?.[0] && <Recommended data={response?.albums_2} />
+      }
 
       {response?.tracks?.[0] && (
         <Row title={"New Featured"} data={response?.tracks} />

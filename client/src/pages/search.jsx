@@ -8,6 +8,7 @@ import {
   useParams,
   useSearchParams,
 } from "react-router-dom";
+import Error from "./error";
 import axios from "axios";
 import instance from "../lib/axios";
 
@@ -45,6 +46,8 @@ const Search = () => {
         console.log(err);
         alert("Facing An Error");
       }
+
+      return true;
     } finally {
       if (res?.data) {
         setResponse((state) => ({
@@ -125,36 +128,49 @@ const Search = () => {
     <div className="container">
       <FIlterSearch type={type} q={searchParams.get("q") || ""} />
 
-      {response?.artists?.[0] && (
-        <Row
-          title={"Artists"}
-          data={response?.artists}
-          isCarousel={type ? false : true}
-          isRound
-        />
-      )}
-
-      {response?.albums?.[0] && (
-        <Row
-          title={"Albums"}
-          data={response?.albums}
-          isCarousel={type ? false : true}
-        />
-      )}
-
-      {response?.tracks?.[0] && (
-        <Row
-          title={"Tracks"}
-          data={response?.tracks}
-          isCarousel={type ? false : true}
-        />
-      )}
-
-      {type === "artist" || type === "track" || type === "album" ? (
+      {!response?.empty ? (
         <>
-          {response?.[`${type}s`]?.length > 0 && <LoadMore onHandle={onLoad} />}
+          {response?.artists?.[0] && (
+            <Row
+              title={"Artists"}
+              data={response?.artists}
+              isCarousel={type ? false : true}
+              isRound
+            />
+          )}
+
+          {response?.albums?.[0] && (
+            <Row
+              title={"Albums"}
+              data={response?.albums}
+              isCarousel={type ? false : true}
+            />
+          )}
+
+          {response?.tracks?.[0] && (
+            <Row
+              title={"Tracks"}
+              data={response?.tracks}
+              isCarousel={type ? false : true}
+            />
+          )}
+
+          {type === "artist" || type === "track" || type === "album" ? (
+            <>
+              {response?.[`${type}s`]?.length > 0 && (
+                <LoadMore onHandle={onLoad} />
+              )}
+            </>
+          ) : null}
         </>
-      ) : null}
+      ) : (
+        <Error
+          customErr={{
+            status: 404,
+            statusText: "Data not found in our database.",
+          }}
+        />
+      )}
     </div>
   );
 };

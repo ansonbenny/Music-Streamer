@@ -40,7 +40,7 @@ const Carousel = ({ title, data }) => {
                   data-also-for="navigate"
                   onClick={(e) => {
                     if (!ref?.current?.["play"][key]?.contains(e.target)) {
-                      navigate("/ee");
+                      navigate(`/album/${elm?.id}`);
                     }
                   }}
                 >

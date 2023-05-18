@@ -8,10 +8,12 @@ const LoadMore = ({ onHandle }) => {
       <button
         ref={ref}
         onClick={async () => {
-          ref?.current?.classList?.add("active");
+          if (!ref?.current?.classList?.contains("active")) {
+            ref?.current?.classList?.add("active");
 
-          if (await onHandle()) {
-            ref?.current?.classList?.remove("active");
+            if (await onHandle()) {
+              ref?.current?.classList?.remove("active");
+            }
           }
         }}
       >

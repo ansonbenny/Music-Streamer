@@ -102,6 +102,10 @@ const Row = ({ title, data, isCarousel, isRound, isLibrary }) => {
                     ) {
                       if (elm?.type === "track") {
                         navigate(`/music/${elm?.id}`);
+                      } else if (elm?.type === "album") {
+                        navigate(`/album/${elm?.id}`);
+                      } else if (elm?.type === "artist") {
+                        navigate(`/artist/${elm?.id}`);
                       }
                     }
                   }}
