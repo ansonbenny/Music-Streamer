@@ -85,9 +85,11 @@ const Row = ({ title, data, isCarousel, isRound, isLibrary }) => {
               <div className="details">
                 <h5>{elm?.name}</h5>
                 <p>
-                  {elm?.album?.name ||
-                    elm?.genres?.[0] ||
-                    elm?.artists?.[0]?.name}
+                  {isLibrary
+                    ? elm?.short
+                    : elm?.album?.name ||
+                      elm?.genres?.[0] ||
+                      elm?.artists?.[0]?.name}
                 </p>
               </div>
 
@@ -106,6 +108,7 @@ const Row = ({ title, data, isCarousel, isRound, isLibrary }) => {
                         navigate(`/album/${elm?.id}`);
                       } else if (elm?.type === "artist") {
                         navigate(`/artist/${elm?.id}`);
+                      } else if (elm?.type === "playlist") {
                       }
                     }
                   }}

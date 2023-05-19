@@ -2,7 +2,7 @@ import React, { useCallback } from "react";
 import { Play, Heart, Share, MusicIcon } from "../../assets";
 import "./style.scss";
 
-const Banner = ({ data }) => {
+const Banner = ({ data, libraryAction,inLibrary }) => {
   const getTime = useCallback(
     (ms) => {
       var minutes = Math.floor(ms / 60000);
@@ -103,8 +103,10 @@ const Banner = ({ data }) => {
           <Play width={"16px"} height={"16px"} color={"#fff"} />
           Play
         </button>
-        <button className="extra">
-          {/* active for grenn */}
+        <button
+          className={`extra ${inLibrary ? "active" : ""}`}
+          onClick={() => libraryAction()}
+        >
           <Heart width={"20px"} height={"20px"} />
         </button>
         <button

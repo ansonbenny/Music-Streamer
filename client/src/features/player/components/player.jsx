@@ -10,8 +10,8 @@ import {
 } from "../../../assets";
 import song from "../../../assets/song.mp3";
 import { setStatus } from "../../../redux/player";
-import "./style.scss";
 import useControl from "../hooks/useControl";
+import "./style.scss";
 
 const Player = () => {
   const ref = useControl();
@@ -33,14 +33,6 @@ const Player = () => {
             <p>{data?.extract}</p>
           </div>
 
-          <div className="playlist">
-            <button>
-              {
-                // if class active color change to green, active for in playlist
-              }
-              <Heart width={"16px"} height={"16px"} />
-            </button>
-          </div>
         </div>
 
         <div className="audio_player">

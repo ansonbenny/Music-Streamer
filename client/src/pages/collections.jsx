@@ -5,11 +5,12 @@ import {
   LoadMore,
   Row,
 } from "../components";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setLoading } from "../redux/additional";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import instance from "../lib/axios";
+import { setAuth } from "../redux/auth";
 
 const Collections = ({ isArtist, isPlaylist }) => {
   // same page for saved playlist item
@@ -21,6 +22,8 @@ const Collections = ({ isArtist, isPlaylist }) => {
   const navigate = useNavigate();
 
   const { id } = useParams();
+
+  const { user } = useSelector((state) => state);
 
   const [response, setResponse] = useState();
 
@@ -53,6 +56,83 @@ const Collections = ({ isArtist, isPlaylist }) => {
         }));
 
         return true;
+      }
+    }
+  };
+
+  const libraryAction = () => {
+    const removeLib = async (type) => {
+      let res;
+      try {
+        res = await instance.delete("/music/delete-playlist", {
+          data: {
+            id,
+            type,
+          },
+        });
+      } catch (err) {
+        if (err?.response?.data?.status === 405) {
+          dispatch(setAuth({ login: true }));
+        } else {
+          console.log(err);
+          alert("Error");
+        }
+      } finally {
+        if (res?.data) {
+          setResponse((state) => ({
+            ...state,
+            inLibrary: false,
+          }));
+        }
+      }
+    };
+
+    const cloneList = async (details) => {
+      let res;
+      try {
+        res = await instance.post("/music/clone-collection-playlist", {
+          id,
+          ...details,
+        });
+      } catch (err) {
+        if (err?.response?.data?.status === 405) {
+          dispatch(setAuth({ login: true }));
+        } else {
+          console.log(err);
+          alert("Error");
+        }
+      } finally {
+        if (res?.data) {
+          setResponse((state) => ({
+            ...state,
+            inLibrary: true,
+          }));
+        }
+      }
+    };
+
+    if (isArtist) {
+      if (response?.inLibrary) {
+        removeLib("artist");
+      } else {
+        cloneList({
+          type: "artist",
+          name: response?.artist?.name,
+          short: response?.artist?.genres?.[0],
+          images: [response?.artist?.images?.[0]],
+        });
+      }
+    } else if (isPlaylist) {
+    } else {
+      if (response?.inLibrary) {
+        removeLib("album");
+      } else {
+        cloneList({
+          type: "album",
+          name: response?.album?.name,
+          short: response?.album?.artists?.[0]?.name,
+          images: [response?.album?.images?.[0]],
+        });
       }
     }
   };
@@ -128,14 +208,24 @@ const Collections = ({ isArtist, isPlaylist }) => {
     return () => {
       cancelToken.cancel();
     };
-  }, [location]);
+  }, [location, user]);
 
   return (
     <div className="container" id="collections">
       {response?.album ? (
-        <Banner data={response?.album} />
+        <Banner
+          data={response?.album}
+          inLibrary={response?.inLibrary || false}
+          libraryAction={libraryAction}
+        />
       ) : (
-        response?.artist && <Banner data={response?.artist} />
+        response?.artist && (
+          <Banner
+            data={response?.artist}
+            inLibrary={response?.inLibrary || false}
+            libraryAction={libraryAction}
+          />
+        )
       )}
 
       {response?.tracks?.[0] && <CollectionsComp data={response?.tracks} />}

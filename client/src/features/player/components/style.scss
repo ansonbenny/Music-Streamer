@@ -69,37 +69,9 @@
                 }
             }
 
-            .playlist button {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                width: auto;
-                height: auto;
-                border: none;
-                background: none;
-                cursor: pointer;
-                @include transi_easy_in_out;
-
-                &:hover {
-                    transform: scale(1.1) translateY(-3px);
-                }
-
-                svg {
-                    fill: var(--text-primary-color);
-                }
-
-                &:is(.active) svg {
-                    fill: $PrimaryColor;
-                }
-            }
-
             @media screen and (max-width: 350px) {
                 .content {
                     width: 40%;
-                }
-
-                .playlist {
-                    display: none;
                 }
             }
         }
