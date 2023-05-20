@@ -1,6 +1,7 @@
 import { ObjectId } from "mongodb";
 import { db } from "../db/connection.js";
 import collections from "../db/collections.js";
+import { response } from "express";
 
 export default {
   createPlaylist: (userId, details) => {
@@ -43,10 +44,8 @@ export default {
   },
   deletePlaylist: (userId, details) => {
     return new Promise(async (resolve, reject) => {
-      let response;
-
       try {
-        response = await db.collection(collections.LIBRARY).updateOne(
+        let response = await db.collection(collections.LIBRARY).updateOne(
           {
             _id: new ObjectId(userId),
           },
@@ -56,12 +55,12 @@ export default {
             },
           }
         );
-      } catch (err) {
-        reject(err);
-      } finally {
+
         if (response) {
           resolve(response);
         }
+      } catch (err) {
+        reject(err);
       }
     });
   },
@@ -79,14 +78,84 @@ export default {
       }
     });
   },
-  getAllPlaylist: (userId) => {
+  getAllPlaylist: (userId, offset, limit) => {
     return new Promise(async (resolve, reject) => {
       try {
-        let response = await db.collection(collections.LIBRARY).findOne({
-          _id: new ObjectId(userId),
-        });
+        let total = await db
+          .collection(collections.LIBRARY)
+          .aggregate([
+            {
+              $match: {
+                _id: new ObjectId(userId),
+              },
+            },
+            {
+              $unwind: "$data",
+            },
+            {
+              $group: {
+                _id: 1,
+                value: { $sum: 1 },
+              },
+            },
+          ])
+          .toArray();
 
-        resolve({ data: response });
+        let response = await db
+          .collection(collections.LIBRARY)
+          .aggregate([
+            {
+              $match: {
+                _id: new ObjectId(userId),
+              },
+            },
+            {
+              $unwind: "$data",
+            },
+            {
+              $skip: offset,
+            },
+            {
+              $limit: limit,
+            },
+            {
+              $project: {
+                _id: 1,
+                id: "$data.id",
+                type: "$data.type",
+                name: "$data.name",
+                short: "$data.short",
+                images: "$data.images",
+                playlistId: "$data.playlistId",
+              },
+            },
+          ])
+          .toArray();
+
+        resolve({ data: response, total: total?.[0]?.value || 0 });
+      } catch (err) {
+        reject(err);
+      }
+    });
+  },
+  editPlaylist: (userId, playlistId, name) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        let response = await db.collection(collections.LIBRARY).updateOne(
+          {
+            _id: new ObjectId(userId),
+            "data.playlistId": playlistId,
+          },
+          {
+            $set: {
+              "data.$.name": name,
+            },
+          }
+        );
+
+        if (response) {
+          resolve(response);
+        }
       } catch (err) {
         reject(err);
       }

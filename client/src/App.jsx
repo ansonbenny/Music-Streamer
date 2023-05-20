@@ -41,11 +41,6 @@ const App = () => {
         auth && <Auth />
       }
 
-      {
-        // for library playlist add delete edit
-        library["modal"]?.status && <LibraryModal />
-      }
-
       <Menu ref={menuRef} />
 
       <Header menuRef={menuRef} />

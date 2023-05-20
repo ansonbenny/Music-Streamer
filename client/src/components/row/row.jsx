@@ -1,15 +1,15 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Dots, MusicIcon, Play, Plus } from "../../assets";
+import { useCarousel } from "../../hooks";
 import { useDispatch } from "react-redux";
 import { setLibraryModal } from "../../redux/library";
-import { useCarousel } from "../../hooks";
 import "./style.scss";
 
 const Row = ({ title, data, isCarousel, isRound, isLibrary }) => {
-  const navigate = useNavigate();
-
   const dispatch = useDispatch();
+
+  const navigate = useNavigate();
 
   const [ref, settings] = useCarousel({
     play: [],
@@ -34,7 +34,7 @@ const Row = ({ title, data, isCarousel, isRound, isLibrary }) => {
           <div
             className="card"
             onClick={() => {
-              dispatch(setLibraryModal({ status: true, isLibrary }));
+              dispatch(setLibraryModal({ status: true }));
             }}
           >
             <div className="thumbnail">
@@ -120,8 +120,7 @@ const Row = ({ title, data, isCarousel, isRound, isLibrary }) => {
                         dispatch(
                           setLibraryModal({
                             status: true,
-                            id: "1wqwqw",
-                            isLibrary,
+                            id: elm?.playlistId,
                           })
                         );
                       }}

@@ -34,7 +34,9 @@ const Collections = ({ data }) => {
 
       if (!btn && !menu_options) {
         ref?.current?.["options"]?.forEach((elm) => {
-          elm.style.display = "none";
+          if (elm?.style) {
+            elm.style.display = "none";
+          }
         });
       }
     };
@@ -81,9 +83,9 @@ const Collections = ({ data }) => {
                     <button
                       onClick={() => {
                         ref?.current?.["options"]?.forEach((elm, index) => {
-                          if (index === key) {
+                          if (index === key && elm?.style) {
                             elm.style.display = "block";
-                          } else {
+                          } else if (elm?.style) {
                             elm.style.display = "none";
                           }
                         });

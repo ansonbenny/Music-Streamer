@@ -7,6 +7,7 @@ const librarySlice = createSlice({
       status: false,
       id: null,
       isLibrary: false,
+      formData: {},
     },
   },
   reducers: {
@@ -26,6 +27,11 @@ const librarySlice = createSlice({
       }
 
       return state;
+    },
+    setFormData: (state, { payload }) => {
+      state.modal.formData = {
+        [payload.target.name]: payload.target.value,
+      };
     },
   },
 });

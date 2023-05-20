@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { Spotify } from "../spotify/api.js";
+import { ObjectId } from "mongodb";
 import user from "../helper/user.js";
 import jwt from "jsonwebtoken";
 import music from "../helper/music.js";
@@ -621,19 +622,19 @@ router.delete("/delete-playlist", CheckLogged, async (req, res) => {
       res.status(200).json({
         status: 200,
         message: "Success",
-        data: response,
+        data: details,
       });
     }
   }
 });
 
 router.get("/all-playlists", CheckLogged, async (req, res) => {
-  const { userId } = req.body;
+  const { userId, offset = 0 } = req.query;
 
   let response;
 
   try {
-    response = await music.getAllPlaylist(userId);
+    response = await music.getAllPlaylist(userId, parseInt(offset), 10);
   } catch (err) {
     res.status(500).json({
       status: 500,
@@ -644,7 +645,69 @@ router.get("/all-playlists", CheckLogged, async (req, res) => {
       res.status(200).json({
         status: 200,
         message: "Success",
-        data: response?.data?.data,
+        data: {
+          list: response?.data,
+          total: response?.total,
+          offset: parseInt(offset) || 0,
+        },
+      });
+    }
+  }
+});
+
+router.post("/create-playlist", CheckLogged, async (req, res) => {
+  let { userId, ...details } = req.body;
+
+  let id = new ObjectId().toHexString();
+
+  details = {
+    ...details,
+    ...{
+      id,
+      type: "playlist",
+      short: `${new Date()}`,
+      playlistId: `${id}_playlist`,
+    },
+  };
+
+  let response;
+
+  try {
+    response = await music.createPlaylist(userId, details);
+  } catch (err) {
+    res.status(500).json({
+      status: 500,
+      message: err,
+    });
+  } finally {
+    if (response) {
+      res.status(200).json({
+        status: 200,
+        message: "Success",
+        data: details,
+      });
+    }
+  }
+});
+
+router.put("/edit-playlist", CheckLogged, async (req, res) => {
+  const { userId, playlistId, name } = req.body;
+
+  let response;
+
+  try {
+    response = await music.editPlaylist(userId, playlistId, name);
+  } catch (err) {
+    res.status(500).json({
+      status: 500,
+      message: err,
+    });
+  } finally {
+    if (response) {
+      res.status(200).json({
+        status: 200,
+        message: "Success",
+        data: response,
       });
     }
   }

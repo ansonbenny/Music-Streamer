@@ -2,7 +2,7 @@ import React, { useCallback } from "react";
 import { Play, Heart, Share, MusicIcon } from "../../assets";
 import "./style.scss";
 
-const Banner = ({ data, libraryAction,inLibrary }) => {
+const Banner = ({ data, libraryAction, inLibrary }) => {
   const getTime = useCallback(
     (ms) => {
       var minutes = Math.floor(ms / 60000);
@@ -37,10 +37,13 @@ const Banner = ({ data, libraryAction,inLibrary }) => {
             {data?.type === "track" && "Track"}
             {data?.type === "album" && "Album"}
             {data?.type === "artist" && "Artist"}
+            {data?.type === "playlist" && "Playlist"}
           </h5>
           <h1>{data?.name}</h1>
           <p>
-            {data?.artists
+            {data?.type === "playlist"
+              ? data?.short
+              : data?.artists
               ? data?.artists?.map((obj, key) => {
                   if (key === 0) {
                     return <span key={key}>{obj?.name}</span>;
@@ -79,16 +82,29 @@ const Banner = ({ data, libraryAction,inLibrary }) => {
               <span>
                 {data?.artists
                   ? data?.artists?.[0]?.name
-                  : data?.type === "artist" && data?.name}
+                  : data?.type === "artist"
+                  ? data?.name
+                  : data?.type === "playlist" && "Own"}
               </span>
             </li>
-            <li>
-              <span>
-                {data?.album?.release_date ||
-                  data?.release_date ||
-                  `Followers : ${data?.followers?.total}`}
-              </span>
-            </li>
+            {data?.album?.release_date ? (
+              <li>
+                {" "}
+                <span>{data?.album?.release_date}</span>{" "}
+              </li>
+            ) : data?.release_date ? (
+              <li>
+                {" "}
+                <span>{data?.release_date}</span>{" "}
+              </li>
+            ) : (
+              data?.followers?.total && (
+                <li>
+                  {" "}
+                  <span>Followers : {data?.followers?.total}</span>{" "}
+                </li>
+              )
+            )}
             {data?.type === "track" && (
               <li>
                 <span>{getTime(data?.duration_ms || 0)}</span>
