@@ -1,28 +1,88 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setLibraryModal } from "../../redux/library";
+import { setUser } from "../../redux/user";
+import instance from "../../lib/axios";
+import axios from "axios";
 import "./style.scss";
 
-const LibraryModal = ({ isLibrary, formAction }) => {
-  const ref = useRef();
+const LibraryModal = ({ isLibrary, formAction, id }) => {
+  const ref = useRef({
+    modal: null,
+  });
 
   const dispatch = useDispatch();
 
-  const [formData, setFormData] = useState({});
-
   const { modal } = useSelector((state) => state.library);
 
-  // if not isLibrary add check box playlist names for music and add option for create playlist
+  const [state, setState] = useState({
+    form: {},
+    playlists: [],
+  });
+
+  // for track
+  const getPlaylists = async (cancelToken, search) => {
+    if (!isLibrary) {
+      let res;
+
+      try {
+        res = await instance.get("/music/search-user-playlists", {
+          cancelToken: cancelToken?.token || null,
+          params: {
+            search,
+            trackId: id,
+          },
+        });
+      } catch (err) {
+        if (axios.isCancel(err)) {
+          console.log("Cancelled");
+        } else if (err?.response?.data?.status === 405) {
+          dispatch(setUser(null));
+          dispatch(setLibraryModal({ status: false }));
+        } else {
+          alert("Facing An Error");
+        }
+      } finally {
+        console.log(res?.data);
+        if (res?.data) {
+          setState((state) => ({
+            ...state,
+            playlists: res?.data?.data,
+          }));
+        }
+      }
+    }
+  };
+
+  // for track
+  useEffect(() => {
+    let cancelToken = axios.CancelToken.source();
+    if (!isLibrary) {
+      getPlaylists(cancelToken);
+    }
+
+    return () => {
+      cancelToken?.cancel?.();
+    };
+  }, []);
+
   return (
     <div
       className="libray_options"
       onClick={(e) => {
-        if (!ref?.current?.contains(e.target)) {
+        if (!ref?.current?.modal?.contains(e.target)) {
           dispatch(setLibraryModal({ status: false }));
         }
       }}
     >
-      <div className="inner" ref={ref}>
+      <div
+        className="inner"
+        ref={(elm) => {
+          if (ref?.current) {
+            ref.current.modal = elm;
+          }
+        }}
+      >
         {isLibrary ? (
           <>
             {modal?.id ? (
@@ -31,19 +91,23 @@ const LibraryModal = ({ isLibrary, formAction }) => {
                   <input
                     type="text"
                     name="library"
-                    value={formData?.edit_name ? formData?.edit_name : ""}
+                    value={state?.form?.edit_name ? state?.form?.edit_name : ""}
                     onChange={(e) => {
-                      setFormData({
-                        edit_name: e.target.value,
-                      });
+                      setState((state) => ({
+                        ...state,
+                        form: {
+                          ...state?.form,
+                          edit_name: e.target.value,
+                        },
+                      }));
                     }}
                     placeholder="Enter library name"
                   />
                   <button
                     onClick={() => {
-                      formAction("edit", {
+                      formAction?.("edit", {
                         playlistId: modal.id,
-                        name: formData?.edit_name,
+                        name: state?.form?.edit_name,
                       });
                     }}
                   >
@@ -66,17 +130,23 @@ const LibraryModal = ({ isLibrary, formAction }) => {
                   <input
                     type="text"
                     name="library"
-                    value={formData?.create_name ? formData?.create_name : ""}
+                    value={
+                      state?.form?.create_name ? state?.form?.create_name : ""
+                    }
                     onChange={(e) => {
-                      setFormData({
-                        create_name: e.target.value,
-                      });
+                      setState((state) => ({
+                        ...state,
+                        form: {
+                          ...state?.form,
+                          create_name: e.target.value,
+                        },
+                      }));
                     }}
                     placeholder="Enter library name"
                   />
                   <button
                     onClick={() => {
-                      formAction("create", formData?.create_name);
+                      formAction?.("create", state?.form?.create_name);
                     }}
                   >
                     add
@@ -86,7 +156,97 @@ const LibraryModal = ({ isLibrary, formAction }) => {
             )}
           </>
         ) : (
-          <div></div>
+          <div>
+            <ul>
+              <div className="edit_add">
+                <input
+                  type="text"
+                  name="library"
+                  ref={(elm) => {
+                    if (ref?.current) {
+                      ref.current.create = elm;
+                    }
+                  }}
+                  placeholder="Enter library name"
+                />
+                <button
+                  onClick={async () => {
+                    // for track
+                    if (
+                      !isLibrary &&
+                      ref?.current?.create?.value?.length >= 1
+                    ) {
+                      let res;
+                      try {
+                        res = await instance.post("/music/create-playlist", {
+                          name: ref?.current?.create?.value,
+                        });
+                      } catch (err) {
+                        if (err?.response?.data?.status === 405) {
+                          dispatch(setUser(null));
+                          dispatch(setLibraryModal({ status: false }));
+                        } else {
+                          console.log(err);
+                          alert("Facing An Error");
+                        }
+                      } finally {
+                        if (res?.data) {
+                          getPlaylists();
+                        }
+                      }
+                    }
+                  }}
+                >
+                  add
+                </button>
+              </div>
+              <form>
+                {state?.playlists?.map((obj, key) => {
+                  return (
+                    <li key={key}>
+                      <input
+                        className="checkBox"
+                        type="checkbox"
+                        value={obj?.playlistId}
+                        checked={
+                          obj?.items?.find((obj) => {
+                            console.log(obj.id === id);
+                            return obj.id === id;
+                          })
+                            ? true
+                            : false
+                        }
+                        onChange={(e) => {
+                          formAction(
+                            obj.playlistId,
+                            e.target.checked,
+                            ref?.current?.search,
+                            getPlaylists
+                          );
+                        }}
+                      />
+                      <label className="checkLabel">{obj?.name}</label>
+                    </li>
+                  );
+                })}
+              </form>
+
+              <div data-for="live-search">
+                <input
+                  placeholder="Search"
+                  type="text"
+                  ref={(elm) => {
+                    if (ref?.current) {
+                      ref.current.search = elm;
+                    }
+                  }}
+                  onChange={(e) => {
+                    getPlaylists(undefined, e.target.value);
+                  }}
+                />
+              </div>
+            </ul>
+          </div>
         )}
       </div>
     </div>

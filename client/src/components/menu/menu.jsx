@@ -149,7 +149,8 @@ const Menu = forwardRef((params, ref) => {
                           dispatch(setUser(null));
                           if (
                             window.location.pathname.includes("account") ||
-                            window.location.pathname.includes("library")
+                            window.location.pathname.includes("library") ||
+                            window.location.pathname.includes("playlist")
                           ) {
                             navigate("/");
                           }

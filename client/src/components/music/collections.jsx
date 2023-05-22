@@ -107,7 +107,7 @@ const Collections = ({ data }) => {
                     }}
                   >
                     <ul>
-                      <li>Add to playlist</li>
+                      <li>Playlist</li>
                       <li
                         onClick={() => {
                           window.navigator.clipboard.writeText(

@@ -12,9 +12,7 @@ import axios from "axios";
 import instance from "../lib/axios";
 import { setAuth } from "../redux/auth";
 
-const Collections = ({ isArtist, isPlaylist }) => {
-  // same page for saved playlist item
-
+const Collections = ({ isArtist }) => {
   const location = useLocation();
 
   const dispatch = useDispatch();
@@ -122,7 +120,6 @@ const Collections = ({ isArtist, isPlaylist }) => {
           images: [response?.artist?.images?.[0]],
         });
       }
-    } else if (isPlaylist) {
     } else {
       if (response?.inLibrary) {
         removeLib("album");
@@ -138,7 +135,7 @@ const Collections = ({ isArtist, isPlaylist }) => {
   };
 
   useEffect(() => {
-    document.title = `Musicon`;
+    document.title = `Musicon - ${isArtist ? "Artist" : "Album"}`;
 
     const cancelToken = axios.CancelToken.source();
 
@@ -172,7 +169,6 @@ const Collections = ({ isArtist, isPlaylist }) => {
           }
         }
       })();
-    } else if (isPlaylist) {
     } else {
       (async () => {
         let res;

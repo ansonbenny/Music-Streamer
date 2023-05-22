@@ -182,58 +182,144 @@ router.get("/search", (req, res) => {
 });
 
 router.get("/track", (req, res) => {
+  const { token } = req.cookies;
   const { id } = req.query;
 
-  Spotify(async (err, instance) => {
-    if (instance) {
-      let response;
+  const getTrack = (userId) => {
+    if (userId) {
+      Spotify(async (err, instance) => {
+        if (instance) {
+          let response;
 
-      try {
-        let track = await instance.get(`/tracks/${id}?market=ES`);
+          try {
+            let track = await instance.get(`/tracks/${id}?market=ES`);
 
-        if (track?.data?.album?.artists?.[0]?.id) {
-          let top = await instance.get(
-            `/artists/${track?.data?.album?.artists?.[0]?.id}/top-tracks?market=ES`
-          );
+            let inPlaylist = await music.checkTrackInPlaylist(
+              userId,
+              track?.data?.id
+            );
 
-          if (top?.data?.tracks && track?.data) {
-            response = {
-              track: {
-                ...track?.data,
-                preview_url: null,
-              },
-              tracks: [
-                ...(top?.data?.tracks?.map((obj) => {
-                  delete obj?.preview_url;
-                  return obj;
-                }) || []),
-              ],
-            };
+            if (track?.data?.album?.artists?.[0]?.id) {
+              let top = await instance.get(
+                `/artists/${track?.data?.album?.artists?.[0]?.id}/top-tracks?market=ES`
+              );
+
+              if (top?.data?.tracks && track?.data) {
+                response = {
+                  track: {
+                    ...track?.data,
+                    preview_url: null,
+                  },
+                  tracks: [
+                    ...(top?.data?.tracks?.map((obj) => {
+                      delete obj?.preview_url;
+                      return obj;
+                    }) || []),
+                  ],
+                  inPlaylist: inPlaylist?.data,
+                };
+              }
+            }
+          } catch (err) {
+            if (err?.response?.status) {
+              return res.status(err?.response?.status).json({
+                status: err?.response?.status,
+                message:
+                  err?.response?.data?.error?.message || "Something Wrong",
+              });
+            } else {
+              return res.status(500).json({
+                status: 500,
+                message: "Something Wrong",
+              });
+            }
+          } finally {
+            if (response) {
+              return res.status(200).json({
+                status: 200,
+                message: "Success",
+                data: response,
+              });
+            }
           }
+        } else {
+          return res.status(err?.status).json(err);
+        }
+      });
+    } else {
+      Spotify(async (err, instance) => {
+        if (instance) {
+          let response;
+
+          try {
+            let track = await instance.get(`/tracks/${id}?market=ES`);
+
+            if (track?.data?.album?.artists?.[0]?.id) {
+              let top = await instance.get(
+                `/artists/${track?.data?.album?.artists?.[0]?.id}/top-tracks?market=ES`
+              );
+
+              if (top?.data?.tracks && track?.data) {
+                response = {
+                  track: {
+                    ...track?.data,
+                    preview_url: null,
+                  },
+                  tracks: [
+                    ...(top?.data?.tracks?.map((obj) => {
+                      delete obj?.preview_url;
+                      return obj;
+                    }) || []),
+                  ],
+                };
+              }
+            }
+          } catch (err) {
+            if (err?.response?.status) {
+              return res.status(err?.response?.status).json({
+                status: err?.response?.status,
+                message:
+                  err?.response?.data?.error?.message || "Something Wrong",
+              });
+            } else {
+              return res.status(500).json({
+                status: 500,
+                message: "Something Wrong",
+              });
+            }
+          } finally {
+            if (response) {
+              return res.status(200).json({
+                status: 200,
+                message: "Success",
+                data: response,
+              });
+            }
+          }
+        } else {
+          return res.status(err?.status).json(err);
+        }
+      });
+    }
+  };
+
+  jwt.verify(token, process.env.JWT_SECRET, async (err, decode) => {
+    if (decode?._id?.length === 24) {
+      try {
+        let userData = await user.get_user(decode?._id);
+
+        if (userData) {
+          getTrack(userData?._id?.toString());
         }
       } catch (err) {
-        if (err?.response?.status) {
-          return res.status(err?.response?.status).json({
-            status: err?.response?.status,
-            message: err?.response?.data?.error?.message || "Something Wrong",
-          });
-        } else {
-          return res.status(500).json({
-            status: 500,
-            message: "Something Wrong",
-          });
-        }
-      } finally {
-        if (response) {
-          return res.status(200).json({
-            status: 200,
-            message: "Success",
-            data: response,
-          });
-        }
+        console.log(err);
+        getTrack();
       }
+    } else if (err) {
+      console.log(`Error : ${err?.name}`);
+      getTrack();
     } else {
-      return res.status(err?.status).json(err);
+      getTrack();
     }
   });
 });
@@ -243,126 +329,128 @@ router.get("/album", (req, res) => {
 
   const { token = null } = req.cookies;
 
-  const getAlbum = () => {
-    Spotify(async (err, instance) => {
-      if (instance) {
-        let response;
+  const getAlbum = (userId) => {
+    if (userId) {
+      Spotify(async (err, instance) => {
+        if (instance) {
+          let response;
 
-        try {
-          let album = await instance.get(`/albums/${id}?market=ES`);
+          try {
+            let album = await instance.get(`/albums/${id}?market=ES`);
 
-          let tracks = await instance.get(
-            `/albums/${id}/tracks?market=ES&limit=10&offset=0`
-          );
+            let tracks = await instance.get(
+              `/albums/${id}/tracks?market=ES&limit=10&offset=0`
+            );
 
-          let related = await instance.get(
-            "/browse/new-releases?limit=10&offset=0"
-          );
+            let related = await instance.get(
+              "/browse/new-releases?limit=10&offset=0"
+            );
 
-          if (album?.data && tracks?.data && related?.data) {
-            delete album?.data?.tracks;
+            let inLibrary = await music.checkInLibrary(userId, id, "album");
 
-            response = {
-              album: album?.data,
-              related: related?.data?.albums?.items,
-              tracks: [
-                ...(tracks?.data?.items?.map((obj) => {
-                  delete obj.preview_url;
-                  return obj;
-                }) || []),
-              ],
-              offset: 0,
-              total: tracks?.data?.total,
-            };
+            if (album?.data && tracks?.data && related?.data) {
+              delete album?.data?.tracks;
+
+              response = {
+                album: album?.data,
+                related: related?.data?.albums?.items,
+                tracks: [
+                  ...(tracks?.data?.items?.map((obj) => {
+                    delete obj.preview_url;
+                    return obj;
+                  }) || []),
+                ],
+                offset: 0,
+                total: tracks?.data?.total,
+                inLibrary,
+              };
+            }
+          } catch (err) {
+            console.log(err);
+            if (err?.response?.status) {
+              return res.status(err?.response?.status).json({
+                status: err?.response?.status,
+                message:
+                  err?.response?.data?.error?.message || "Something Wrong",
+              });
+            } else {
+              return res.status(500).json({
+                status: 500,
+                message: "Something Wrong",
+              });
+            }
+          } finally {
+            if (response) {
+              return res.status(200).json({
+                status: 200,
+                message: "Success",
+                data: response,
+              });
+            }
           }
-        } catch (err) {
-          if (err?.response?.status) {
-            return res.status(err?.response?.status).json({
-              status: err?.response?.status,
-              message: err?.response?.data?.error?.message || "Something Wrong",
-            });
-          } else {
-            return res.status(500).json({
-              status: 500,
-              message: "Something Wrong",
-            });
-          }
-        } finally {
-          if (response) {
-            return res.status(200).json({
-              status: 200,
-              message: "Success",
-              data: response,
-            });
-          }
+        } else {
+          return res.status(err?.status).json(err);
         }
-      } else {
-        return res.status(err?.status).json(err);
-      }
-    });
-  };
+      });
+    } else {
+      Spotify(async (err, instance) => {
+        if (instance) {
+          let response;
 
-  const getAlbumLogged = (userId) => {
-    Spotify(async (err, instance) => {
-      if (instance) {
-        let response;
+          try {
+            let album = await instance.get(`/albums/${id}?market=ES`);
 
-        try {
-          let album = await instance.get(`/albums/${id}?market=ES`);
+            let tracks = await instance.get(
+              `/albums/${id}/tracks?market=ES&limit=10&offset=0`
+            );
 
-          let tracks = await instance.get(
-            `/albums/${id}/tracks?market=ES&limit=10&offset=0`
-          );
+            let related = await instance.get(
+              "/browse/new-releases?limit=10&offset=0"
+            );
 
-          let related = await instance.get(
-            "/browse/new-releases?limit=10&offset=0"
-          );
+            if (album?.data && tracks?.data && related?.data) {
+              delete album?.data?.tracks;
 
-          let inLibrary = await music.checkInLibrary(userId, id, "album");
-
-          if (album?.data && tracks?.data && related?.data) {
-            delete album?.data?.tracks;
-
-            response = {
-              album: album?.data,
-              related: related?.data?.albums?.items,
-              tracks: [
-                ...(tracks?.data?.items?.map((obj) => {
-                  delete obj.preview_url;
-                  return obj;
-                }) || []),
-              ],
-              offset: 0,
-              total: tracks?.data?.total,
-              inLibrary,
-            };
+              response = {
+                album: album?.data,
+                related: related?.data?.albums?.items,
+                tracks: [
+                  ...(tracks?.data?.items?.map((obj) => {
+                    delete obj.preview_url;
+                    return obj;
+                  }) || []),
+                ],
+                offset: 0,
+                total: tracks?.data?.total,
+              };
+            }
+          } catch (err) {
+            if (err?.response?.status) {
+              return res.status(err?.response?.status).json({
+                status: err?.response?.status,
+                message:
+                  err?.response?.data?.error?.message || "Something Wrong",
+              });
+            } else {
+              return res.status(500).json({
+                status: 500,
+                message: "Something Wrong",
+              });
+            }
+          } finally {
+            if (response) {
+              return res.status(200).json({
+                status: 200,
+                message: "Success",
+                data: response,
+              });
+            }
           }
-        } catch (err) {
-          console.log(err);
-          if (err?.response?.status) {
-            return res.status(err?.response?.status).json({
-              status: err?.response?.status,
-              message: err?.response?.data?.error?.message || "Something Wrong",
-            });
-          } else {
-            return res.status(500).json({
-              status: 500,
-              message: "Something Wrong",
-            });
-          }
-        } finally {
-          if (response) {
-            return res.status(200).json({
-              status: 200,
-              message: "Success",
-              data: response,
-            });
-          }
+        } else {
+          return res.status(err?.status).json(err);
         }
-      } else {
-        return res.status(err?.status).json(err);
-      }
-    });
+      });
+    }
   };
 
   jwt.verify(token, process.env.JWT_SECRET, async (err, decode) => {
@@ -371,7 +459,7 @@ router.get("/album", (req, res) => {
         let userData = await user.get_user(decode?._id);
 
         if (userData) {
-          getAlbumLogged(userData?._id?.toString());
+          getAlbum(userData?._id?.toString());
         }
       } catch (err) {
         console.log(err);
@@ -441,122 +529,127 @@ router.get("/artist", (req, res) => {
 
   const { token = null } = req.cookies;
 
-  const getArtist = () => {
-    Spotify(async (err, instance) => {
-      if (instance) {
-        let response;
+  const getArtist = (userId) => {
+    if (userId) {
+      Spotify(async (err, instance) => {
+        if (instance) {
+          let response;
 
-        try {
-          let artist = await instance.get(`/artists/${id}`);
+          try {
+            let artist = await instance.get(`/artists/${id}`);
 
-          let tracks = await instance.get(`artists/${id}/top-tracks?market=ES`);
+            let tracks = await instance.get(
+              `artists/${id}/top-tracks?market=ES`
+            );
 
-          let related = await instance.get(
-            `/artists/${id}/albums?market=ES&limit=10&offset=0`
-          );
+            let related = await instance.get(
+              `/artists/${id}/albums?market=ES&limit=10&offset=0`
+            );
 
-          if (artist?.data && tracks?.data && related?.data) {
-            response = {
-              artist: artist?.data,
-              related: related?.data?.items,
-              tracks: [
-                ...(tracks?.data?.tracks?.map((obj) => {
-                  delete obj.preview_url;
-                  return obj;
-                }) || []),
-              ],
-              offset: 0,
-              total: tracks?.data?.total,
-            };
-          }
-        } catch (err) {
-          if (err?.response?.status) {
-            return res
-              .clearCookie("token")
-              .status(err?.response?.status)
-              .json({
+            let inLibrary = await music.checkInLibrary(userId, id, "artist");
+
+            if (artist?.data && tracks?.data && related?.data) {
+              response = {
+                artist: artist?.data,
+                related: related?.data?.items,
+                tracks: [
+                  ...(tracks?.data?.tracks?.map((obj) => {
+                    delete obj.preview_url;
+                    return obj;
+                  }) || []),
+                ],
+                inLibrary: inLibrary,
+                offset: 0,
+                total: tracks?.data?.total,
+              };
+            }
+          } catch (err) {
+            console.log(err);
+            if (err?.response?.status) {
+              return res.status(err?.response?.status).json({
                 status: err?.response?.status,
                 message:
                   err?.response?.data?.error?.message || "Something Wrong",
               });
-          } else {
-            return res.clearCookie("token").status(500).json({
-              status: 500,
-              message: "Something Wrong",
-            });
+            } else {
+              return res.status(500).json({
+                status: 500,
+                message: "Something Wrong",
+              });
+            }
+          } finally {
+            if (response) {
+              return res.status(200).json({
+                status: 200,
+                message: "Success",
+                data: response,
+              });
+            }
           }
-        } finally {
-          if (response) {
-            return res.clearCookie("token").status(200).json({
-              status: 200,
-              message: "Success",
-              data: response,
-            });
-          }
+        } else {
+          return res.status(err?.status).json(err);
         }
-      } else {
-        return res.clearCookie("token").status(err?.status).json(err);
-      }
-    });
-  };
+      });
+    } else {
+      Spotify(async (err, instance) => {
+        if (instance) {
+          let response;
 
-  const getArtistLogged = (userId) => {
-    Spotify(async (err, instance) => {
-      if (instance) {
-        let response;
+          try {
+            let artist = await instance.get(`/artists/${id}`);
 
-        try {
-          let artist = await instance.get(`/artists/${id}`);
+            let tracks = await instance.get(
+              `artists/${id}/top-tracks?market=ES`
+            );
 
-          let tracks = await instance.get(`artists/${id}/top-tracks?market=ES`);
+            let related = await instance.get(
+              `/artists/${id}/albums?market=ES&limit=10&offset=0`
+            );
 
-          let related = await instance.get(
-            `/artists/${id}/albums?market=ES&limit=10&offset=0`
-          );
-
-          let inLibrary = await music.checkInLibrary(userId, id, "artist");
-
-          if (artist?.data && tracks?.data && related?.data) {
-            response = {
-              artist: artist?.data,
-              related: related?.data?.items,
-              tracks: [
-                ...(tracks?.data?.tracks?.map((obj) => {
-                  delete obj.preview_url;
-                  return obj;
-                }) || []),
-              ],
-              inLibrary: inLibrary,
-              offset: 0,
-              total: tracks?.data?.total,
-            };
+            if (artist?.data && tracks?.data && related?.data) {
+              response = {
+                artist: artist?.data,
+                related: related?.data?.items,
+                tracks: [
+                  ...(tracks?.data?.tracks?.map((obj) => {
+                    delete obj.preview_url;
+                    return obj;
+                  }) || []),
+                ],
+                offset: 0,
+                total: tracks?.data?.total,
+              };
+            }
+          } catch (err) {
+            if (err?.response?.status) {
+              return res
+                .clearCookie("token")
+                .status(err?.response?.status)
+                .json({
+                  status: err?.response?.status,
+                  message:
+                    err?.response?.data?.error?.message || "Something Wrong",
+                });
+            } else {
+              return res.clearCookie("token").status(500).json({
+                status: 500,
+                message: "Something Wrong",
+              });
+            }
+          } finally {
+            if (response) {
+              return res.clearCookie("token").status(200).json({
+                status: 200,
+                message: "Success",
+                data: response,
+              });
+            }
           }
-        } catch (err) {
-          console.log(err);
-          if (err?.response?.status) {
-            return res.status(err?.response?.status).json({
-              status: err?.response?.status,
-              message: err?.response?.data?.error?.message || "Something Wrong",
-            });
-          } else {
-            return res.status(500).json({
-              status: 500,
-              message: "Something Wrong",
-            });
-          }
-        } finally {
-          if (response) {
-            return res.status(200).json({
-              status: 200,
-              message: "Success",
-              data: response,
-            });
-          }
+        } else {
+          return res.clearCookie("token").status(err?.status).json(err);
         }
-      } else {
-        return res.status(err?.status).json(err);
-      }
-    });
+      });
+    }
   };
 
   jwt.verify(token, process.env.JWT_SECRET, async (err, decode) => {
@@ -565,7 +658,7 @@ router.get("/artist", (req, res) => {
         let userData = await user.get_user(decode?._id);
 
         if (userData) {
-          getArtistLogged(userData?._id?.toString());
+          getArtist(userData?._id?.toString());
         }
       } catch (err) {
         console.log(err);
@@ -629,12 +722,12 @@ router.delete("/delete-playlist", CheckLogged, async (req, res) => {
 });
 
 router.get("/all-playlists", CheckLogged, async (req, res) => {
-  const { userId, offset = 0 } = req.query;
+  const { userId, offset = 0, search = "" } = req.query;
 
   let response;
 
   try {
-    response = await music.getAllPlaylist(userId, parseInt(offset), 10);
+    response = await music.getAllPlaylist(userId, parseInt(offset), 10, search);
   } catch (err) {
     res.status(500).json({
       status: 500,
@@ -650,6 +743,29 @@ router.get("/all-playlists", CheckLogged, async (req, res) => {
           total: response?.total,
           offset: parseInt(offset) || 0,
         },
+      });
+    }
+  }
+});
+
+router.get("/search-user-playlists", CheckLogged, async (req, res) => {
+  const { userId, search = "", trackId } = req.query;
+
+  let response;
+
+  try {
+    response = await music.getUserPlaylists(userId, search, trackId);
+  } catch (err) {
+    res.status(500).json({
+      status: 500,
+      message: err,
+    });
+  } finally {
+    if (response) {
+      res.status(200).json({
+        status: 200,
+        message: "Success",
+        data: response?.data,
       });
     }
   }
@@ -684,7 +800,7 @@ router.post("/create-playlist", CheckLogged, async (req, res) => {
       res.status(200).json({
         status: 200,
         message: "Success",
-        data: details,
+        data: response,
       });
     }
   }
@@ -697,6 +813,51 @@ router.put("/edit-playlist", CheckLogged, async (req, res) => {
 
   try {
     response = await music.editPlaylist(userId, playlistId, name);
+  } catch (err) {
+    res.status(500).json({
+      status: 500,
+      message: err,
+    });
+  } finally {
+    if (response) {
+      res.status(200).json({
+        status: 200,
+        message: "Success",
+        data: response,
+      });
+    }
+  }
+});
+
+router.put("/remove-track-playlist", CheckLogged, async (req, res) => {
+  const { userId, trackId, playlistId } = req.body;
+  let response;
+
+  try {
+    response = await music.removeItemPlaylist(userId, playlistId, trackId);
+  } catch (err) {
+    res.status(500).json({
+      status: 500,
+      message: err,
+    });
+  } finally {
+    if (response) {
+      res.status(200).json({
+        status: 200,
+        message: "Success",
+        data: response,
+      });
+    }
+  }
+});
+
+router.put("/add-track-playlist", CheckLogged, async (req, res) => {
+  const { userId, track, playlistId } = req.body;
+
+  let response;
+
+  try {
+    response = await music.addItemPlaylist(userId, playlistId, track);
   } catch (err) {
     res.status(500).json({
       status: 500,

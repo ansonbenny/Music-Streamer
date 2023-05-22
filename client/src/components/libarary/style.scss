@@ -135,9 +135,7 @@
 
             li {
                 padding: .5rem 1rem;
-                border: 1px solid var(--primary-border);
-                border-left: none;
-                border-right: none;
+                border-top: 1px solid var(--primary-border);
 
                 button {
                     border: none;
@@ -150,6 +148,75 @@
                     &:hover {
                         color: $PrimaryColor;
                     }
+                }
+
+                .checkBox {
+                    -webkit-appearance: none;
+                    appearance: none;
+                    margin-right: .5rem;
+                    width: .7rem;
+                    height: .7rem;
+                    border: 2px solid var(--primary-border);
+                    border-radius: 3px;
+                    background-color: transparent;
+                    cursor: pointer;
+                }
+
+                .checkBox:checked {
+                    background-color: $PrimaryColor;
+                }
+
+                .checkLabel {
+                    color: var(--text-primary-color);
+                    font-size: 12px;
+                    @include transi_easy_in_out($second: .2s);
+                }
+            }
+
+            form {
+                display: flex;
+                flex-direction: column;
+                max-height: calc(50vh);
+                height: auto;
+                overflow-y: auto;
+                scrollbar-color: #888 transparent;
+                scrollbar-width: 2px;
+
+                &::-webkit-scrollbar {
+                    width: 2px;
+                    background: transparent;
+                }
+
+                &::-webkit-scrollbar-track {
+                    background: var(--primary-bg);
+                }
+
+                /* Handle */
+                &::-webkit-scrollbar-thumb {
+                    background: #888;
+                }
+
+                /* Handle on hover */
+                &::-webkit-scrollbar-thumb:hover {
+                    background: #555;
+                }
+            }
+
+            div[data-for="live-search"] {
+                display: flex;
+                flex-direction: column;
+                padding: .5rem 1rem;
+                width: auto;
+
+                input {
+                    outline: none;
+                    border: 2px solid $PrimaryColor;
+                    height: 1.5rem;
+                    padding: 0 .5rem;
+                    width: auto;
+                    border-radius: 5px;
+                    background: transparent;
+                    color: var(--text-primary-color);
                 }
             }
         }

@@ -15,17 +15,20 @@ const Library = () => {
 
   const navigate = useNavigate();
 
-  const [response, setResponse] = useState();
+  const [state, setState] = useState({
+    response: {},
+    search: false,
+  });
 
   const { user, library } = useSelector((state) => state);
 
-  const loadMore = async () => {
+  const loadMore = async (offset) => {
     let res;
 
     try {
       res = await instance.get("/music/all-playlists", {
         params: {
-          offset: response?.offset + 10,
+          offset: offset ? offset : state?.response?.offset + 10,
         },
       });
     } catch (err) {
@@ -39,10 +42,14 @@ const Library = () => {
       }
     } finally {
       if (res?.data) {
-        setResponse((state) => ({
-          list: [...state.list, ...(res?.data?.data?.list || [])],
-          offset: res?.data?.data?.offset || state?.offset || 0,
-          total: res?.data?.data?.total || state?.total || 0,
+        setState((state) => ({
+          ...state,
+          response: {
+            ...state?.response,
+            list: [...state?.response?.list, ...(res?.data?.data?.list || [])],
+            offset: res?.data?.data?.offset || state?.response?.offset || 0,
+            total: res?.data?.data?.total || state?.response?.total || 0,
+          },
         }));
         return true;
       }
@@ -66,17 +73,20 @@ const Library = () => {
         }
       } finally {
         if (res?.data) {
-          setResponse((state) => ({
+          setState((state) => ({
             ...state,
-            list: [
-              ...state?.list?.map((obj) => {
-                if (obj?.playlistId === data?.playlistId) {
-                  obj.name = data.name;
-                }
+            response: {
+              ...state?.response,
+              list: [
+                ...state?.response?.list?.map((obj) => {
+                  if (obj?.playlistId === data?.playlistId) {
+                    obj.name = data.name;
+                  }
 
-                return obj;
-              }),
-            ],
+                  return obj;
+                }),
+              ],
+            },
           }));
           dispatch(setLibraryModal({ status: false }));
         }
@@ -97,10 +107,21 @@ const Library = () => {
         }
       } finally {
         if (res?.data) {
-          setResponse((state) => ({
-            ...state,
-            list: [...state?.list, res?.data?.data],
-          }));
+          if (state?.search) {
+            getPlaylists();
+          } else {
+            if (state?.response?.offset + 10 >= state?.response?.total + 1) {
+              loadMore(state?.response?.total);
+            } else {
+              setState((state) => ({
+                ...state,
+                response: {
+                  ...state?.response,
+                  total: state?.response?.total + 1,
+                },
+              }));
+            }
+          }
           dispatch(setLibraryModal({ status: false }));
         }
       }
@@ -122,18 +143,55 @@ const Library = () => {
         }
       } finally {
         if (res?.data) {
-          setResponse((state) => ({
+          setState((state) => ({
             ...state,
-            list: [
-              ...state?.list?.filter((obj) => {
-                return obj?.playlistId !== res?.data?.data?.playlistId;
-              }),
-            ],
-            total: state?.total - 1,
-            offset: state?.offset - 1,
+            response: {
+              ...state?.response,
+              list: [
+                ...state?.response?.list?.filter((obj) => {
+                  return obj?.playlistId !== res?.data?.data?.playlistId;
+                }),
+              ],
+              total: state?.response?.total - 1,
+              offset: state?.response?.offset - 1,
+            },
           }));
           dispatch(setLibraryModal({ status: false }));
         }
+      }
+    }
+  };
+
+  const getPlaylists = async (cancelToken, search) => {
+    let res;
+
+    try {
+      res = await instance.get("/music/all-playlists", {
+        params: {
+          search,
+        },
+        cancelToken: cancelToken?.token || null,
+      });
+    } catch (err) {
+      if (axios.isCancel(err)) {
+        console.log("Cancelled");
+      } else {
+        console.log(err);
+        alert("Facing An Error");
+        setTimeout(() => {
+          dispatch(setLoading(false));
+        }, 1000);
+      }
+    } finally {
+      if (res?.data) {
+        setState({
+          ...state,
+          response: res?.data?.data || {},
+          search: search ? true : false,
+        });
+        setTimeout(() => {
+          dispatch(setLoading(false));
+        }, 1000);
       }
     }
   };
@@ -144,30 +202,7 @@ const Library = () => {
     let cancelToken = axios.CancelToken.source();
 
     if (user) {
-      (async () => {
-        let res;
-
-        try {
-          res = await instance.get("/music/all-playlists");
-        } catch (err) {
-          if (axios.isCancel(err)) {
-            console.log("Cancelled");
-          } else {
-            console.log(err);
-            alert("Facing An Error");
-            setTimeout(() => {
-              dispatch(setLoading(false));
-            }, 1000);
-          }
-        } finally {
-          if (res?.data) {
-            setResponse(res?.data?.data || {});
-            setTimeout(() => {
-              dispatch(setLoading(false));
-            }, 1000);
-          }
-        }
-      })();
+      getPlaylists(cancelToken);
     } else {
       dispatch(setLoading(true));
     }
@@ -179,10 +214,10 @@ const Library = () => {
 
   return (
     <div className="container">
-      <LibraryHead />
-      <Row isLibrary data={response?.list} />
+      <LibraryHead getPlaylists={getPlaylists} />
+      <Row isLibrary data={state?.response?.list} />
 
-      {response?.total > response?.list?.length && (
+      {state?.response?.total > state?.response?.list?.length && (
         <LoadMore onHandle={loadMore} />
       )}
 

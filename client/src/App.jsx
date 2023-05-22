@@ -7,6 +7,7 @@ import {
   Home,
   Library,
   Music,
+  Playlist,
   Search,
   Verification,
 } from "./pages";
@@ -54,7 +55,6 @@ const App = () => {
 
             <Route path="/artist/:id" element={<Collections isArtist />} />
             <Route path="/album/:id" element={<Collections />} />
-            <Route path="/playlist/:id" element={<Collections isPlaylist />} />
 
             <Route path="/search" element={<Search />} />
             <Route path="/search/:type" element={<Search />} />
@@ -69,6 +69,7 @@ const App = () => {
             />
           </Route>
           <Route element={<ProtectedRoute isAuth />}>
+            <Route path="/playlist/:id" element={<Playlist />} />
             <Route path="/library" element={<Library />} />
             <Route path="/account" element={<Account />} />
           </Route>

@@ -121,7 +121,7 @@ const Banner = ({ data, libraryAction, inLibrary }) => {
         </button>
         <button
           className={`extra ${inLibrary ? "active" : ""}`}
-          onClick={() => libraryAction()}
+          onClick={() => libraryAction?.()}
         >
           <Heart width={"20px"} height={"20px"} />
         </button>
