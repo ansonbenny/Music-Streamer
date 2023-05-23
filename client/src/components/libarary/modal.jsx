@@ -6,7 +6,7 @@ import instance from "../../lib/axios";
 import axios from "axios";
 import "./style.scss";
 
-const LibraryModal = ({ isLibrary, formAction, id }) => {
+const LibraryModal = ({ isLibrary, formAction }) => {
   const ref = useRef({
     modal: null,
   });
@@ -30,7 +30,6 @@ const LibraryModal = ({ isLibrary, formAction, id }) => {
           cancelToken: cancelToken?.token || null,
           params: {
             search,
-            trackId: id,
           },
         });
       } catch (err) {
@@ -43,7 +42,6 @@ const LibraryModal = ({ isLibrary, formAction, id }) => {
           alert("Facing An Error");
         }
       } finally {
-        console.log(res?.data);
         if (res?.data) {
           setState((state) => ({
             ...state,
@@ -210,8 +208,7 @@ const LibraryModal = ({ isLibrary, formAction, id }) => {
                         value={obj?.playlistId}
                         checked={
                           obj?.items?.find((obj) => {
-                            console.log(obj.id === id);
-                            return obj.id === id;
+                            return obj?.id === modal?.track?.id;
                           })
                             ? true
                             : false

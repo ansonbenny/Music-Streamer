@@ -1,7 +1,6 @@
 import { ObjectId } from "mongodb";
 import { db } from "../db/connection.js";
 import collections from "../db/collections.js";
-import { response } from "express";
 
 export default {
   createPlaylist: (userId, details) => {
@@ -177,7 +176,7 @@ export default {
       }
     });
   },
-  getUserPlaylists: (userId, search, trackId) => {
+  getUserPlaylists: (userId, search) => {
     return new Promise(async (resolve, reject) => {
       try {
         let response = await db
@@ -293,6 +292,7 @@ export default {
             },
             {
               $project: {
+                _id: 0,
                 inPlaylist: {
                   $cond: {
                     if: {
@@ -304,10 +304,197 @@ export default {
                 },
               },
             },
+            {
+              $match: {
+                inPlaylist: true,
+              },
+            },
+            {
+              $limit: 1,
+            },
           ])
           .toArray();
 
         resolve({ data: response?.[0]?.inPlaylist });
+      } catch (err) {
+        reject(err);
+      }
+    });
+  },
+  getUserPlaylist: (userId, playlistId) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        let response = {};
+        response.details = await db
+          .collection(collections.LIBRARY)
+          .aggregate([
+            {
+              $match: {
+                _id: new ObjectId(userId),
+              },
+            },
+            {
+              $unwind: "$data",
+            },
+            {
+              $project: {
+                name: "$data.name",
+                type: "$data.type",
+                id: "$data.id",
+                short: "$data.short",
+                playlistId: "$data.playlistId",
+              },
+            },
+            {
+              $match: {
+                playlistId: playlistId,
+              },
+            },
+          ])
+          .toArray();
+
+        response.tracks = await db
+          .collection(collections.LIBRARY)
+          .aggregate([
+            {
+              $match: {
+                _id: new ObjectId(userId),
+              },
+            },
+            {
+              $unwind: "$data",
+            },
+            {
+              $project: {
+                playlistId: "$data.playlistId",
+                items: "$data.items",
+              },
+            },
+            {
+              $match: {
+                playlistId: playlistId,
+              },
+            },
+            {
+              $unwind: "$items",
+            },
+            {
+              $group: {
+                _id: null,
+                items: {
+                  $push: "$items",
+                },
+                total: {
+                  $sum: 1,
+                },
+              },
+            },
+            {
+              $unwind: "$items",
+            },
+            {
+              $skip: 0,
+            },
+            {
+              $limit: 10,
+            },
+            {
+              $group: {
+                _id: 1,
+                total: {
+                  $first: "$total",
+                },
+                tracks: {
+                  $push: "$items",
+                },
+              },
+            },
+          ])
+          .toArray();
+
+        if (response) {
+          if (response?.details?.[0]) {
+            response = {
+              tracks: response?.tracks?.[0]?.tracks || [],
+              total: response?.tracks?.[0]?.total || 0,
+              offset: 0,
+              details: response?.details?.[0],
+            };
+            resolve(response);
+          } else {
+            reject("Playlist not found");
+          }
+        }
+      } catch (err) {
+        reject(err);
+      }
+    });
+  },
+  getUserPlaylistTracks: (userId, offset, playlistId) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        let response = await db
+          .collection(collections.LIBRARY)
+          .aggregate([
+            {
+              $match: {
+                _id: new ObjectId(userId),
+              },
+            },
+            {
+              $unwind: "$data",
+            },
+            {
+              $project: {
+                playlistId: "$data.playlistId",
+                items: "$data.items",
+              },
+            },
+            {
+              $match: {
+                playlistId: playlistId,
+              },
+            },
+            {
+              $unwind: "$items",
+            },
+            {
+              $group: {
+                _id: null,
+                items: {
+                  $push: "$items",
+                },
+                total: {
+                  $sum: 1,
+                },
+              },
+            },
+            {
+              $unwind: "$items",
+            },
+            {
+              $skip: offset,
+            },
+            {
+              $limit: 10,
+            },
+            {
+              $group: {
+                _id: 1,
+                total: {
+                  $first: "$total",
+                },
+                tracks: {
+                  $push: "$items",
+                },
+              },
+            },
+          ])
+          .toArray();
+
+        if (response) {
+          resolve({ data: response?.[0] });
+        }
       } catch (err) {
         reject(err);
       }

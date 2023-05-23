@@ -1,5 +1,8 @@
 import React, { useCallback, useEffect, useRef } from "react";
 import { Dots, Play } from "../../assets";
+import { useDispatch, useSelector } from "react-redux";
+import { setLibraryModal } from "../../redux/library";
+import { setAuth } from "../../redux/auth";
 import "./style.scss";
 
 const Collections = ({ data }) => {
@@ -7,6 +10,8 @@ const Collections = ({ data }) => {
     options: [],
     btn: [],
   });
+
+  const dispatch = useDispatch();
 
   const getTime = useCallback(
     (ms) => {
@@ -17,6 +22,8 @@ const Collections = ({ data }) => {
     },
     [data]
   );
+
+  const { user } = useSelector((state) => state);
 
   useEffect(() => {
     const handleClick = (e) => {
@@ -107,7 +114,19 @@ const Collections = ({ data }) => {
                     }}
                   >
                     <ul>
-                      <li>Playlist</li>
+                      <li
+                        onClick={() => {
+                          if (user) {
+                            dispatch(
+                              setLibraryModal({ status: true, track: obj })
+                            );
+                          } else {
+                            dispatch(setAuth({ login: true }));
+                          }
+                        }}
+                      >
+                        Playlist
+                      </li>
                       <li
                         onClick={() => {
                           window.navigator.clipboard.writeText(

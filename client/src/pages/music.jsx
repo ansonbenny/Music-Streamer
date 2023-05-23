@@ -29,7 +29,36 @@ const Music = () => {
     }
   };
 
-  const formAction = async (playlistId, checked, search, reloadData) => {
+  const getTrackData = async (cancelToken) => {
+    let res;
+    try {
+      res = await instance.get("/music/track", {
+        params: {
+          id,
+        },
+        cancelToken: cancelToken?.token || null,
+      });
+    } catch (err) {
+      if (axios.isCancel(err)) {
+        console.log("Cancelled");
+      } else if (typeof err?.response?.data?.message === "string") {
+        alert(err?.response?.data?.message);
+        navigate("/");
+      } else {
+        alert("Facing An Error");
+        navigate("/");
+      }
+    } finally {
+      if (res?.data) {
+        setResponse(res?.data?.data);
+        setTimeout(() => {
+          dispatch(setLoading(false));
+        }, 1000);
+      }
+    }
+  };
+
+  const LibFormAction = async (playlistId, checked, search, reloadData) => {
     if (checked) {
       let res;
 
@@ -79,35 +108,6 @@ const Music = () => {
     }
   };
 
-  const getTrackData = async (cancelToken) => {
-    let res;
-    try {
-      res = await instance.get("/music/track", {
-        params: {
-          id,
-        },
-        cancelToken: cancelToken?.token || null,
-      });
-    } catch (err) {
-      if (axios.isCancel(err)) {
-        console.log("Cancelled");
-      } else if (typeof err?.response?.data?.message === "string") {
-        alert(err?.response?.data?.message);
-        navigate("/");
-      } else {
-        alert("Facing An Error");
-        navigate("/");
-      }
-    } finally {
-      if (res?.data) {
-        setResponse(res?.data?.data);
-        setTimeout(() => {
-          dispatch(setLoading(false));
-        }, 1000);
-      }
-    }
-  };
-
   useEffect(() => {
     document.title = `Musicon`;
 
@@ -137,9 +137,7 @@ const Music = () => {
           />
         )}
       </div>
-      {library?.modal?.status && (
-        <LibraryModal formAction={formAction} id={id} />
-      )}
+      {library?.modal?.status && <LibraryModal formAction={LibFormAction} />}
     </Fragment>
   );
 };

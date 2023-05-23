@@ -2,15 +2,18 @@ import React, { useEffect, useState } from "react";
 import {
   Banner,
   Collections as CollectionsComp,
+  LibraryModal,
   LoadMore,
   Row,
 } from "../components";
 import { useDispatch, useSelector } from "react-redux";
 import { setLoading } from "../redux/additional";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { setAuth } from "../redux/auth";
+import { setLibraryModal } from "../redux/library";
+import { setUser } from "../redux/user";
 import axios from "axios";
 import instance from "../lib/axios";
-import { setAuth } from "../redux/auth";
 
 const Collections = ({ isArtist }) => {
   const location = useLocation();
@@ -21,7 +24,7 @@ const Collections = ({ isArtist }) => {
 
   const { id } = useParams();
 
-  const { user } = useSelector((state) => state);
+  const { user, library } = useSelector((state) => state);
 
   const [response, setResponse] = useState();
 
@@ -134,6 +137,50 @@ const Collections = ({ isArtist }) => {
     }
   };
 
+  const LibFormAction = async (playlistId, checked, search, reloadData) => {
+    if (checked) {
+      let res;
+
+      try {
+        res = await instance.put("/music/add-track-playlist", {
+          playlistId,
+          track: library?.modal?.track,
+        });
+      } catch (err) {
+        if (err?.response?.data?.status === 405) {
+          dispatch(setUser(null));
+          dispatch(setLibraryModal({ status: false }));
+        } else {
+          alert("Facing An Error");
+        }
+      } finally {
+        if (res?.data) {
+          reloadData(search?.value);
+        }
+      }
+    } else {
+      let res;
+
+      try {
+        res = await instance.put("/music/remove-track-playlist", {
+          playlistId,
+          trackId: library?.modal?.track?.id,
+        });
+      } catch (err) {
+        if (err?.response?.data?.status === 405) {
+          dispatch(setUser(null));
+          dispatch(setLibraryModal({ status: false }));
+        } else {
+          alert("Facing An Error");
+        }
+      } finally {
+        if (res?.data) {
+          reloadData(search?.value);
+        }
+      }
+    }
+  };
+
   useEffect(() => {
     document.title = `Musicon - ${isArtist ? "Artist" : "Album"}`;
 
@@ -236,6 +283,8 @@ const Collections = ({ isArtist }) => {
           data={response?.related}
         />
       )}
+
+      {library?.modal?.status && <LibraryModal formAction={LibFormAction} />}
     </div>
   );
 };

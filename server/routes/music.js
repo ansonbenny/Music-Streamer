@@ -749,12 +749,12 @@ router.get("/all-playlists", CheckLogged, async (req, res) => {
 });
 
 router.get("/search-user-playlists", CheckLogged, async (req, res) => {
-  const { userId, search = "", trackId } = req.query;
+  const { userId, search = "" } = req.query;
 
   let response;
 
   try {
-    response = await music.getUserPlaylists(userId, search, trackId);
+    response = await music.getUserPlaylists(userId, search);
   } catch (err) {
     res.status(500).json({
       status: 500,
@@ -869,6 +869,60 @@ router.put("/add-track-playlist", CheckLogged, async (req, res) => {
         status: 200,
         message: "Success",
         data: response,
+      });
+    }
+  }
+});
+
+router.get("/user-playlist", CheckLogged, async (req, res) => {
+  const { userId, id } = req.query;
+
+  let response;
+
+  try {
+    response = await music.getUserPlaylist(userId, `${id}_playlist`);
+  } catch (err) {
+    res.status(500).json({
+      status: 500,
+      message: err,
+    });
+  } finally {
+    if (response) {
+      res.status(200).json({
+        status: 200,
+        message: "Success",
+        data: response,
+      });
+    }
+  }
+});
+
+router.get("/user-playlist-tracks", CheckLogged, async (req, res) => {
+  const { userId, id, offset = 0 } = req.query;
+
+  let response;
+
+  try {
+    response = await music.getUserPlaylistTracks(
+      userId,
+      parseInt(offset),
+      `${id}_playlist`
+    );
+  } catch (err) {
+    res.status(500).json({
+      status: 500,
+      message: err,
+    });
+  } finally {
+    if (response) {
+      res.status(200).json({
+        status: 200,
+        message: "Success",
+        data: {
+          tracks: response?.data?.tracks,
+          total: response?.data?.total,
+          offset: parseInt(offset),
+        },
       });
     }
   }

@@ -23,15 +23,10 @@ const librarySlice = createSlice({
         state.modal.status = payload.status;
       } else {
         state.modal.id = null;
-        state.modal.status = payload.status;
+        state.modal = payload;
       }
 
       return state;
-    },
-    setFormData: (state, { payload }) => {
-      state.modal.formData = {
-        [payload.target.name]: payload.target.value,
-      };
     },
   },
 });
