@@ -144,7 +144,7 @@ const Collections = ({ isArtist }) => {
       try {
         res = await instance.put("/music/add-track-playlist", {
           playlistId,
-          track: library?.modal?.track,
+          trackId: library?.modal?.track,
         });
       } catch (err) {
         if (err?.response?.data?.status === 405) {
@@ -164,7 +164,7 @@ const Collections = ({ isArtist }) => {
       try {
         res = await instance.put("/music/remove-track-playlist", {
           playlistId,
-          trackId: library?.modal?.track?.id,
+          trackId: library?.modal?.track,
         });
       } catch (err) {
         if (err?.response?.data?.status === 405) {

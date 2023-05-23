@@ -208,7 +208,7 @@ const LibraryModal = ({ isLibrary, formAction }) => {
                         value={obj?.playlistId}
                         checked={
                           obj?.items?.find((obj) => {
-                            return obj?.id === modal?.track?.id;
+                            return obj?.id === modal?.track;
                           })
                             ? true
                             : false

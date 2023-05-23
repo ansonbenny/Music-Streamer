@@ -110,7 +110,12 @@ const Library = () => {
           if (state?.search) {
             getPlaylists();
           } else {
-            if (state?.response?.offset + 10 >= state?.response?.total + 1) {
+            if (state?.response?.total === 0) {
+              loadMore("0");
+            } else if (
+              state?.response?.offset + 10 >=
+              state?.response?.total + 1
+            ) {
               loadMore(state?.response?.total);
             } else {
               setState((state) => ({

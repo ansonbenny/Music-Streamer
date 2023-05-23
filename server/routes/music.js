@@ -852,26 +852,46 @@ router.put("/remove-track-playlist", CheckLogged, async (req, res) => {
 });
 
 router.put("/add-track-playlist", CheckLogged, async (req, res) => {
-  const { userId, track, playlistId } = req.body;
+  const { userId, trackId, playlistId } = req.body;
 
-  let response;
+  Spotify(async (err, instance) => {
+    if (instance) {
+      let response;
 
-  try {
-    response = await music.addItemPlaylist(userId, playlistId, track);
-  } catch (err) {
-    res.status(500).json({
-      status: 500,
-      message: err,
-    });
-  } finally {
-    if (response) {
-      res.status(200).json({
-        status: 200,
-        message: "Success",
-        data: response,
-      });
+      try {
+        let track = await instance.get(`/tracks/${trackId}?market=ES`);
+
+        if (track?.data) {
+          response = await music.addItemPlaylist(userId, playlistId, {
+            ...track?.data,
+            preview_url: null,
+          });
+        }
+      } catch (err) {
+        if (err?.response?.status) {
+          return res.status(err?.response?.status).json({
+            status: err?.response?.status,
+            message: err?.response?.data?.error?.message || "Something Wrong",
+          });
+        } else {
+          return res.status(500).json({
+            status: 500,
+            message: "Something Wrong",
+          });
+        }
+      } finally {
+        if (response) {
+          return res.status(200).json({
+            status: 200,
+            message: "Success",
+            data: response,
+          });
+        }
+      }
+    } else {
+      return res.status(err?.status).json(err);
     }
-  }
+  });
 });
 
 router.get("/user-playlist", CheckLogged, async (req, res) => {

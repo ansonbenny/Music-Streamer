@@ -257,7 +257,7 @@ export default {
             "data.playlistId": playlistId,
           },
           {
-            $push: {
+            $addToSet: {
               "data.$.items": track,
             },
           }

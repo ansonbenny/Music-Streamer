@@ -233,6 +233,21 @@
           border-radius: 5px;
         }
 
+        &:is(.thumb) {
+          svg {
+            display: flex;
+            align-items: center;
+            object-fit: cover;
+            aspect-ratio: 1/1;
+            height: 1.5rem;
+            object-position: center;
+            border-radius: 5px;
+            padding: .5rem;
+            border: 1px solid var(--primary-border);
+            fill: var(--text-primary-color)
+          }
+        }
+
         p {
           @include singleLine;
           width: 100%;

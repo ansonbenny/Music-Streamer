@@ -3,6 +3,7 @@ import { Dots, Play } from "../../assets";
 import { useDispatch, useSelector } from "react-redux";
 import { setLibraryModal } from "../../redux/library";
 import { setAuth } from "../../redux/auth";
+import { MusicIcon } from "../../assets";
 import "./style.scss";
 
 const Collections = ({ data }) => {
@@ -68,9 +69,13 @@ const Collections = ({ data }) => {
                     <Play width={"16px"} height={"16px"} />
                   </button>
                 </td>
-                {obj?.album?.images?.[0] && (
+                {obj?.album?.images?.[0] ? (
                   <td>
                     <img src={obj?.album?.images?.[0]?.url} alt={obj?.uri} />
+                  </td>
+                ) : (
+                  <td className="thumb">
+                    <MusicIcon />
                   </td>
                 )}
                 <td>
@@ -118,7 +123,7 @@ const Collections = ({ data }) => {
                         onClick={() => {
                           if (user) {
                             dispatch(
-                              setLibraryModal({ status: true, track: obj })
+                              setLibraryModal({ status: true, track: obj?.id })
                             );
                           } else {
                             dispatch(setAuth({ login: true }));

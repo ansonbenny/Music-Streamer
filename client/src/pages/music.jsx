@@ -23,7 +23,7 @@ const Music = () => {
 
   const libraryAction = () => {
     if (user) {
-      dispatch(setLibraryModal({ status: true, track: response?.track }));
+      dispatch(setLibraryModal({ status: true, track: response?.track?.id }));
     } else {
       dispatch(setAuth({ login: true }));
     }
@@ -65,7 +65,7 @@ const Music = () => {
       try {
         res = await instance.put("/music/add-track-playlist", {
           playlistId,
-          track: response?.track,
+          trackId: response?.track?.id,
         });
       } catch (err) {
         if (axios.isCancel(err)) {
