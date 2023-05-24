@@ -102,14 +102,14 @@ const Player = () => {
                   dispatch(changeAudio(data?.position + 1));
                 } else if (
                   (data?.type === "album" || data?.type === "playlist") &&
-                  data?.offset < data?.tracks?.length &&
-                  data?.offset + 10 <= data?.total
+                  data?.total !== data?.tracks?.length &&
+                  data?.offset < data?.total
                 ) {
                   dispatch(
                     getTrack({
                       type: data?.type,
                       id: data?.id,
-                      offset: data?.offset + 10,
+                      offset: data?.offset,
                       position: data?.position + 1,
                     })
                   );

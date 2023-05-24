@@ -956,7 +956,7 @@ router.get("/user-playlist-tracks", CheckLogged, async (req, res) => {
 });
 
 router.get("/get-audio-tracks", CheckLogged, async (req, res) => {
-  const { userId, type, id, offset, position } = req.query;
+  const { userId, type, id, offset = 0, position = 0, limit = 10 } = req.query;
 
   if (type === "artist") {
     Spotify(async (err, instance) => {
@@ -1012,7 +1012,7 @@ router.get("/get-audio-tracks", CheckLogged, async (req, res) => {
           let album = await instance.get(`/albums/${id}?market=ES`);
 
           let tracks = await instance.get(
-            `/albums/${id}/tracks?market=ES&limit=10&offset=${offset}`
+            `/albums/${id}/tracks?market=ES&limit=${limit}&offset=${offset}`
           );
 
           if (tracks?.data && album?.data) {
@@ -1022,7 +1022,7 @@ router.get("/get-audio-tracks", CheckLogged, async (req, res) => {
                 images: album?.data?.images,
                 name: album?.data?.name,
               },
-              offset: parseInt(offset),
+              offset: parseInt(offset) + tracks?.data?.items?.length,
               type: "album",
               id,
               tracks: tracks?.data?.items,
@@ -1104,7 +1104,8 @@ router.get("/get-audio-tracks", CheckLogged, async (req, res) => {
       response = await music.getUserPlaylistTracks(
         userId,
         parseInt(offset),
-        `${id}_playlist`
+        `${id}_playlist`,
+        parseInt(limit)
       );
     } catch (err) {
       res.status(500).json({
@@ -1118,7 +1119,7 @@ router.get("/get-audio-tracks", CheckLogged, async (req, res) => {
           message: "Success",
           data: {
             total: response?.data?.total,
-            offset: parseInt(offset),
+            offset: parseInt(offset) + response?.data?.tracks?.length,
             type: "playlist",
             id,
             tracks: response?.data?.tracks,

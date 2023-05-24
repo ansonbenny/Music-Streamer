@@ -87,16 +87,15 @@ const useControl = () => {
           if (
             (ref?.current?.["player"]?.type === "album" ||
               ref?.current?.["player"]?.type === "playlist") &&
-            ref?.current?.["player"]?.offset <
+            ref?.current?.["player"]?.total !==
               ref?.current?.["player"]?.tracks?.length &&
-            ref?.current?.["player"]?.offset + 10 <=
-              ref?.current?.["player"]?.total
+            ref?.current?.["player"]?.offset < ref?.current?.["player"]?.total
           ) {
             dispatch(
               getTrack({
                 type: ref?.current?.["player"]?.type,
                 id: ref?.current?.["player"]?.id,
-                offset: ref?.current?.["player"]?.offset + 10,
+                offset: ref?.current?.["player"]?.offset,
                 position: ref?.current?.["player"]?.position + 1,
               })
             );

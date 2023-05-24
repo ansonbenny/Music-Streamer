@@ -4,7 +4,6 @@ import {
   Collections as CollectionsComp,
   LibraryModal,
   LoadMore,
-  Row,
 } from "../components";
 import { useDispatch, useSelector } from "react-redux";
 import { setLoading } from "../redux/additional";
@@ -196,7 +195,13 @@ const Collections = ({ isArtist }) => {
         />
       )}
 
-      {response?.tracks?.[0] && <CollectionsComp data={response?.tracks} />}
+      {response?.tracks?.[0] && (
+        <CollectionsComp
+          data={response?.tracks}
+          collectionId={response?.details?.id}
+          collectionType={"playlist"}
+        />
+      )}
 
       {response?.tracks?.length < response?.total && (
         <LoadMore onHandle={getTracks} />

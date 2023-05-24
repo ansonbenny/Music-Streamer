@@ -3,13 +3,14 @@ import instance from "../lib/axios";
 
 export const getTrack = createAsyncThunk(
   "player/track",
-  async ({ type, id, offset = 0, position = 0 }) => {
+  async ({ type, id, offset, position, limit }) => {
     let response = await instance.get("/music/get-audio-tracks", {
       params: {
         id,
         type,
         offset,
         position,
+        limit,
       },
     });
 

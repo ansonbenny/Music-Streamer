@@ -4,8 +4,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { setLibraryModal } from "../../redux/library";
 import { setAuth } from "../../redux/auth";
 import { MusicIcon } from "../../assets";
-import "./style.scss";
 import { changeAudio, getTrack, setStatus } from "../../redux/player";
+import "./style.scss";
 
 const Collections = ({ data, collectionId, collectionType }) => {
   const ref = useRef({
@@ -66,8 +66,10 @@ const Collections = ({ data, collectionId, collectionType }) => {
               <tr key={key}>
                 <td>
                   <span className="count grey">{key + 1}</span>
-                  {player?.data?.tracks[player?.data?.position]?.id ===
-                    obj?.id && player?.status ? (
+                  {player?.data?.id === collectionId &&
+                  player?.data?.tracks?.[player?.data?.position]?.id ===
+                    obj?.id &&
+                  player?.status ? (
                     <button
                       className="Play"
                       onClick={() => {
@@ -80,13 +82,38 @@ const Collections = ({ data, collectionId, collectionType }) => {
                     <button
                       className="Play"
                       onClick={() => {
-                        dispatch(
-                          getTrack({
-                            type: "track",
-                            id: obj?.id,
-                            position: 0,
-                          })
-                        );
+                        if (
+                          player?.data?.id === collectionId &&
+                          player?.data?.tracks?.[player?.data?.position]?.id ===
+                            obj?.id
+                        ) {
+                          dispatch(setStatus(true));
+                        } else if (player?.data?.id === collectionId) {
+                          if (player?.data?.tracks?.length >= key + 1) {
+                            dispatch(changeAudio(key));
+                          } else {
+                            var limit = key + 1 - player?.data?.offset;
+                            dispatch(
+                              getTrack({
+                                type: collectionType,
+                                id: collectionId,
+                                position: key,
+                                offset: player?.data?.offset,
+                                limit: limit,
+                              })
+                            );
+                          }
+                        } else {
+                          dispatch(
+                            getTrack({
+                              type: collectionType,
+                              id: collectionId,
+                              position: key,
+                              offset: 0,
+                              limit: key + 1,
+                            })
+                          );
+                        }
                       }}
                     >
                       <Play width={"16px"} height={"16px"} />
@@ -171,7 +198,7 @@ const Collections = ({ data, collectionId, collectionType }) => {
                       </li>
 
                       {player?.data?.id === collectionId &&
-                      player?.data?.tracks[player?.data?.position]?.id ===
+                      player?.data?.tracks?.[player?.data?.position]?.id ===
                         obj?.id &&
                       player?.status ? (
                         <li
@@ -182,34 +209,45 @@ const Collections = ({ data, collectionId, collectionType }) => {
                           Pause
                         </li>
                       ) : (
-                        <>
-                          {player?.data?.id === collectionId &&
-                          player?.data?.tracks[player?.data?.position]?.id !==
-                            obj?.id ? (
-                            <li
-                              onClick={() => {
+                        <li
+                          onClick={() => {
+                            if (
+                              player?.data?.id === collectionId &&
+                              player?.data?.tracks?.[player?.data?.position]
+                                ?.id === obj?.id
+                            ) {
+                              dispatch(setStatus(true));
+                            } else if (player?.data?.id === collectionId) {
+                              if (player?.data?.tracks?.length >= key + 1) {
                                 dispatch(changeAudio(key));
-                                dispatch(setStatus(true));
-                              }}
-                            >
-                              Play
-                            </li>
-                          ) : (
-                            <li
-                              onClick={() => {
+                              } else {
+                                var limit = key + 1 - player?.data?.offset;
+
                                 dispatch(
                                   getTrack({
-                                    type: "track",
-                                    id: obj?.id,
-                                    position: 0,
+                                    type: collectionType,
+                                    id: collectionId,
+                                    position: key,
+                                    offset: player?.data?.offset,
+                                    limit: limit,
                                   })
                                 );
-                              }}
-                            >
-                              Play
-                            </li>
-                          )}
-                        </>
+                              }
+                            } else {
+                              dispatch(
+                                getTrack({
+                                  type: collectionType,
+                                  id: collectionId,
+                                  position: key,
+                                  offset: 0,
+                                  limit: key + 1,
+                                })
+                              );
+                            }
+                          }}
+                        >
+                          Play
+                        </li>
                       )}
                     </ul>
                   </div>

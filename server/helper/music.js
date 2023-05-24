@@ -430,7 +430,7 @@ export default {
       }
     });
   },
-  getUserPlaylistTracks: (userId, offset, playlistId) => {
+  getUserPlaylistTracks: (userId, offset, playlistId, limit = 10) => {
     return new Promise(async (resolve, reject) => {
       try {
         let response = await db
@@ -476,7 +476,7 @@ export default {
               $skip: offset,
             },
             {
-              $limit: 10,
+              $limit: limit,
             },
             {
               $group: {
