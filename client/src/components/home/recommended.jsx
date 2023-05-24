@@ -1,13 +1,17 @@
 import React from "react";
-import { Play } from "../../assets";
+import { Play, Pause } from "../../assets";
+import { useDispatch, useSelector } from "react-redux";
+import { getTrack, setStatus } from "../../redux/player";
 import "./style.scss";
 
-const Recommended = ({ data }) => {
-  // add play options
+const Recommended = ({ data, title }) => {
+  const dispatch = useDispatch();
+
+  const { player } = useSelector((state) => state);
   return (
     <div className="recommended">
       <div className="title">
-        <h5>Recommended</h5>
+        <h5>{title}</h5>
       </div>
       <div className="grid">
         {data
@@ -24,9 +28,40 @@ const Recommended = ({ data }) => {
                 </div>
 
                 <div className="play">
-                  <button>
-                    <Play width={"16px"} height={"16px"} />
-                  </button>
+                  {player?.data?.type === elm?.type &&
+                  player?.data?.id === elm?.id &&
+                  player?.status ? (
+                    <button
+                      onClick={() => {
+                        dispatch(setStatus(false));
+                      }}
+                    >
+                      <Pause width={"16px"} height={"16px"} />
+                    </button>
+                  ) : (
+                    <>
+                      {player?.data?.type === elm?.type &&
+                      player?.data?.id === elm?.id ? (
+                        <button
+                          onClick={() => {
+                            dispatch(setStatus(true));
+                          }}
+                        >
+                          <Play width={"16px"} height={"16px"} />
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => {
+                            dispatch(
+                              getTrack({ type: elm?.type, id: elm?.id })
+                            );
+                          }}
+                        >
+                          <Play width={"16px"} height={"16px"} />
+                        </button>
+                      )}
+                    </>
+                  )}
                 </div>
               </div>
             );

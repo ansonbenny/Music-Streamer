@@ -64,7 +64,9 @@ const Home = () => {
 
       {
         // for play
-        response?.albums_2?.[0] && <Recommended data={response?.albums_2} />
+        response?.albums_2?.[0] && (
+          <Recommended data={response?.albums_2} title={"Latest Year"} />
+        )
       }
 
       {response?.tracks?.[0] && (

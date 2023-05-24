@@ -1,8 +1,14 @@
 import React, { useCallback } from "react";
-import { Play, Heart, Share, MusicIcon } from "../../assets";
+import { Play, Heart, Share, MusicIcon, Pause } from "../../assets";
+import { getTrack, setStatus } from "../../redux/player";
+import { useDispatch, useSelector } from "react-redux";
 import "./style.scss";
 
 const Banner = ({ data, libraryAction, inLibrary }) => {
+  const dispatch = useDispatch();
+
+  const { player } = useSelector((state) => state);
+
   const getTime = useCallback(
     (ms) => {
       var minutes = Math.floor(ms / 60000);
@@ -12,6 +18,7 @@ const Banner = ({ data, libraryAction, inLibrary }) => {
     },
     [data]
   );
+
   return (
     <div className="banner">
       <div className="details">
@@ -115,10 +122,45 @@ const Banner = ({ data, libraryAction, inLibrary }) => {
       </div>
 
       <div className="actions">
-        <button className="play">
-          <Play width={"16px"} height={"16px"} color={"#fff"} />
-          Play
-        </button>
+        {player?.data?.type === data?.type &&
+        player?.data?.id === data?.id &&
+        player?.status ? (
+          <button
+            className="play"
+            onClick={() => {
+              dispatch(setStatus(false));
+            }}
+          >
+            <Pause width={"16px"} height={"16px"} color={"#fff"} />
+            Pause
+          </button>
+        ) : (
+          <>
+            {player?.data?.type === data?.type &&
+            player?.data?.id === data?.id ? (
+              <button
+                className="play"
+                onClick={() => {
+                  dispatch(setStatus(true));
+                }}
+              >
+                <Play width={"16px"} height={"16px"} color={"#fff"} />
+                Play
+              </button>
+            ) : (
+              <button
+                className="play"
+                onClick={() => {
+                  dispatch(getTrack({ type: data?.type, id: data?.id }));
+                }}
+              >
+                <Play width={"16px"} height={"16px"} color={"#fff"} />
+                Play
+              </button>
+            )}
+          </>
+        )}
+
         <button
           className={`extra ${inLibrary ? "active" : ""}`}
           onClick={() => libraryAction?.()}

@@ -105,6 +105,19 @@
                             fill: $PrimaryColor;
                         }
                     }
+
+                    &:is(.disable){
+                        cursor: unset;
+                        svg{
+                            fill: #888;
+                        }
+
+                        &:hover {
+                            svg {
+                                fill: #888;
+                            }
+                        }
+                    }
                 }
 
                 .prev svg {

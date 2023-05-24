@@ -1,13 +1,35 @@
-import { useEffect, useRef } from "react";
-import { useDispatch } from "react-redux";
-import { setTime, setVolume, setStatus } from "../../../redux/player";
+import { useCallback, useEffect, useRef } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  setTime,
+  setVolume,
+  setStatus,
+  changeAudio,
+  getTrack,
+} from "../../../redux/player";
 
 const useControl = () => {
   const ref = useRef({});
 
   const dispatch = useDispatch();
 
+  const { player } = useSelector((state) => state);
+
+  const playerUpdate = useCallback(() => {
+    ref.current.player = {
+      position: player?.data?.position,
+      status: player?.status,
+      tracks: player?.data?.tracks,
+      type: player?.data?.type,
+      offset: player?.data?.offset,
+      total: player?.data?.total,
+      id: player?.data?.id,
+    };
+  }, [player]);
+
   useEffect(() => {
+    playerUpdate();
+
     // functions
     const progressColor = (to) => {
       if (ref?.current?.[to]) {
@@ -34,10 +56,6 @@ const useControl = () => {
     };
 
     const handelTimeUpdate = () => {
-      if (ref.current["audio"].paused) {
-        dispatch(setStatus(false));
-      }
-
       ref.current["seekBar"].value = ref.current["audio"].currentTime;
 
       var sec = ref.current["audio"].currentTime;
@@ -55,6 +73,38 @@ const useControl = () => {
       dispatch(setTime({ current: `${min} : ${sec}` }));
 
       progressColor("seekBar");
+
+      if (
+        ref.current["audio"].currentTime === ref.current["audio"].duration &&
+        ref?.current?.["player"]?.status
+      ) {
+        if (
+          ref?.current?.["player"]?.tracks?.length - 1 >
+          ref?.current?.["player"]?.position
+        ) {
+          dispatch(changeAudio(ref?.current?.["player"]?.position + 1));
+        } else {
+          if (
+            (ref?.current?.["player"]?.type === "album" ||
+              ref?.current?.["player"]?.type === "playlist") &&
+            ref?.current?.["player"]?.offset <
+              ref?.current?.["player"]?.tracks?.length &&
+            ref?.current?.["player"]?.offset + 10 <=
+              ref?.current?.["player"]?.total
+          ) {
+            dispatch(
+              getTrack({
+                type: ref?.current?.["player"]?.type,
+                id: ref?.current?.["player"]?.id,
+                offset: ref?.current?.["player"]?.offset + 10,
+                position: ref?.current?.["player"]?.position + 1,
+              })
+            );
+          } else {
+            dispatch(setStatus(false));
+          }
+        }
+      }
     };
 
     const handleDurationChange = () => {
@@ -125,7 +175,7 @@ const useControl = () => {
         handleDurationChange
       );
     };
-  }, []);
+  }, [playerUpdate]);
 
   return ref;
 };

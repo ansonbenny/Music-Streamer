@@ -1,12 +1,13 @@
 import React, { useCallback, useEffect, useRef } from "react";
-import { Dots, Play } from "../../assets";
+import { Dots, Pause, Play } from "../../assets";
 import { useDispatch, useSelector } from "react-redux";
 import { setLibraryModal } from "../../redux/library";
 import { setAuth } from "../../redux/auth";
 import { MusicIcon } from "../../assets";
 import "./style.scss";
+import { changeAudio, getTrack, setStatus } from "../../redux/player";
 
-const Collections = ({ data }) => {
+const Collections = ({ data, collectionId, collectionType }) => {
   const ref = useRef({
     options: [],
     btn: [],
@@ -24,7 +25,7 @@ const Collections = ({ data }) => {
     [data]
   );
 
-  const { user } = useSelector((state) => state);
+  const { user, player } = useSelector((state) => state);
 
   useEffect(() => {
     const handleClick = (e) => {
@@ -65,9 +66,32 @@ const Collections = ({ data }) => {
               <tr key={key}>
                 <td>
                   <span className="count grey">{key + 1}</span>
-                  <button className="Play">
-                    <Play width={"16px"} height={"16px"} />
-                  </button>
+                  {player?.data?.tracks[player?.data?.position]?.id ===
+                    obj?.id && player?.status ? (
+                    <button
+                      className="Play"
+                      onClick={() => {
+                        dispatch(setStatus(false));
+                      }}
+                    >
+                      <Pause width={"16px"} height={"16px"} />
+                    </button>
+                  ) : (
+                    <button
+                      className="Play"
+                      onClick={() => {
+                        dispatch(
+                          getTrack({
+                            type: "track",
+                            id: obj?.id,
+                            position: 0,
+                          })
+                        );
+                      }}
+                    >
+                      <Play width={"16px"} height={"16px"} />
+                    </button>
+                  )}
                 </td>
                 {obj?.album?.images?.[0] ? (
                   <td>
@@ -145,7 +169,48 @@ const Collections = ({ data }) => {
                       >
                         Share
                       </li>
-                      <li onClick={() => console.log("Clicked")}>Play</li>
+
+                      {player?.data?.id === collectionId &&
+                      player?.data?.tracks[player?.data?.position]?.id ===
+                        obj?.id &&
+                      player?.status ? (
+                        <li
+                          onClick={() => {
+                            dispatch(setStatus(false));
+                          }}
+                        >
+                          Pause
+                        </li>
+                      ) : (
+                        <>
+                          {player?.data?.id === collectionId &&
+                          player?.data?.tracks[player?.data?.position]?.id !==
+                            obj?.id ? (
+                            <li
+                              onClick={() => {
+                                dispatch(changeAudio(key));
+                                dispatch(setStatus(true));
+                              }}
+                            >
+                              Play
+                            </li>
+                          ) : (
+                            <li
+                              onClick={() => {
+                                dispatch(
+                                  getTrack({
+                                    type: "track",
+                                    id: obj?.id,
+                                    position: 0,
+                                  })
+                                );
+                              }}
+                            >
+                              Play
+                            </li>
+                          )}
+                        </>
+                      )}
                     </ul>
                   </div>
                 </td>

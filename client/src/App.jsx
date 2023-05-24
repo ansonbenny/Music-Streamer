@@ -23,7 +23,7 @@ const App = () => {
 
   const location = useLocation();
 
-  const { library, additional, auth } = useSelector((state) => state);
+  const { player, additional, auth } = useSelector((state) => state);
 
   useLayoutEffect(() => {
     // for theme
@@ -79,7 +79,7 @@ const App = () => {
 
       <Footer />
 
-      <Player />
+      {player?.data?.tracks?.[0] && <Player />}
     </Fragment>
   );
 };

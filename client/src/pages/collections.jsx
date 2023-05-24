@@ -271,7 +271,13 @@ const Collections = ({ isArtist }) => {
         )
       )}
 
-      {response?.tracks?.[0] && <CollectionsComp data={response?.tracks} />}
+      {response?.tracks?.[0] && (
+        <CollectionsComp
+          data={response?.tracks}
+          collectionId={response?.album?.id || response?.artist?.id}
+          collectionType={response?.album?.type || response?.artist?.type}
+        />
+      )}
 
       {response?.tracks?.length < response?.total && (
         <LoadMore onHandle={loadMoreTracks} />

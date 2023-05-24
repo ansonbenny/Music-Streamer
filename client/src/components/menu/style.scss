@@ -3,7 +3,7 @@
 .menu {
     position: fixed;
     width: 240px;
-    height: calc(100% - 4rem);
+    height: 100%;
     z-index: 1000;
     background: var(--primary-bg);
 
@@ -42,10 +42,14 @@
     }
 
     .inner {
-        height: 100%;
+        height: calc(100% - 4rem);
         padding: 1rem;
         display: flex;
         flex-direction: column;
+
+        @media screen and (max-width:767px) {
+            height: 100%;
+        }
 
         .logo_menu {
             padding-top: .7rem;
