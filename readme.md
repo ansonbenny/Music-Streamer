@@ -70,7 +70,7 @@ To run this project, you will need to add the following environment variables to
 Clone the project
 
 ```bash
-  git clone https://github.com/ansonbenny/Music_Platform.git
+  git clone https://github.com/ansonbenny/Music-Platform
 ```
 
 ##To Start BackEnd
@@ -78,7 +78,7 @@ Clone the project
 Go to the server directory
 
 ```bash
-  cd Music_Platform/server
+  cd Music-Platform/server
 ```
 
 Install dependencies
@@ -98,7 +98,7 @@ Start
 Go to the client directory
 
 ```bash
-  cd Music_Platform/client
+  cd Music-Platform/client
 ```
 
 Install dependencies
