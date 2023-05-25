@@ -8,12 +8,7 @@ import {
   SpeakerMute,
   dummy,
 } from "../../../assets";
-import {
-  changeAudio,
-  getTrack,
-  resetData,
-  setStatus,
-} from "../../../redux/player";
+import { getTrack, resetData, setStatus } from "../../../redux/player";
 import useControl from "../hooks/useControl";
 import "./style.scss";
 
@@ -29,9 +24,9 @@ const Player = () => {
   useEffect(() => {
     if (user) {
       if (status) {
-        ref.current["audio"].play();
+        ref?.current?.["audio"]?.play?.();
       } else {
-        ref.current["audio"].pause();
+        ref?.current?.["audio"]?.pause?.();
       }
     } else {
       dispatch(resetData());
@@ -45,28 +40,32 @@ const Player = () => {
           <div className="thumbnail">
             <img
               src={
-                data?.tracks?.[data?.position]?.album?.images?.[0]?.url ||
+                data?.track.album?.images?.[0]?.url ||
                 data?.album?.images?.[0]?.url
               }
-              alt={data?.tracks?.[data?.position]?.uri}
+              alt={data?.track?.uri}
             />
           </div>
 
           <div className="content">
-            <h4>{data?.tracks?.[data?.position]?.name}</h4>
-            <p>
-              {data?.tracks?.[data?.position]?.album?.name || data?.album?.name}
-            </p>
+            <h4>{data?.track?.name}</h4>
+            <p>{data?.track?.album?.name || data?.album?.name}</p>
           </div>
         </div>
 
         <div className="audio_player">
           <div className="actions">
             <button
-              className={`prev ${data?.position <= 0 ? "disable" : ""}`}
+              className={`prev ${data?.offset <= 0 ? "disable" : ""}`}
               onClick={() => {
-                if (data?.position > 0) {
-                  dispatch(changeAudio(data?.position - 1));
+                if (data?.offset > 0) {
+                  dispatch(
+                    getTrack({
+                      type: data?.type,
+                      id: data?.id,
+                      offset: data?.offset - 1,
+                    })
+                  );
                 }
               }}
             >
@@ -95,22 +94,15 @@ const Player = () => {
 
             <button
               className={`next ${
-                data?.total - 1 <= data?.position ? "disable" : ""
+                data?.offset + 1 >= data?.total ? "disable" : ""
               }`}
               onClick={() => {
-                if (data?.tracks?.length - 1 > data?.position) {
-                  dispatch(changeAudio(data?.position + 1));
-                } else if (
-                  (data?.type === "album" || data?.type === "playlist") &&
-                  data?.total !== data?.tracks?.length &&
-                  data?.offset < data?.total
-                ) {
+                if (data?.offset + 1 < data?.total) {
                   dispatch(
                     getTrack({
                       type: data?.type,
                       id: data?.id,
-                      offset: data?.offset,
-                      position: data?.position + 1,
+                      offset: data?.offset + 1,
                     })
                   );
                 }
@@ -154,7 +146,7 @@ const Player = () => {
         </div>
 
         <audio
-          src={data?.tracks?.[data?.position]?.preview_url || dummy}
+          src={data?.track?.preview_url || dummy}
           ref={(audio) => {
             if (ref?.current) return (ref.current["audio"] = audio);
           }}

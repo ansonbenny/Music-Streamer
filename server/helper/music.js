@@ -500,4 +500,138 @@ export default {
       }
     });
   },
+  recentActivity: (userId, artist) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        let total = await db
+          .collection(collections.ACTIVITY)
+          .aggregate([
+            {
+              $match: {
+                _id: new ObjectId(userId),
+              },
+            },
+            {
+              $unwind: "$items",
+            },
+            {
+              $group: {
+                _id: 1,
+                value: {
+                  $sum: 1,
+                },
+              },
+            },
+          ])
+          .toArray();
+
+        if (total?.[0]?.value > 10) {
+          let remove = await db.collection(collections.ACTIVITY).updateOne(
+            {
+              _id: new ObjectId(userId),
+            },
+            {
+              $pop: {
+                items: -1,
+              },
+            }
+          );
+
+          if (remove) {
+            await db.collection(collections.ACTIVITY).updateOne(
+              {
+                _id: new ObjectId(userId),
+              },
+              {
+                $addToSet: {
+                  items: { name: artist },
+                },
+              },
+              {
+                upsert: true,
+              }
+            );
+
+            resolve();
+          }
+        } else {
+          await db.collection(collections.ACTIVITY).updateOne(
+            {
+              _id: new ObjectId(userId),
+            },
+            {
+              $addToSet: {
+                items: { name: artist },
+              },
+            },
+            {
+              upsert: true,
+            }
+          );
+
+          resolve();
+        }
+      } catch (err) {
+        console.log(err);
+        resolve();
+      }
+    });
+  },
+  getRecentActivity: (userId) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        let total = await db
+          .collection(collections.ACTIVITY)
+          .aggregate([
+            {
+              $match: {
+                _id: new ObjectId(userId),
+              },
+            },
+            {
+              $unwind: "$items",
+            },
+            {
+              $group: {
+                _id: 1,
+                value: {
+                  $sum: 1,
+                },
+              },
+            },
+          ])
+          .toArray();
+
+        if (total?.[0]) {
+          let random = Math.random() * total?.[0]?.value || 0;
+
+          random = Math.floor(random);
+
+          let res = await db
+            .collection(collections.ACTIVITY)
+            ?.aggregate([
+              {
+                $match: {
+                  _id: new ObjectId(userId),
+                },
+              },
+              {
+                $project: {
+                  artist: {
+                    $arrayElemAt: ["$items", random],
+                  },
+                },
+              },
+            ])
+            .toArray();
+
+          resolve({ artist: res?.[0]?.artist?.name });
+        } else {
+          resolve({ artist: null });
+        }
+      } catch (err) {
+        resolve({ artist: null });
+      }
+    });
+  },
 };

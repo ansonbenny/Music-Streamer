@@ -3,14 +3,12 @@ import instance from "../lib/axios";
 
 export const getTrack = createAsyncThunk(
   "player/track",
-  async ({ type, id, offset, position, limit }) => {
+  async ({ type, id, offset }) => {
     let response = await instance.get("/music/get-audio-tracks", {
       params: {
         id,
         type,
         offset,
-        position,
-        limit,
       },
     });
 
@@ -22,12 +20,11 @@ const playerSlice = createSlice({
   name: "player",
   initialState: {
     data: {
-      position: 0,
       total: 0,
       offset: 0,
       type: null,
       id: null,
-      tracks: [],
+      track: null,
     },
     volume: localStorage.getItem("volume") || 1,
     time: { current: `00 : 00`, duration: `00 : 00` },
@@ -47,12 +44,11 @@ const playerSlice = createSlice({
     },
     resetData: (state, actions) => {
       state.data = {
-        position: 0,
         total: 0,
         offset: 0,
         type: null,
         id: null,
-        tracks: [],
+        track: null,
       };
       return state;
     },
@@ -64,50 +60,21 @@ const playerSlice = createSlice({
       state.status = payload;
       return state;
     },
-    changeAudio: (state, { payload }) => {
-      state.data.position = payload;
-      return state;
-    },
   },
   extraReducers: (callback) => {
     callback.addCase(getTrack.fulfilled, (state, { payload }) => {
-      let old = JSON.parse(JSON.stringify(state));
+      state.data = payload;
 
       state.status = true;
-
-      if (
-        payload?.type === "album" &&
-        old?.data?.type === "album" &&
-        payload?.id === old?.data?.id &&
-        payload?.offset > old?.data?.offset
-      ) {
-        state.data = {
-          ...payload,
-          tracks: [...old?.data?.tracks, ...payload?.tracks],
-        };
-      } else if (
-        payload?.type === "playlist" &&
-        old?.data?.type === "playlist" &&
-        payload?.id === old?.data?.id &&
-        payload?.offset > old?.data?.offset
-      ) {
-        state.data = {
-          ...payload,
-          tracks: [...old?.data?.tracks, ...payload?.tracks],
-        };
-      } else if (payload?.id !== old?.data?.id) {
-        state.data = payload;
-      }
       return state;
     });
 
     callback.addCase(getTrack.rejected, (state, { error }) => {
-      state.data.tracks = [];
+      state.data.track = null;
       return state;
     });
   },
 });
 
-export const { setTime, resetData, setVolume, setStatus, changeAudio } =
-  playerSlice.actions;
+export const { setTime, resetData, setVolume, setStatus } = playerSlice.actions;
 export default playerSlice.reducer;

@@ -79,7 +79,7 @@ const App = () => {
 
       <Footer />
 
-      {player?.data?.tracks?.[0] && <Player />}
+      {player?.data?.track && <Player />}
     </Fragment>
   );
 };

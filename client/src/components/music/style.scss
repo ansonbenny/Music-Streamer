@@ -87,6 +87,10 @@
 
           span {
             margin-left: -5px;
+
+            &:is(.normal){
+              margin-left: 0 !important;
+            }
           }
 
           &:is(.avatar) {

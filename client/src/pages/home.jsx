@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Carousel, Row, Recommended } from "../components";
+import { Carousel, Row, LiteRow } from "../components";
 import { useDispatch } from "react-redux";
 import { setLoading } from "../redux/additional";
 import { useLocation } from "react-router-dom";
@@ -22,20 +22,18 @@ const Home = () => {
       let res;
 
       try {
-        res = await instance.get("/music/all", {
+        res = await instance.get("/music/home", {
           cancelToken: cancelToken.token,
         });
       } catch (err) {
         if (axios.isCancel(err)) {
           console.log("Cancelled");
         } else if (typeof err?.response?.data?.message === "string") {
-          console.log(err);
           alert(err?.response?.data?.message);
           setTimeout(() => {
             dispatch(setLoading(false));
           }, 1000);
         } else {
-          console.log(err);
           alert("Facing An Error");
           setTimeout(() => {
             dispatch(setLoading(false));
@@ -43,7 +41,6 @@ const Home = () => {
         }
       } finally {
         if (res?.data) {
-          //  console.log(res?.["data"]?.data);
           setResponse(res?.["data"]?.data);
           setTimeout(() => {
             dispatch(setLoading(false));
@@ -56,26 +53,33 @@ const Home = () => {
       cancelToken.cancel();
     };
   }, [location]);
+
   return (
     <div className="container">
       {response?.albums?.[0] && (
-        <Carousel title={"Featured"} data={response?.albums} />
+        <Carousel
+          title={response?.recentActivity ? "Based On Activity" : "Featured"}
+          data={response?.albums}
+        />
       )}
 
       {
         // for play
         response?.albums_2?.[0] && (
-          <Recommended data={response?.albums_2} title={"Latest Year"} />
+          <LiteRow data={response?.albums_2} title={"Latest Year"} />
         )
       }
 
       {response?.tracks?.[0] && (
-        <Row title={"New Featured"} data={response?.tracks} />
+        <Row
+          title={response?.recentActivity ? "For You" : "Featured Tracks"}
+          data={response?.tracks}
+        />
       )}
 
       {response?.artists?.[0] && (
         <Row
-          title={"Top Artists"}
+          title={"Latest Artists"}
           data={response?.artists}
           isCarousel
           isRound
@@ -83,7 +87,7 @@ const Home = () => {
       )}
 
       {response?.tracks_2?.[0] && (
-        <Row title={"New music"} data={response?.tracks_2} />
+        <Row title={"Latest Tracks"} data={response?.tracks_2} />
       )}
     </div>
   );

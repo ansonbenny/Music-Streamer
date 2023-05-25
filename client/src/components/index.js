@@ -2,7 +2,7 @@ export { default as Header } from "./header/header";
 export { default as Menu } from "./menu/menu";
 export { default as Loading } from "./loading/loading";
 export { default as Row } from "./row/row";
-export { default as Recommended } from "./home/recommended";
+export { default as LiteRow } from "./home/liteRow";
 export { default as Carousel } from "./home/carousel";
 export { default as Footer } from "./footer/footer";
 export { default as Banner } from "./music/banner";

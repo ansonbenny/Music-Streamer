@@ -41,10 +41,8 @@ const Banner = ({ data, libraryAction, inLibrary }) => {
 
         <div className="content">
           <h5>
-            {data?.type === "track" && "Track"}
-            {data?.type === "album" && "Album"}
-            {data?.type === "artist" && "Artist"}
-            {data?.type === "playlist" && "Playlist"}
+            {data?.type?.[0]?.toUpperCase()}
+            {data?.type?.slice(1, data?.type?.length)}
           </h5>
           <h1>{data?.name}</h1>
           <p>
@@ -68,50 +66,51 @@ const Banner = ({ data, libraryAction, inLibrary }) => {
           </p>
 
           <ul>
-            <li className="avatar">
-              {data?.album?.images?.[0]?.url ? (
-                <img
-                  src={data?.album?.images?.[0]?.url}
-                  alt={data?.artists?.[0]?.uri}
-                />
-              ) : (
-                <>
-                  {data?.images?.[0]?.url ? (
-                    <img
-                      src={data?.images?.[0]?.url}
-                      alt={data?.artists?.[0]?.uri}
-                    />
-                  ) : (
-                    <MusicIcon />
-                  )}
-                </>
-              )}
-              <span>
-                {data?.artists
-                  ? data?.artists?.[0]?.name
-                  : data?.type === "artist"
-                  ? data?.name
-                  : data?.type === "playlist" && "Own"}
-              </span>
-            </li>
+            {data?.type !== "artist" && (
+              <li className="avatar">
+                {data?.album?.images?.[0]?.url ? (
+                  <img
+                    src={data?.album?.images?.[0]?.url}
+                    alt={data?.artists?.[0]?.uri}
+                  />
+                ) : (
+                  <>
+                    {data?.images?.[0]?.url ? (
+                      <img
+                        src={data?.images?.[0]?.url}
+                        alt={data?.artists?.[0]?.uri}
+                      />
+                    ) : (
+                      <MusicIcon />
+                    )}
+                  </>
+                )}
+                <span>
+                  {data?.artists
+                    ? data?.artists?.[0]?.name
+                    : data?.type === "playlist" && "Own"}
+                </span>
+              </li>
+            )}
+
             {data?.album?.release_date ? (
               <li>
-                {" "}
-                <span>{data?.album?.release_date}</span>{" "}
+                <span>{data?.album?.release_date}</span>
               </li>
             ) : data?.release_date ? (
               <li>
-                {" "}
-                <span>{data?.release_date}</span>{" "}
+                <span>{data?.release_date}</span>
               </li>
             ) : (
               data?.followers?.total && (
                 <li>
-                  {" "}
-                  <span>Followers : {data?.followers?.total}</span>{" "}
+                  <span className="normal">
+                    Follows : {data?.followers?.total}
+                  </span>
                 </li>
               )
             )}
+
             {data?.type === "track" && (
               <li>
                 <span>{getTime(data?.duration_ms || 0)}</span>

@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setLibraryModal } from "../../redux/library";
 import { setAuth } from "../../redux/auth";
 import { MusicIcon } from "../../assets";
-import { changeAudio, getTrack, setStatus } from "../../redux/player";
+import { getTrack, setStatus } from "../../redux/player";
 import "./style.scss";
 
 const Collections = ({ data, collectionId, collectionType }) => {
@@ -67,8 +67,7 @@ const Collections = ({ data, collectionId, collectionType }) => {
                 <td>
                   <span className="count grey">{key + 1}</span>
                   {player?.data?.id === collectionId &&
-                  player?.data?.tracks?.[player?.data?.position]?.id ===
-                    obj?.id &&
+                  player?.data?.track?.id === obj?.id &&
                   player?.status ? (
                     <button
                       className="Play"
@@ -84,33 +83,15 @@ const Collections = ({ data, collectionId, collectionType }) => {
                       onClick={() => {
                         if (
                           player?.data?.id === collectionId &&
-                          player?.data?.tracks?.[player?.data?.position]?.id ===
-                            obj?.id
+                          player?.data?.track?.id === obj?.id
                         ) {
                           dispatch(setStatus(true));
-                        } else if (player?.data?.id === collectionId) {
-                          if (player?.data?.tracks?.length >= key + 1) {
-                            dispatch(changeAudio(key));
-                          } else {
-                            var limit = key + 1 - player?.data?.offset;
-                            dispatch(
-                              getTrack({
-                                type: collectionType,
-                                id: collectionId,
-                                position: key,
-                                offset: player?.data?.offset,
-                                limit: limit,
-                              })
-                            );
-                          }
                         } else {
                           dispatch(
                             getTrack({
                               type: collectionType,
                               id: collectionId,
-                              position: key,
-                              offset: 0,
-                              limit: key + 1,
+                              offset: key,
                             })
                           );
                         }
@@ -198,8 +179,7 @@ const Collections = ({ data, collectionId, collectionType }) => {
                       </li>
 
                       {player?.data?.id === collectionId &&
-                      player?.data?.tracks?.[player?.data?.position]?.id ===
-                        obj?.id &&
+                      player?.data?.track?.id === obj?.id &&
                       player?.status ? (
                         <li
                           onClick={() => {
@@ -213,34 +193,15 @@ const Collections = ({ data, collectionId, collectionType }) => {
                           onClick={() => {
                             if (
                               player?.data?.id === collectionId &&
-                              player?.data?.tracks?.[player?.data?.position]
-                                ?.id === obj?.id
+                              player?.data?.track?.id === obj?.id
                             ) {
                               dispatch(setStatus(true));
-                            } else if (player?.data?.id === collectionId) {
-                              if (player?.data?.tracks?.length >= key + 1) {
-                                dispatch(changeAudio(key));
-                              } else {
-                                var limit = key + 1 - player?.data?.offset;
-
-                                dispatch(
-                                  getTrack({
-                                    type: collectionType,
-                                    id: collectionId,
-                                    position: key,
-                                    offset: player?.data?.offset,
-                                    limit: limit,
-                                  })
-                                );
-                              }
                             } else {
                               dispatch(
                                 getTrack({
                                   type: collectionType,
                                   id: collectionId,
-                                  position: key,
-                                  offset: 0,
-                                  limit: key + 1,
+                                  offset: key,
                                 })
                               );
                             }

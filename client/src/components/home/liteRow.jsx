@@ -4,12 +4,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { getTrack, setStatus } from "../../redux/player";
 import "./style.scss";
 
-const Recommended = ({ data, title }) => {
+const LiteRow = ({ data, title }) => {
   const dispatch = useDispatch();
 
   const { player } = useSelector((state) => state);
   return (
-    <div className="recommended">
+    <div className="liteRow">
       <div className="title">
         <h5>{title}</h5>
       </div>
@@ -71,4 +71,4 @@ const Recommended = ({ data, title }) => {
   );
 };
 
-export default Recommended;
+export default LiteRow;

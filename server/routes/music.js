@@ -41,61 +41,160 @@ const CheckLogged = (req, res, next) => {
   });
 };
 
-router.get("/all", (req, res) => {
-  Spotify(async (err, instance) => {
-    if (instance) {
-      let response;
+router.get("/home", (req, res) => {
+  const { token } = req.cookies;
+
+  const getData = (userId) => {
+    if (userId) {
+      Spotify(async (err, instance) => {
+        if (instance) {
+          let response;
+          try {
+            let recentActivity = await music.getRecentActivity(userId);
+
+            let collection;
+
+            if (recentActivity?.artist) {
+              collection = await instance.get(
+                `/search?q=artist:${recentActivity?.artist}&type=album%2Ctrack&limit=10&market=ES`
+              );
+            } else {
+              collection = await instance.get(
+                `/search?q=year%3A${new Date().getFullYear()}&type=album%2Ctrack&limit=10&market=ES`
+              );
+            }
+
+            let collection2 = await instance.get(
+              `/search?q=year%3A${new Date().getFullYear()}&type=album%2Cartist%2Ctrack&offset=10&limit=10&market=ES`
+            );
+
+            if (collection?.["data"] && collection2?.["data"]) {
+              response = {
+                tracks: [
+                  ...(collection?.["data"]?.tracks?.items?.map((obj) => {
+                    delete obj?.preview_url;
+                    return obj;
+                  }) || []),
+                ],
+                tracks_2: [
+                  ...(collection2?.["data"]?.tracks?.items?.map((obj) => {
+                    delete obj?.preview_url;
+                    return obj;
+                  }) || []),
+                ],
+                albums_2: collection2?.["data"]?.albums?.items,
+                albums: collection?.["data"]?.albums?.items,
+                artists: collection2?.["data"]?.artists?.items,
+                recentActivity: recentActivity?.artist ? true : false,
+              };
+            }
+          } catch (err) {
+            if (err?.response?.status) {
+              return res.status(err?.response?.status).json({
+                status: err?.response?.status,
+                message:
+                  err?.response?.data?.error?.message || "Something Wrong",
+              });
+            } else {
+              return res.status(500).json({
+                status: 500,
+                message: "Something Wrong",
+              });
+            }
+          } finally {
+            if (response) {
+              return res.status(200).json({
+                status: 200,
+                message: "Success",
+                data: response,
+              });
+            }
+          }
+        } else {
+          return res.status(err?.status).json(err);
+        }
+      });
+    } else {
+      Spotify(async (err, instance) => {
+        if (instance) {
+          let response;
+          try {
+            let collection = await instance.get(
+              `/search?q=year%3A${new Date().getFullYear()}&type=album%2Cartist%2Ctrack&limit=10&market=ES`
+            );
+
+            let collection2 = await instance.get(
+              `/search?q=year%3A${new Date().getFullYear()}&type=album%2Ctrack&offset=10&limit=10&market=ES`
+            );
+
+            if (collection?.["data"] && collection2?.["data"]) {
+              response = {
+                tracks: [
+                  ...(collection?.["data"]?.tracks?.items?.map((obj) => {
+                    delete obj?.preview_url;
+                    return obj;
+                  }) || []),
+                ],
+                tracks_2: [
+                  ...(collection2?.["data"]?.tracks?.items?.map((obj) => {
+                    delete obj?.preview_url;
+                    return obj;
+                  }) || []),
+                ],
+                albums_2: collection2?.["data"]?.albums?.items,
+                albums: collection?.["data"]?.albums?.items,
+                artists: collection?.["data"]?.artists?.items,
+              };
+            }
+          } catch (err) {
+            if (err?.response?.status) {
+              return res
+                .clearCookie("token")
+                .status(err?.response?.status)
+                .json({
+                  status: err?.response?.status,
+                  message:
+                    err?.response?.data?.error?.message || "Something Wrong",
+                });
+            } else {
+              return res.clearCookie("token").status(500).json({
+                status: 500,
+                message: "Something Wrong",
+              });
+            }
+          } finally {
+            if (response) {
+              return res.clearCookie("token").status(200).json({
+                status: 200,
+                message: "Success",
+                data: response,
+              });
+            }
+          }
+        } else {
+          return res.clearCookie("token").status(err?.status).json(err);
+        }
+      });
+    }
+  };
+
+  jwt.verify(token, process.env.JWT_SECRET, async (err, decode) => {
+    if (decode?._id?.length === 24) {
       try {
-        let collection = await instance.get(
-          `/search?q=year%3A${new Date().getFullYear()}&type=album%2Cartist%2Ctrack&limit=10&market=ES`
-        );
+        let userData = await user.get_user(decode?._id);
 
-        let collection2 = await instance.get(
-          `/search?q=year%3A${new Date().getFullYear()}&type=album%2Ctrack&offset=10&limit=10&market=ES`
-        );
-
-        if (collection?.["data"] && collection2?.["data"]) {
-          response = {
-            tracks: [
-              ...(collection?.["data"]?.tracks?.items?.map((obj) => {
-                delete obj?.preview_url;
-                return obj;
-              }) || []),
-            ],
-            tracks_2: [
-              ...(collection2?.["data"]?.tracks?.items?.map((obj) => {
-                delete obj?.preview_url;
-                return obj;
-              }) || []),
-            ],
-            albums_2: collection2?.["data"]?.albums?.items,
-            albums: collection?.["data"]?.albums?.items,
-            artists: collection?.["data"]?.artists?.items,
-          };
+        if (userData) {
+          getData(userData?._id?.toString());
         }
       } catch (err) {
-        if (err?.response?.status) {
-          return res.status(err?.response?.status).json({
-            status: err?.response?.status,
-            message: err?.response?.data?.error?.message || "Something Wrong",
-          });
-        } else {
-          return res.status(500).json({
-            status: 500,
-            message: "Something Wrong",
-          });
-        }
-      } finally {
-        if (response) {
-          return res.status(200).json({
-            status: 200,
-            message: "Success",
-            data: response,
-          });
-        }
+        console.log(err);
+        getData();
       }
+    } else if (err) {
+      console.log(`Error : ${err?.name}`);
+      getData();
     } else {
-      return res.status(err?.status).json(err);
+      getData();
     }
   });
 });
@@ -197,6 +296,11 @@ router.get("/track", (req, res) => {
             let inPlaylist = await music.checkTrackInPlaylist(
               userId,
               track?.data?.id
+            );
+
+            await music.recentActivity(
+              userId,
+              track?.data?.album?.artists?.[0]?.name
             );
 
             if (track?.data?.album?.artists?.[0]?.id) {
@@ -350,6 +454,8 @@ router.get("/album", (req, res) => {
             );
 
             let inLibrary = await music.checkInLibrary(userId, id, "album");
+
+            await music.recentActivity(userId, album?.data?.artists?.[0]?.name);
 
             if (album?.data && tracks?.data && related?.data) {
               delete album?.data?.tracks;
@@ -553,6 +659,8 @@ router.get("/artist", (req, res) => {
             );
 
             let inLibrary = await music.checkInLibrary(userId, id, "artist");
+
+            await music.recentActivity(userId, artist?.data?.name);
 
             if (artist?.data && tracks?.data && related?.data) {
               response = {
@@ -956,7 +1064,7 @@ router.get("/user-playlist-tracks", CheckLogged, async (req, res) => {
 });
 
 router.get("/get-audio-tracks", CheckLogged, async (req, res) => {
-  const { userId, type, id, offset = 0, position = 0, limit = 10 } = req.query;
+  const { userId, type, id, offset = 0 } = req.query;
 
   if (type === "artist") {
     Spotify(async (err, instance) => {
@@ -971,11 +1079,12 @@ router.get("/get-audio-tracks", CheckLogged, async (req, res) => {
           if (tracks?.data) {
             response = {
               total: tracks?.data?.tracks?.length,
-              offset: tracks?.data?.tracks?.length,
+              offset: parseInt(offset),
               type: "artist",
               id,
-              tracks: tracks?.data?.tracks,
-              position: parseInt(position),
+              track:
+                tracks?.data?.tracks?.[offset] ||
+                tracks?.data?.tracks?.[tracks?.data?.tracks?.length - 1],
             };
           }
         } catch (err) {
@@ -1012,7 +1121,7 @@ router.get("/get-audio-tracks", CheckLogged, async (req, res) => {
           let album = await instance.get(`/albums/${id}?market=ES`);
 
           let tracks = await instance.get(
-            `/albums/${id}/tracks?market=ES&limit=${limit}&offset=${offset}`
+            `/albums/${id}/tracks?market=ES&limit=${1}&offset=${offset}`
           );
 
           if (tracks?.data && album?.data) {
@@ -1022,11 +1131,10 @@ router.get("/get-audio-tracks", CheckLogged, async (req, res) => {
                 images: album?.data?.images,
                 name: album?.data?.name,
               },
-              offset: parseInt(offset) + tracks?.data?.items?.length,
+              offset: parseInt(offset),
               type: "album",
               id,
-              tracks: tracks?.data?.items,
-              position: parseInt(position),
+              track: tracks?.data?.items?.[0],
             };
           }
         } catch (err) {
@@ -1065,11 +1173,10 @@ router.get("/get-audio-tracks", CheckLogged, async (req, res) => {
           if (tracks?.data) {
             response = {
               total: 1,
-              offset: 1,
+              offset: 0,
               type: "track",
               id,
-              tracks: [tracks?.data],
-              position: parseInt("0"),
+              track: tracks?.data,
             };
           }
         } catch (err) {
@@ -1105,7 +1212,7 @@ router.get("/get-audio-tracks", CheckLogged, async (req, res) => {
         userId,
         parseInt(offset),
         `${id}_playlist`,
-        parseInt(limit)
+        1
       );
     } catch (err) {
       res.status(500).json({
@@ -1119,11 +1226,10 @@ router.get("/get-audio-tracks", CheckLogged, async (req, res) => {
           message: "Success",
           data: {
             total: response?.data?.total,
-            offset: parseInt(offset) + response?.data?.tracks?.length,
+            offset: parseInt(offset),
             type: "playlist",
             id,
-            tracks: response?.data?.tracks,
-            position: parseInt(position),
+            track: response?.data?.tracks?.[0],
           },
         });
       }

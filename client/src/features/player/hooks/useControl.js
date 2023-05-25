@@ -1,12 +1,6 @@
 import { useCallback, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  setTime,
-  setVolume,
-  setStatus,
-  changeAudio,
-  getTrack,
-} from "../../../redux/player";
+import { setTime, setVolume, setStatus, getTrack } from "../../../redux/player";
 
 const useControl = () => {
   const ref = useRef({});
@@ -17,9 +11,7 @@ const useControl = () => {
 
   const playerUpdate = useCallback(() => {
     ref.current.player = {
-      position: player?.data?.position,
       status: player?.status,
-      tracks: player?.data?.tracks,
       type: player?.data?.type,
       offset: player?.data?.offset,
       total: player?.data?.total,
@@ -52,13 +44,18 @@ const useControl = () => {
     };
 
     const changeTime = (e) => {
-      ref.current["audio"].currentTime = e.target.value;
+      if (ref?.current?.["audio"]) {
+        ref.current["audio"].currentTime = e.target.value;
+      }
     };
 
     const handelTimeUpdate = () => {
-      ref.current["seekBar"].value = ref.current["audio"].currentTime;
+      if (ref?.current?.["seekBar"]) {
+        ref.current["seekBar"].value =
+          ref?.current?.["audio"]?.currentTime || 0;
+      }
 
-      var sec = ref.current["audio"].currentTime;
+      var sec = ref?.current?.["audio"]?.currentTime || 0;
 
       sec = sec % 3600;
 
@@ -75,45 +72,37 @@ const useControl = () => {
       progressColor("seekBar");
 
       if (
-        ref.current["audio"].currentTime === ref.current["audio"].duration &&
+        ref?.current?.["audio"]?.currentTime ===
+          ref?.current?.["audio"]?.duration &&
         ref?.current?.["player"]?.status
       ) {
         if (
-          ref?.current?.["player"]?.tracks?.length - 1 >
-          ref?.current?.["player"]?.position
+          ref?.current?.["player"]?.offset + 1 <
+          ref?.current?.["player"]?.total
         ) {
-          dispatch(changeAudio(ref?.current?.["player"]?.position + 1));
+          dispatch(
+            getTrack({
+              type: ref?.current?.["player"]?.type,
+              id: ref?.current?.["player"]?.id,
+              offset: ref?.current?.["player"]?.offset + 1,
+            })
+          );
         } else {
-          if (
-            (ref?.current?.["player"]?.type === "album" ||
-              ref?.current?.["player"]?.type === "playlist") &&
-            ref?.current?.["player"]?.total !==
-              ref?.current?.["player"]?.tracks?.length &&
-            ref?.current?.["player"]?.offset < ref?.current?.["player"]?.total
-          ) {
-            dispatch(
-              getTrack({
-                type: ref?.current?.["player"]?.type,
-                id: ref?.current?.["player"]?.id,
-                offset: ref?.current?.["player"]?.offset,
-                position: ref?.current?.["player"]?.position + 1,
-              })
-            );
-          } else {
-            dispatch(setStatus(false));
-          }
+          dispatch(setStatus(false));
         }
       }
     };
 
     const handleDurationChange = () => {
-      ref.current["seekBar"].value = 0;
+      if (ref?.current?.["seekBar"]) {
+        ref.current["seekBar"].value = 0;
 
-      ref.current["seekBar"].min = 0;
+        ref.current["seekBar"].min = 0;
 
-      ref.current["seekBar"].max = ref.current["audio"].duration;
+        ref.current["seekBar"].max = ref.current["audio"].duration;
+      }
 
-      var sec = ref.current["audio"].duration;
+      var sec = ref?.current?.["audio"]?.duration || 0;
 
       sec = sec % 3600;
 
