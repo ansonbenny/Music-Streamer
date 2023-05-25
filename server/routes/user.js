@@ -1,6 +1,8 @@
 import { Router } from "express";
+import { sendMail } from "../mail/mail.js";
 import user from "../helper/user.js";
-import { sendMail } from "../helper/mail.js";
+import path from "path";
+import fs from "fs";
 import axios from "axios";
 import jwt from "jsonwebtoken";
 
@@ -120,17 +122,33 @@ router.post("/register", CheckLogged, async (req, res) => {
           }
         } finally {
           if (response?._id) {
-            sendMail(
-              {
-                to: email,
-                subject: `Musicon Register Verification`,
-                html: `You can complete register by clicking below link  <a href="${process.env.SITE_URL}/register/pending/${response._id}/${secret}" >Click</a>`,
-              },
-              (err, done) => {
-                if (err) {
-                  console.log(err);
+            fs.readFile(
+              `${path.resolve(`${path.dirname("")}/mail/static/index.html`)}`,
+              "utf-8",
+              (err, html) => {
+                if (!err && html) {
+                  html = html.replace("[EMAIL]", email);
+                  html = html.replace(
+                    "[LINK]",
+                    `${process.env.SITE_URL}/register/pending/${response._id}/${secret}`
+                  );
+
+                  sendMail(
+                    {
+                      to: email,
+                      subject: `Musicon Register Verification`,
+                      html,
+                    },
+                    (err, done) => {
+                      if (err) {
+                        console.log(err);
+                      } else {
+                        console.log(`Email sent: ${done.response}`);
+                      }
+                    }
+                  );
                 } else {
-                  console.log(`Email sent: ${done.response}`);
+                  console.log(err);
                 }
               }
             );
@@ -215,17 +233,33 @@ router.post("/forgot", CheckLogged, async (req, res) => {
         }
       } finally {
         if (response?._id) {
-          sendMail(
-            {
-              to: email,
-              subject: `Musicon Password Forgot Verification`,
-              html: `You can complete password forgot by clicking below link  <a href="${process.env.SITE_URL}/forgot/pending/${response._id}/${secret}" >Click</a>`,
-            },
-            (err, done) => {
-              if (err) {
-                console.log(err);
+          fs.readFile(
+            `${path.resolve(`${path.dirname("")}/mail/static/index.html`)}`,
+            "utf-8",
+            (err, html) => {
+              if (!err && html) {
+                html = html.replace("[EMAIL]", email);
+                html = html.replace(
+                  "[LINK]",
+                  `${process.env.SITE_URL}/forgot/pending/${response._id}/${secret}`
+                );
+
+                sendMail(
+                  {
+                    to: email,
+                    subject: `Musicon Password Forgot Verification`,
+                    html,
+                  },
+                  (err, done) => {
+                    if (err) {
+                      console.log(err);
+                    } else {
+                      console.log(`Email sent: ${done.response}`);
+                    }
+                  }
+                );
               } else {
-                console.log(`Email sent: ${done.response}`);
+                console.log(err);
               }
             }
           );

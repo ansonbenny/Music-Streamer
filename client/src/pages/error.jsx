@@ -9,7 +9,9 @@ const Error = ({ customErr }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    document.title = `Musicon - Error`;
+    document.title = `Musicon - ${
+      customErr?.statusText ? customErr.statusText : "Error"
+    }`;
     dispatch(setLoading(false));
   }, []);
 
