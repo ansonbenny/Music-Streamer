@@ -8,7 +8,7 @@ This project is a digital music platform, It's made for listening to music and m
 - Password login & Verification Based Sign Up
 - Forgot password
 - Google Login & Sign up
-- Collections Clone & Custom Playlist Create and Edit (Library) & With Search Feature in Library
+- Collections Clone & Custom Playlist Create and Edit & With Search Feature in Library
 - Search With Filter ( all, artists, albums, tracks)
 - Search box allows Spotify Search Query (Example = artist:alan walker )
 - Account Edit Option
