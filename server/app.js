@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
+import path from "path";
 
 // Routes
 
@@ -34,7 +35,7 @@ app.get("/api", (req, res) => {
 
 // for render react static files
 app.get("/*", (req, res) => {
-  res.json("STATIC");
+  res.sendFile(path.join(path.resolve(`${path.dirname("")}/dist/index.html`)));
 });
 
 app.listen(port, () => {
