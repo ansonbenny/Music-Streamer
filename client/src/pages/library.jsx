@@ -36,7 +36,6 @@ const Library = () => {
         dispatch(setUser(null));
         navigate("/");
       } else {
-        console.log(err);
         alert("Facing An Error");
         return true;
       }
@@ -68,7 +67,6 @@ const Library = () => {
           dispatch(setUser(null));
           navigate("/");
         } else {
-          console.log(err);
           alert("Facing An Error");
         }
       } finally {
@@ -102,7 +100,6 @@ const Library = () => {
           dispatch(setUser(null));
           navigate("/");
         } else {
-          console.log(err);
           alert("Facing An Error");
         }
       } finally {
@@ -143,7 +140,6 @@ const Library = () => {
           dispatch(setUser(null));
           navigate("/");
         } else {
-          console.log(err);
           alert("Facing An Error");
         }
       } finally {
@@ -181,7 +177,6 @@ const Library = () => {
       if (axios.isCancel(err)) {
         console.log("Cancelled");
       } else {
-        console.log(err);
         alert("Facing An Error");
         setTimeout(() => {
           dispatch(setLoading(false));

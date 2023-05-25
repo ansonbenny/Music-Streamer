@@ -40,10 +40,8 @@ const Search = () => {
       });
     } catch (err) {
       if (typeof err?.response?.data?.message === "string") {
-        console.log(err);
         alert(err?.response?.data?.message);
       } else {
-        console.log(err);
         alert("Facing An Error");
       }
 
@@ -85,13 +83,11 @@ const Search = () => {
         if (axios.isCancel(err)) {
           console.log("Cancelled");
         } else if (typeof err?.response?.data?.message === "string") {
-          console.log(err);
           alert(err?.response?.data?.message);
           setTimeout(() => {
             dispatch(setLoading(false));
           }, 1000);
         } else {
-          console.log(err);
           alert("Facing An Error");
           setTimeout(() => {
             dispatch(setLoading(false));

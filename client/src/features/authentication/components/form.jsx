@@ -50,7 +50,6 @@ const Form = ({ isSignup }) => {
       ) {
         errorHandle(err.response.data.message);
       } else {
-        console.log(err);
         errorHandle("Something Wrong Server Getting Error");
       }
     } finally {
@@ -89,7 +88,6 @@ const Form = ({ isSignup }) => {
       ) {
         errorHandle(err.response.data.message);
       } else {
-        console.log(err);
         errorHandle("Something Wrong Server Getting Error");
       }
     } finally {

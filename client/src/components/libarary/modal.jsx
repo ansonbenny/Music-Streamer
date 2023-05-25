@@ -184,7 +184,6 @@ const LibraryModal = ({ isLibrary, formAction }) => {
                           dispatch(setUser(null));
                           dispatch(setLibraryModal({ status: false }));
                         } else {
-                          console.log(err);
                           alert("Facing An Error");
                         }
                       } finally {

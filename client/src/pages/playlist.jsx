@@ -41,7 +41,6 @@ const Collections = ({ isArtist }) => {
         dispatch(setAuth({ login: true }));
         navigate("/");
       } else {
-        console.log(err);
         alert("Error");
       }
     } finally {

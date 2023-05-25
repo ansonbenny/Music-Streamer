@@ -39,17 +39,14 @@ const Collections = ({ isArtist }) => {
       });
     } catch (err) {
       if (typeof err?.response?.data?.message === "string") {
-        console.log(err);
         alert(err?.response?.data?.message);
       } else {
-        console.log(err);
         alert("Facing An Error");
       }
 
       return true;
     } finally {
       if (res?.data) {
-        //  console.log(res?.data);
         setResponse((state) => ({
           ...state,
           tracks: [...state?.tracks, ...(res?.data?.data?.tracks || [])],
@@ -75,7 +72,6 @@ const Collections = ({ isArtist }) => {
         if (err?.response?.data?.status === 405) {
           dispatch(setAuth({ login: true }));
         } else {
-          console.log(err);
           alert("Error");
         }
       } finally {
@@ -99,7 +95,6 @@ const Collections = ({ isArtist }) => {
         if (err?.response?.data?.status === 405) {
           dispatch(setAuth({ login: true }));
         } else {
-          console.log(err);
           alert("Error");
         }
       } finally {

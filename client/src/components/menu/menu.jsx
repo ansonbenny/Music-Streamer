@@ -156,7 +156,6 @@ const Menu = forwardRef((params, ref) => {
                           }
                         }
                       } catch (err) {
-                        console.log(err);
                         alert("Facing An Error");
                       }
                     }}

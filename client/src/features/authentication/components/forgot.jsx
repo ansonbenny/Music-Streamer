@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import { exitAuth, setAuth } from "../../../redux/auth";
 import Mail from "./mail";
 import { setUser } from "../../../redux/user";
-import useAuthState from '../hooks/useAuthState'
+import useAuthState from "../hooks/useAuthState";
 import instance from "../../../lib/axios";
 
 const Forgot = (params) => {
@@ -46,7 +46,6 @@ const Forgot = (params) => {
       ) {
         errorHandle(err.response.data.message);
       } else {
-        console.log(err);
         errorHandle("Something Wrong Server Getting Error");
       }
     } finally {
@@ -77,9 +76,13 @@ const Forgot = (params) => {
       errorHandle("Enter Password And Password Length Must Contain 8");
     }
   };
-  
+
   return state?.mail ? (
-    <Mail email={state?.form?.email || ""} type={'forgot'} handleForm={forgotApi} />
+    <Mail
+      email={state?.form?.email || ""}
+      type={"forgot"}
+      handleForm={forgotApi}
+    />
   ) : (
     <form className="form_auth" onSubmit={formHandle}>
       <h3>Forgot</h3>
