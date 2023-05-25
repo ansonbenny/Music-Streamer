@@ -2,12 +2,13 @@ import React, { useCallback } from "react";
 import { Play, Heart, Share, MusicIcon, Pause } from "../../assets";
 import { getTrack, setStatus } from "../../redux/player";
 import { useDispatch, useSelector } from "react-redux";
+import { setAuth } from "../../redux/auth";
 import "./style.scss";
 
 const Banner = ({ data, libraryAction, inLibrary }) => {
   const dispatch = useDispatch();
 
-  const { player } = useSelector((state) => state);
+  const { player, user } = useSelector((state) => state);
 
   const getTime = useCallback(
     (ms) => {
@@ -137,13 +138,17 @@ const Banner = ({ data, libraryAction, inLibrary }) => {
           <button
             className="play"
             onClick={() => {
-              if (
-                player?.data?.type === data?.type &&
-                player?.data?.id === data?.id
-              ) {
-                dispatch(setStatus(true));
+              if (user) {
+                if (
+                  player?.data?.type === data?.type &&
+                  player?.data?.id === data?.id
+                ) {
+                  dispatch(setStatus(true));
+                } else {
+                  dispatch(getTrack({ type: data?.type, id: data?.id }));
+                }
               } else {
-                dispatch(getTrack({ type: data?.type, id: data?.id }));
+                dispatch(setAuth({ login: true }));
               }
             }}
           >

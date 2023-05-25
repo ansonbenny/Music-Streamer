@@ -3,6 +3,7 @@ import { Pause, Play } from "../../assets";
 import { useCarousel } from "../../hooks";
 import { useDispatch, useSelector } from "react-redux";
 import { getTrack, setStatus } from "../../redux/player";
+import { setAuth } from "../../redux/auth";
 import "./style.scss";
 
 const Carousel = ({ title, data }) => {
@@ -14,7 +15,7 @@ const Carousel = ({ title, data }) => {
     play: [],
   });
 
-  const { player } = useSelector((state) => state);
+  const { player, user } = useSelector((state) => state);
 
   return (
     <div className="carousel">
@@ -65,36 +66,30 @@ const Carousel = ({ title, data }) => {
                       <Pause width={"16px"} height={"16px"} color={"#333"} />
                     </button>
                   ) : (
-                    <>
-                      {player?.data?.type === elm?.type &&
-                      player?.data?.id === elm?.id ? (
-                        <button
-                          ref={(elem) => {
-                            if (ref?.current)
-                              return (ref.current["play"][key] = elem);
-                          }}
-                          onClick={() => {
+                    <button
+                      ref={(elem) => {
+                        if (ref?.current)
+                          return (ref.current["play"][key] = elem);
+                      }}
+                      onClick={() => {
+                        if (user) {
+                          if (
+                            player?.data?.type === elm?.type &&
+                            player?.data?.id === elm?.id
+                          ) {
                             dispatch(setStatus(true));
-                          }}
-                        >
-                          <Play width={"16px"} height={"16px"} color={"#333"} />
-                        </button>
-                      ) : (
-                        <button
-                          ref={(elem) => {
-                            if (ref?.current)
-                              return (ref.current["play"][key] = elem);
-                          }}
-                          onClick={() => {
+                          } else {
                             dispatch(
                               getTrack({ type: elm?.type, id: elm?.id })
                             );
-                          }}
-                        >
-                          <Play width={"16px"} height={"16px"} color={"#333"} />
-                        </button>
-                      )}
-                    </>
+                          }
+                        } else {
+                          dispatch(setAuth({ login: true }));
+                        }
+                      }}
+                    >
+                      <Play width={"16px"} height={"16px"} color={"#333"} />
+                    </button>
                   )}
                   <div className="details">
                     <h5>{elm?.name}</h5>

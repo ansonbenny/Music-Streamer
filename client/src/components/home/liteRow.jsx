@@ -2,12 +2,13 @@ import React from "react";
 import { Play, Pause } from "../../assets";
 import { useDispatch, useSelector } from "react-redux";
 import { getTrack, setStatus } from "../../redux/player";
+import { setAuth } from "../../redux/auth";
 import "./style.scss";
 
 const LiteRow = ({ data, title }) => {
   const dispatch = useDispatch();
 
-  const { player } = useSelector((state) => state);
+  const { player, user } = useSelector((state) => state);
   return (
     <div className="liteRow">
       <div className="title">
@@ -39,28 +40,26 @@ const LiteRow = ({ data, title }) => {
                       <Pause width={"16px"} height={"16px"} />
                     </button>
                   ) : (
-                    <>
-                      {player?.data?.type === elm?.type &&
-                      player?.data?.id === elm?.id ? (
-                        <button
-                          onClick={() => {
+                    <button
+                      onClick={() => {
+                        if (user) {
+                          if (
+                            player?.data?.type === elm?.type &&
+                            player?.data?.id === elm?.id
+                          ) {
                             dispatch(setStatus(true));
-                          }}
-                        >
-                          <Play width={"16px"} height={"16px"} />
-                        </button>
-                      ) : (
-                        <button
-                          onClick={() => {
+                          } else {
                             dispatch(
                               getTrack({ type: elm?.type, id: elm?.id })
                             );
-                          }}
-                        >
-                          <Play width={"16px"} height={"16px"} />
-                        </button>
-                      )}
-                    </>
+                          }
+                        } else {
+                          dispatch(setAuth({ login: true }));
+                        }
+                      }}
+                    >
+                      <Play width={"16px"} height={"16px"} />
+                    </button>
                   )}
                 </div>
               </div>

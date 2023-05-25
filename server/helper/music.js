@@ -525,7 +525,7 @@ export default {
           ])
           .toArray();
 
-        if (total?.[0]?.value > 10) {
+        if (total?.[0]?.value >= 10) {
           let remove = await db.collection(collections.ACTIVITY).updateOne(
             {
               _id: new ObjectId(userId),
@@ -543,7 +543,7 @@ export default {
                 _id: new ObjectId(userId),
               },
               {
-                $addToSet: {
+                $push: {
                   items: { name: artist },
                 },
               },
@@ -560,7 +560,7 @@ export default {
               _id: new ObjectId(userId),
             },
             {
-              $addToSet: {
+              $push: {
                 items: { name: artist },
               },
             },

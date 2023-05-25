@@ -81,19 +81,23 @@ const Collections = ({ data, collectionId, collectionType }) => {
                     <button
                       className="Play"
                       onClick={() => {
-                        if (
-                          player?.data?.id === collectionId &&
-                          player?.data?.track?.id === obj?.id
-                        ) {
-                          dispatch(setStatus(true));
+                        if (user) {
+                          if (
+                            player?.data?.id === collectionId &&
+                            player?.data?.track?.id === obj?.id
+                          ) {
+                            dispatch(setStatus(true));
+                          } else {
+                            dispatch(
+                              getTrack({
+                                type: collectionType,
+                                id: collectionId,
+                                offset: key,
+                              })
+                            );
+                          }
                         } else {
-                          dispatch(
-                            getTrack({
-                              type: collectionType,
-                              id: collectionId,
-                              offset: key,
-                            })
-                          );
+                          dispatch(setAuth({ login: true }));
                         }
                       }}
                     >
@@ -191,19 +195,23 @@ const Collections = ({ data, collectionId, collectionType }) => {
                       ) : (
                         <li
                           onClick={() => {
-                            if (
-                              player?.data?.id === collectionId &&
-                              player?.data?.track?.id === obj?.id
-                            ) {
-                              dispatch(setStatus(true));
+                            if (user) {
+                              if (
+                                player?.data?.id === collectionId &&
+                                player?.data?.track?.id === obj?.id
+                              ) {
+                                dispatch(setStatus(true));
+                              } else {
+                                dispatch(
+                                  getTrack({
+                                    type: collectionType,
+                                    id: collectionId,
+                                    offset: key,
+                                  })
+                                );
+                              }
                             } else {
-                              dispatch(
-                                getTrack({
-                                  type: collectionType,
-                                  id: collectionId,
-                                  offset: key,
-                                })
-                              );
+                              dispatch(setAuth({ login: true }));
                             }
                           }}
                         >

@@ -1,11 +1,25 @@
-import React, { Fragment, useRef } from "react";
+import React, { Fragment, useEffect, useRef } from "react";
 import { MagnifyingGlass, MenuBar } from "../../assets";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import "./style.scss";
 
 const Header = ({ menuRef }) => {
   const ref = useRef();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+
+  useEffect(() => {
+    if (searchParams?.get("q")?.length >= 1) {
+      if (ref?.current) {
+        ref.current.value = searchParams?.get("q");
+      }
+    } else {
+      if (ref?.current) {
+        ref.current.value = "";
+      }
+    }
+  }, [searchParams?.get("q")]);
+
   return (
     <Fragment>
       <div className="Header">
