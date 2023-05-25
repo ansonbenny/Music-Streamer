@@ -1,6 +1,6 @@
 # Music Platform
 
-This project is a music platform, It's made for listening to music. Spotify API is used to get tracks and albums, artists. This project is made in the MERN stack.
+This project is a digital music platform, It's made for listening to music and making your favorite music collection. Spotify API is used to get tracks and albums, artists. Spotify API provides millions of music data. This project is made in the MERN stack.
 
 ## Features
 
