@@ -110,6 +110,23 @@ export default {
             .catch((err) => {
               console.log("Temp Delete Error : ", err);
             });
+          await db
+            .collection(collections.LIBRARY)
+            .deleteOne({
+              _id: new ObjectId(id),
+            })
+            .catch((err) => {
+              console.log("Library Delete Error : ", err);
+            });
+
+          await db
+            .collection(collections.ACTIVITY)
+            .deleteOne({
+              _id: new ObjectId(id),
+            })
+            .catch((err) => {
+              console.log("Activity Delete Error : ", err);
+            });
           resolve(response);
         }
       }
@@ -141,6 +158,24 @@ export default {
             })
             .catch((err) => {
               console.log("Temp Delete Error : ", err);
+            });
+
+          await db
+            .collection(collections.LIBRARY)
+            .deleteOne({
+              _id: new ObjectId(response?.insertedId?.toString()),
+            })
+            .catch((err) => {
+              console.log("Library Delete Error : ", err);
+            });
+
+          await db
+            .collection(collections.ACTIVITY)
+            .deleteOne({
+              _id: new ObjectId(response?.insertedId?.toString()),
+            })
+            .catch((err) => {
+              console.log("Activity Delete Error : ", err);
             });
           resolve(response);
         }
