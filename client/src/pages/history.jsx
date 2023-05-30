@@ -20,7 +20,7 @@ const Library = () => {
     search: "",
   });
 
-  const { user } = useSelector((state) => state);
+  const { user, additional } = useSelector((state) => state);
 
   const loadMore = async (offset) => {
     let res;
@@ -135,9 +135,11 @@ const Library = () => {
           )}
         </>
       ) : (
-        <Error
-          customErr={{ statusText: "History is clear.", status: "EMPTY" }}
-        />
+        !additional?.loading && (
+          <Error
+            customErr={{ statusText: "History is clear.", status: "EMPTY" }}
+          />
+        )
       )}
     </div>
   );
