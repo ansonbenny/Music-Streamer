@@ -1077,6 +1077,12 @@ router.get("/get-audio-tracks", CheckLogged, async (req, res) => {
           );
 
           if (tracks?.data) {
+            await music.addToHistory(
+              userId,
+              tracks?.data?.tracks?.[offset] ||
+                tracks?.data?.tracks?.[tracks?.data?.tracks?.length - 1]
+            );
+
             response = {
               total: tracks?.data?.tracks?.length,
               offset: parseInt(offset),
@@ -1125,6 +1131,16 @@ router.get("/get-audio-tracks", CheckLogged, async (req, res) => {
           );
 
           if (tracks?.data && album?.data) {
+            if (tracks?.data?.items?.[0]) {
+              await music.addToHistory(userId, {
+                ...tracks?.data?.items?.[0],
+                album: {
+                  images: album?.data?.images,
+                  name: album?.data?.name,
+                },
+              });
+            }
+
             response = {
               total: tracks?.data?.total,
               album: {
@@ -1171,6 +1187,7 @@ router.get("/get-audio-tracks", CheckLogged, async (req, res) => {
           let tracks = await instance.get(`/tracks/${id}?market=ES`);
 
           if (tracks?.data) {
+            await music.addToHistory(userId, tracks?.data);
             response = {
               total: 1,
               offset: 0,
@@ -1214,6 +1231,8 @@ router.get("/get-audio-tracks", CheckLogged, async (req, res) => {
         `${id}_playlist`,
         1
       );
+
+      await music.addToHistory(userId, response?.data?.tracks?.[0]);
     } catch (err) {
       res.status(500).json({
         status: 500,
@@ -1233,6 +1252,53 @@ router.get("/get-audio-tracks", CheckLogged, async (req, res) => {
           },
         });
       }
+    }
+  }
+});
+
+router.get("/getHistory", CheckLogged, async (req, res) => {
+  const { userId, search = "", offset = 0 } = req.query;
+
+  let response;
+  try {
+    response = await music.getHistory(userId, search, parseInt(offset), 10);
+  } catch (err) {
+    res.status(500).json({
+      status: 500,
+      message: err,
+    });
+  } finally {
+    if (response) {
+      res.status(200).json({
+        status: 200,
+        message: "Success",
+        data: {
+          list: response?.data,
+          total: response?.total,
+          offset: parseInt(offset) || 0,
+        },
+      });
+    }
+  }
+});
+
+router.put("/clearHistory", CheckLogged, async (req, res) => {
+  const { userId } = req.query;
+  let response;
+
+  try {
+    response = await music.clearHistory(userId);
+  } catch (err) {
+    res.status(500).json({
+      status: 500,
+      message: err,
+    });
+  } finally {
+    if (response) {
+      res.status(200).json({
+        status: 200,
+        message: "Success",
+      });
     }
   }
 });

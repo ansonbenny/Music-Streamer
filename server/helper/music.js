@@ -9,7 +9,7 @@ export default {
       try {
         response = await db.collection(collections.LIBRARY).insertOne({
           _id: new ObjectId(userId),
-          data: [details],
+          playlists: [details],
         });
       } catch (err) {
         if (err?.code === 11000) {
@@ -18,13 +18,13 @@ export default {
             .updateOne(
               {
                 _id: new ObjectId(userId),
-                "data.playlistId": {
+                "playlists.playlistId": {
                   $ne: details.playlistId,
                 },
               },
               {
                 $addToSet: {
-                  data: details,
+                  playlists: details,
                 },
               }
             )
@@ -50,7 +50,7 @@ export default {
           },
           {
             $pull: {
-              data: details,
+              playlists: details,
             },
           }
         );
@@ -68,7 +68,7 @@ export default {
       try {
         let response = await db.collection(collections.LIBRARY).findOne({
           _id: new ObjectId(userId),
-          "data.playlistId": `${id}_${type}`,
+          "playlists.playlistId": `${id}_${type}`,
         });
 
         resolve(response);
@@ -89,11 +89,11 @@ export default {
               },
             },
             {
-              $unwind: "$data",
+              $unwind: "$playlists",
             },
             {
               $match: {
-                "data.name": {
+                "playlists.name": {
                   $regex: search,
                   $options: "i",
                 },
@@ -117,11 +117,11 @@ export default {
               },
             },
             {
-              $unwind: "$data",
+              $unwind: "$playlists",
             },
             {
               $match: {
-                "data.name": {
+                "playlists.name": {
                   $regex: search,
                   $options: "i",
                 },
@@ -136,12 +136,12 @@ export default {
             {
               $project: {
                 _id: 1,
-                id: "$data.id",
-                type: "$data.type",
-                name: "$data.name",
-                short: "$data.short",
-                images: "$data.images",
-                playlistId: "$data.playlistId",
+                id: "$playlists.id",
+                type: "$playlists.type",
+                name: "$playlists.name",
+                short: "$playlists.short",
+                images: "$playlists.images",
+                playlistId: "$playlists.playlistId",
               },
             },
           ])
@@ -159,11 +159,11 @@ export default {
         let response = await db.collection(collections.LIBRARY).updateOne(
           {
             _id: new ObjectId(userId),
-            "data.playlistId": playlistId,
+            "playlists.playlistId": playlistId,
           },
           {
             $set: {
-              "data.$.name": name,
+              "playlists.$.name": name,
             },
           }
         );
@@ -188,15 +188,15 @@ export default {
               },
             },
             {
-              $unwind: "$data",
+              $unwind: "$playlists",
             },
             {
               $match: {
-                "data.name": {
+                "playlists.name": {
                   $regex: search,
                   $options: "i",
                 },
-                "data.type": "playlist",
+                "playlists.type": "playlist",
               },
             },
             {
@@ -205,13 +205,13 @@ export default {
             {
               $set: {
                 _id: 1,
-                id: "$data.id",
-                type: "$data.type",
-                name: "$data.name",
-                short: "$data.short",
-                images: "$data.images",
-                playlistId: "$data.playlistId",
-                items: "$data.items",
+                id: "$playlists.id",
+                type: "$playlists.type",
+                name: "$playlists.name",
+                short: "$playlists.short",
+                images: "$playlists.images",
+                playlistId: "$playlists.playlistId",
+                items: "$playlists.items",
               },
             },
           ])
@@ -229,11 +229,11 @@ export default {
         let response = await db.collection(collections.LIBRARY).updateOne(
           {
             _id: new ObjectId(userId),
-            "data.playlistId": playlistId,
+            "playlists.playlistId": playlistId,
           },
           {
             $pull: {
-              "data.$.items": {
+              "playlists.$.items": {
                 id: trackId,
               },
             },
@@ -254,11 +254,11 @@ export default {
         let response = await db.collection(collections.LIBRARY).updateOne(
           {
             _id: new ObjectId(userId),
-            "data.playlistId": playlistId,
+            "playlists.playlistId": playlistId,
           },
           {
             $addToSet: {
-              "data.$.items": track,
+              "playlists.$.items": track,
             },
           }
         );
@@ -285,10 +285,10 @@ export default {
               },
             },
             {
-              $unwind: "$data",
+              $unwind: "$playlists",
             },
             {
-              $unwind: "$data.items",
+              $unwind: "$playlists.items",
             },
             {
               $project: {
@@ -296,7 +296,7 @@ export default {
                 inPlaylist: {
                   $cond: {
                     if: {
-                      $eq: [trackId, "$data.items.id"],
+                      $eq: [trackId, "$playlists.items.id"],
                     },
                     then: true,
                     else: false,
@@ -334,15 +334,15 @@ export default {
               },
             },
             {
-              $unwind: "$data",
+              $unwind: "$playlists",
             },
             {
               $project: {
-                name: "$data.name",
-                type: "$data.type",
-                id: "$data.id",
-                short: "$data.short",
-                playlistId: "$data.playlistId",
+                name: "$playlists.name",
+                type: "$playlists.type",
+                id: "$playlists.id",
+                short: "$playlists.short",
+                playlistId: "$playlists.playlistId",
               },
             },
             {
@@ -362,12 +362,12 @@ export default {
               },
             },
             {
-              $unwind: "$data",
+              $unwind: "$playlists",
             },
             {
               $project: {
-                playlistId: "$data.playlistId",
-                items: "$data.items",
+                playlistId: "$playlists.playlistId",
+                items: "$playlists.items",
               },
             },
             {
@@ -442,12 +442,12 @@ export default {
               },
             },
             {
-              $unwind: "$data",
+              $unwind: "$playlists",
             },
             {
               $project: {
-                playlistId: "$data.playlistId",
-                items: "$data.items",
+                playlistId: "$playlists.playlistId",
+                items: "$playlists.items",
               },
             },
             {
@@ -631,6 +631,141 @@ export default {
         }
       } catch (err) {
         resolve({ artist: null });
+      }
+    });
+  },
+  addToHistory: (userId, details) => {
+    return new Promise(async (resolve, reject) => {
+      if (details) {
+        let response;
+        try {
+          response = await db.collection(collections.LIBRARY).insertOne({
+            _id: new ObjectId(userId),
+            history: [details],
+          });
+        } catch (err) {
+          if (err?.code === 11000) {
+            response = await db
+              .collection(collections.LIBRARY)
+              .updateOne(
+                {
+                  _id: new ObjectId(userId),
+                },
+                {
+                  $addToSet: {
+                    history: details,
+                  },
+                }
+              )
+              .catch(() => {
+                resolve();
+              });
+          } else {
+            resolve();
+          }
+        } finally {
+          if (response) {
+            resolve(response);
+          }
+        }
+      } else {
+        resolve();
+      }
+    });
+  },
+  getHistory: (userId, search, offset, limit) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        let total = await db
+          .collection(collections.LIBRARY)
+          .aggregate([
+            {
+              $match: {
+                _id: new ObjectId(userId),
+              },
+            },
+            {
+              $unwind: "$history",
+            },
+            {
+              $match: {
+                "history.name": {
+                  $regex: search,
+                  $options: "i",
+                },
+              },
+            },
+            {
+              $group: {
+                _id: 1,
+                value: { $sum: 1 },
+              },
+            },
+          ])
+          .toArray();
+
+        let response = await db
+          .collection(collections.LIBRARY)
+          .aggregate([
+            {
+              $match: {
+                _id: new ObjectId(userId),
+              },
+            },
+            {
+              $unwind: "$history",
+            },
+            {
+              $match: {
+                "history.name": {
+                  $regex: search,
+                  $options: "i",
+                },
+              },
+            },
+            {
+              $skip: offset,
+            },
+            {
+              $limit: limit,
+            },
+            {
+              $group: {
+                _id: 1,
+                item: {
+                  $push: "$history",
+                },
+              },
+            },
+          ])
+          .toArray();
+
+        resolve({
+          data: response?.[0]?.item,
+          total: total?.[0]?.value || 0,
+        });
+      } catch (err) {
+        reject(err);
+      }
+    });
+  },
+  clearHistory: (userId) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        let res = await db.collection(collections.LIBRARY).updateOne(
+          {
+            _id: new ObjectId(userId),
+          },
+          {
+            $set: {
+              history: [],
+            },
+          }
+        );
+
+        resolve(res);
+      } catch (err) {
+        reject(err);
       }
     });
   },

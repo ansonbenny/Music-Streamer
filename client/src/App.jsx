@@ -5,13 +5,14 @@ import {
   Collections,
   Error,
   Home,
-  Library,
+  Playlists,
   Music,
   Playlist,
   Search,
   Verification,
+  History
 } from "./pages";
-import { Footer, Header, LibraryModal, Loading, Menu } from "./components";
+import { Footer, Header, Loading, Menu } from "./components";
 import { Auth, Player } from "./features";
 import { useRef } from "react";
 import { useSelector } from "react-redux";
@@ -70,7 +71,8 @@ const App = () => {
           </Route>
           <Route element={<ProtectedRoute isAuth />}>
             <Route path="/playlist/:id" element={<Playlist />} />
-            <Route path="/library" element={<Library />} />
+            <Route path="/library/playlists" element={<Playlists />} />
+            <Route path="/library/history" element={<History />} />
             <Route path="/account" element={<Account />} />
           </Route>
           <Route path="*" element={<Error />} />

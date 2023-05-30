@@ -4,12 +4,60 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: center;
-    margin-bottom: 1rem;
+    justify-content: left;
+    margin-bottom: 1.5rem;
 
-    .title {
-        @include rowsTitle;
-        margin-bottom: 0;
+    .actions {
+        position: relative;
+
+        button {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            border-radius: 9999px;
+            height: 2rem;
+            padding: 0 1.3rem;
+            border: none;
+            font-size: small;
+            font-weight: normal;
+            background: var(--primary-bg);
+            color: var(--text-primary-color);
+            transition: all .5s ease-in-out;
+            -moz-transition: all .5s ease-in-out;
+
+            span {
+                padding-left: .5rem;
+                padding-top: .3rem;
+
+                svg {
+                    fill: var(--text-primary-color);
+                }
+            }
+
+            &:hover {
+                cursor: pointer;
+                background: rgba(0, 0, 0, 0.2);
+            }
+        }
+
+        .dropdown {
+            margin-top: .5rem;
+            padding: 1rem 1.5rem;
+            display: none;
+            position: absolute;
+            z-index: 1000;
+            background: var(--content-bg);
+            border: 1px solid var(--primary-border);
+
+            button {
+                background: var(--primary-bg);
+            }
+
+            &:is(.active) {
+                display: block;
+            }
+        }
     }
 
     .search_library {
@@ -58,7 +106,7 @@
                 padding-left: 2rem;
                 padding-right: .5rem;
                 position: relative;
-                border-radius: 5px;
+                border-radius: 9999px;
                 color: var(--text-primary-color);
 
                 &::placeholder {
@@ -73,6 +121,31 @@
                     width: 4rem;
                 }
             }
+        }
+    }
+
+    .clear-history {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: 1rem;
+        font-size: small;
+        font-weight: normal;
+        height: 2rem;
+        padding: 0 .8rem;
+        border: none;
+        border-radius: 9999px;
+        background: var(--primary-bg);
+        transition: all .5s ease-in-out;
+        -moz-transition: all .5s ease-in-out;
+
+        svg {
+            fill: var(--text-primary-color);
+        }
+
+        &:hover {
+            cursor: pointer;
+            background: rgba(0, 0, 0, 0.2);
         }
     }
 

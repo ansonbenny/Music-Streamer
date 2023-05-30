@@ -8,7 +8,7 @@ import { setUser } from "../redux/user";
 import axios from "axios";
 import instance from "../lib/axios";
 
-const Library = () => {
+const Playlists = () => {
   const dispatch = useDispatch();
 
   const location = useLocation();
@@ -17,7 +17,7 @@ const Library = () => {
 
   const [state, setState] = useState({
     response: {},
-    search: false,
+    search: "",
   });
 
   const { user, library } = useSelector((state) => state);
@@ -29,6 +29,7 @@ const Library = () => {
       res = await instance.get("/music/all-playlists", {
         params: {
           offset: offset ? offset : state?.response?.offset + 10,
+          search: state?.search || "",
         },
       });
     } catch (err) {
@@ -104,26 +105,7 @@ const Library = () => {
         }
       } finally {
         if (res?.data) {
-          if (state?.search) {
-            getPlaylists();
-          } else {
-            if (state?.response?.total === 0) {
-              loadMore("0");
-            } else if (
-              state?.response?.offset + 10 >=
-              state?.response?.total + 1
-            ) {
-              loadMore(state?.response?.total);
-            } else {
-              setState((state) => ({
-                ...state,
-                response: {
-                  ...state?.response,
-                  total: state?.response?.total + 1,
-                },
-              }));
-            }
-          }
+          getPlaylists(undefined, state?.search);
           dispatch(setLibraryModal({ status: false }));
         }
       }
@@ -169,7 +151,7 @@ const Library = () => {
     try {
       res = await instance.get("/music/all-playlists", {
         params: {
-          search,
+          search: search,
         },
         cancelToken: cancelToken?.token || null,
       });
@@ -187,7 +169,7 @@ const Library = () => {
         setState({
           ...state,
           response: res?.data?.data || {},
-          search: search ? true : false,
+          search: search,
         });
         setTimeout(() => {
           dispatch(setLoading(false));
@@ -214,7 +196,10 @@ const Library = () => {
 
   return (
     <div className="container">
-      <LibraryHead getPlaylists={getPlaylists} />
+      <LibraryHead
+        getData={getPlaylists}
+        extraNeed={state?.response?.list?.length > 0 ? true : false}
+      />
       <Row isLibrary data={state?.response?.list} />
 
       {state?.response?.total > state?.response?.list?.length && (
@@ -228,4 +213,4 @@ const Library = () => {
   );
 };
 
-export default Library;
+export default Playlists;

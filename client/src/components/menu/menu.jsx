@@ -230,13 +230,15 @@ const Menu = forwardRef((params, ref) => {
             </button>
             <button
               className={
-                window.location.pathname === "/library" ||
-                window.location.pathname === "/library/"
+                window.location.pathname === "/library/playlists" ||
+                window.location.pathname === "/library/playlists/" ||
+                window.location.pathname === "/library/history" ||
+                window.location.pathname === "/library/history/"
                   ? "active"
                   : ""
               }
               onClick={() => {
-                navigate("/library");
+                navigate("/library/playlists");
               }}
             >
               <span>
