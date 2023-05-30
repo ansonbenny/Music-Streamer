@@ -125,10 +125,20 @@ const Library = () => {
   return (
     <div className="container">
       <LibraryHead isHistory getData={getHistory} clearHistory={clearHistory} />
-      <Row data={state?.response?.list} />
 
-      {state?.response?.total > state?.response?.list?.length && (
-        <LoadMore onHandle={loadMore} />
+      {state?.response?.list?.length > 0 ? (
+        <>
+          <Row data={state?.response?.list} />
+
+          {state?.response?.total > state?.response?.list?.length && (
+            <LoadMore onHandle={loadMore} />
+          )}
+        </>
+      ) : (
+        <div className="error_page">
+          <h1>EMPTY</h1>
+          <p>History is clear.</p>
+        </div>
       )}
     </div>
   );
