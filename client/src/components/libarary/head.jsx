@@ -3,7 +3,7 @@ import { Down, MagnifyingGlass, Trash } from "../../assets";
 import { useNavigate } from "react-router-dom";
 import "./style.scss";
 
-const LibraryHead = ({ getData, isHistory, clearHistory, extraNeed }) => {
+const LibraryHead = ({ getData, isHistory, clearHistory }) => {
   const ref = useRef({
     search: null,
     svg: null,
@@ -76,43 +76,41 @@ const LibraryHead = ({ getData, isHistory, clearHistory, extraNeed }) => {
         </div>
       </div>
 
-      {extraNeed && (
-        <form
-          className="search_library"
-          onSubmit={(e) => {
-            e.preventDefault();
-            getData(undefined, ref?.current?.search?.value);
+      <form
+        className="search_library"
+        onSubmit={(e) => {
+          e.preventDefault();
+          getData(undefined, ref?.current?.search?.value);
+        }}
+      >
+        <MagnifyingGlass
+          ref={(elm) => {
+            if (ref?.current) {
+              ref.current.svg = elm;
+            }
           }}
-        >
-          <MagnifyingGlass
-            ref={(elm) => {
-              if (ref?.current) {
-                ref.current.svg = elm;
-              }
-            }}
-            width={"16px"}
-            height={"16px"}
-          />
-          <input
-            type="text"
-            name="search"
-            placeholder="Search..."
-            ref={(elm) => {
-              if (ref?.current) {
-                ref.current.search = elm;
-              }
-            }}
-            onFocus={() => {
-              ref?.current?.svg?.classList?.add("active");
-            }}
-            onBlur={() => {
-              ref?.current?.svg?.classList?.remove("active");
-            }}
-          />
-        </form>
-      )}
+          width={"16px"}
+          height={"16px"}
+        />
+        <input
+          type="text"
+          name="search"
+          placeholder="Search..."
+          ref={(elm) => {
+            if (ref?.current) {
+              ref.current.search = elm;
+            }
+          }}
+          onFocus={() => {
+            ref?.current?.svg?.classList?.add("active");
+          }}
+          onBlur={() => {
+            ref?.current?.svg?.classList?.remove("active");
+          }}
+        />
+      </form>
 
-      {isHistory && extraNeed ? (
+      {isHistory ? (
         <button
           className="clear-history"
           onClick={() => {

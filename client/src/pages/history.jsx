@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setLoading } from "../redux/additional";
 import { useLocation, useNavigate } from "react-router-dom";
 import { setUser } from "../redux/user";
-import {Error} from './'
+import { Error } from "./";
 import axios from "axios";
 import instance from "../lib/axios";
 
@@ -125,12 +125,7 @@ const Library = () => {
 
   return (
     <div className="container">
-      <LibraryHead
-        isHistory
-        getData={getHistory}
-        clearHistory={clearHistory}
-        extraNeed={state?.response?.list?.length > 0 ? true : false}
-      />
+      <LibraryHead isHistory getData={getHistory} clearHistory={clearHistory} />
       {state?.response?.list?.length > 0 ? (
         <>
           <Row data={state?.response?.list} />
@@ -139,7 +134,11 @@ const Library = () => {
             <LoadMore onHandle={loadMore} />
           )}
         </>
-      ) : <Error customErr={{statusText:"History is clear.",status:"EMPTY"}}/>}
+      ) : (
+        <Error
+          customErr={{ statusText: "History is clear.", status: "EMPTY" }}
+        />
+      )}
     </div>
   );
 };

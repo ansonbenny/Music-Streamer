@@ -198,7 +198,6 @@ const Playlists = () => {
     <div className="container">
       <LibraryHead
         getData={getPlaylists}
-        extraNeed={state?.response?.list?.length > 0 ? true : false}
       />
       <Row isLibrary data={state?.response?.list} />
 
