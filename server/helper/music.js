@@ -641,25 +641,74 @@ export default {
         try {
           response = await db.collection(collections.LIBRARY).insertOne({
             _id: new ObjectId(userId),
-            history: [details],
+            history: [
+              {
+                ...details,
+                date: new Date(),
+              },
+            ],
           });
         } catch (err) {
           if (err?.code === 11000) {
-            response = await db
+            let del = await db
               .collection(collections.LIBRARY)
               .updateOne(
                 {
                   _id: new ObjectId(userId),
                 },
                 {
-                  $addToSet: {
-                    history: details,
+                  $pull: {
+                    history: {
+                      type: details?.type,
+                      id: details?.id,
+                    },
                   },
                 }
               )
-              .catch(() => {
-                resolve();
+              .catch(async () => {
+                response = await db
+                  .collection(collections.LIBRARY)
+                  .updateOne(
+                    {
+                      _id: new ObjectId(userId),
+                      "history.id": {
+                        $ne: details?.id,
+                      },
+                    },
+                    {
+                      $addToSet: {
+                        history: {
+                          ...details,
+                          date: new Date(),
+                        },
+                      },
+                    }
+                  )
+                  .catch(() => {
+                    resolve();
+                  });
               });
+
+            if (del) {
+              response = await db
+                .collection(collections.LIBRARY)
+                .updateOne(
+                  {
+                    _id: new ObjectId(userId),
+                  },
+                  {
+                    $push: {
+                      history: {
+                        ...details,
+                        date: new Date(),
+                      },
+                    },
+                  }
+                )
+                .catch(() => {
+                  resolve();
+                });
+            }
           } else {
             resolve();
           }
@@ -721,6 +770,11 @@ export default {
                   $regex: search,
                   $options: "i",
                 },
+              },
+            },
+            {
+              $sort: {
+                "history.date": -1,
               },
             },
             {

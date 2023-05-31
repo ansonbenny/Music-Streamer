@@ -1077,6 +1077,13 @@ router.get("/get-audio-tracks", CheckLogged, async (req, res) => {
           );
 
           if (tracks?.data) {
+            await music.recentActivity(
+              userId,
+              tracks?.data?.tracks?.[offset]?.artists?.[0]?.name ||
+                tracks?.data?.tracks?.[tracks?.data?.tracks?.length - 1]
+                  ?.artists?.[0]?.name
+            );
+
             await music.addToHistory(
               userId,
               tracks?.data?.tracks?.[offset] ||
@@ -1132,6 +1139,11 @@ router.get("/get-audio-tracks", CheckLogged, async (req, res) => {
 
           if (tracks?.data && album?.data) {
             if (tracks?.data?.items?.[0]) {
+              await music.recentActivity(
+                userId,
+                tracks?.data?.items?.[0]?.artists?.[0]?.name
+              );
+
               await music.addToHistory(userId, {
                 ...tracks?.data?.items?.[0],
                 album: {
@@ -1187,6 +1199,10 @@ router.get("/get-audio-tracks", CheckLogged, async (req, res) => {
           let tracks = await instance.get(`/tracks/${id}?market=ES`);
 
           if (tracks?.data) {
+            await music.recentActivity(
+              userId,
+              tracks?.data?.artists?.[0]?.name
+            );
             await music.addToHistory(userId, tracks?.data);
             response = {
               total: 1,
@@ -1232,15 +1248,20 @@ router.get("/get-audio-tracks", CheckLogged, async (req, res) => {
         1
       );
 
+      await music.recentActivity(
+        userId,
+        response?.data?.tracks?.[0]?.artists?.[0]?.name
+      );
+
       await music.addToHistory(userId, response?.data?.tracks?.[0]);
     } catch (err) {
-      res.status(500).json({
+      return res.status(500).json({
         status: 500,
         message: err,
       });
     } finally {
       if (response) {
-        res.status(200).json({
+        return res.status(200).json({
           status: 200,
           message: "Success",
           data: {
