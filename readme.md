@@ -1,4 +1,4 @@
-# Music Platform
+# Music Streamer
 
 This project is a digital music platform, It's made for listening to music and making your favorite music collection. Spotify API is used to get tracks and albums, artists. Spotify API provides millions of music data. This project is made in the MERN stack.
 
@@ -71,7 +71,7 @@ To run this project, you will need to add the following environment variables to
 Clone the project
 
 ```bash
-  git clone https://github.com/ansonbenny/Music-Platform
+  git clone https://github.com/ansonbenny/Music-Streamer
 ```
 
 ##To Start BackEnd
@@ -79,7 +79,7 @@ Clone the project
 Go to the server directory
 
 ```bash
-  cd Music-Platform/server
+  cd Music-Streamer/server
 ```
 
 Install dependencies
@@ -99,7 +99,7 @@ Start
 Go to the client directory
 
 ```bash
-  cd Music-Platform/client
+  cd Music-Streamer/client
 ```
 
 Install dependencies
